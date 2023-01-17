@@ -129,14 +129,15 @@ client = commands.Bot(command_prefix='!', intents=intents)
 @client.command()
 async def check(ctx, arg):
     message = ''
+    # This is nested dictionary
     users_dict = {
-        'hwangz#8075'           :'hwangz',
-        'Fruit#8143'            :'kong',
-        'FloatLikeBubble#0529'  :'tele',
-        'Jasmine#4582'          :'jazz',
-        'clem#1138'             :'clem',
-        'LL#2409'               :'ryuh',
-        'kevinc#3600'           :'kevin',
+        'hwangz#8075'           : { 'name' : 'hwangz' , 'id' : '<@490507365704138763>' },
+        'Fruit#8143'            : { 'name' : 'kong'   , 'id' : '<@274075256275206145>' },
+        'FloatLikeBubble#0529'  : { 'name' : 'tele'   , 'id' : '<@311477931576918016>' },
+        'Jasmine#4582'          : { 'name' : 'jazz'   , 'id' : '<@389193536043483138>' },
+        'LL#2409'               : { 'name' : 'ryuh'   , 'id' : '<@702529999068200970>' },
+        'kevinc#3600'           : { 'name' : 'kevin'  , 'id' : '<@131389918998953985>' },
+        # 'clem#1138'             : { 'name' : 'clem'   , 'id' : '<@304579645003530251>' },
     }
     channel = client.get_channel(channel_id)
     message_to_check = await channel.fetch_message(arg)
@@ -149,9 +150,13 @@ async def check(ctx, arg):
     if({} == users_dict):
         message = 'everyone voted'
     else:
-        for k in list(users_dict.values()):
-            message += k
-            message += ', '
+        for dis_tag, dis_info in users_dict.items():
+            for key in dis_info:
+                # print(dis_info)
+                if(key == 'name'):
+                    # print(dis_info[key])
+                    message += dis_info[key]
+                    message += ', '
         message = message[:-2] + ' not yet vote'
     await ctx.send(message)
 
