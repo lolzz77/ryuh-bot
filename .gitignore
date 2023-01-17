@@ -1,0 +1,8 @@
+*.txt
+
+# Python
+__pycache__/
+
+# npm
+.env
+node_modules/
