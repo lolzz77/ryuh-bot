@@ -114,6 +114,17 @@ channel_id = 963160372385296414
 # my #general channel
 # channel_id = 803958155935219724
 
+# This is nested dictionary
+users_dict = {
+    'hwangz#8075'           : { 'name' : 'hwangz' , 'id' : '<@490507365704138763>' },
+    'Fruit#8143'            : { 'name' : 'kong'   , 'id' : '<@274075256275206145>' },
+    'FloatLikeBubble#0529'  : { 'name' : 'tele'   , 'id' : '<@311477931576918016>' },
+    'Jasmine#4582'          : { 'name' : 'jazz'   , 'id' : '<@389193536043483138>' },
+    'LL#2409'               : { 'name' : 'ryuh'   , 'id' : '<@702529999068200970>' },
+    'kevinc#3600'           : { 'name' : 'kevin'  , 'id' : '<@131389918998953985>' },
+    # 'clem#1138'             : { 'name' : 'clem'   , 'id' : '<@304579645003530251>' },
+}
+
 # https://stackoverflow.com/questions/73393567/discord-py-client-run-and-bot-run-in-one-code
 # client = discord.Client(intents=intents)
 client = commands.Bot(command_prefix='!', intents=intents)
@@ -122,16 +133,6 @@ client = commands.Bot(command_prefix='!', intents=intents)
 @client.command()
 async def check(ctx, arg):
     message = ''
-    # This is nested dictionary
-    users_dict = {
-        'hwangz#8075'           : { 'name' : 'hwangz' , 'id' : '<@490507365704138763>' },
-        'Fruit#8143'            : { 'name' : 'kong'   , 'id' : '<@274075256275206145>' },
-        'FloatLikeBubble#0529'  : { 'name' : 'tele'   , 'id' : '<@311477931576918016>' },
-        'Jasmine#4582'          : { 'name' : 'jazz'   , 'id' : '<@389193536043483138>' },
-        'LL#2409'               : { 'name' : 'ryuh'   , 'id' : '<@702529999068200970>' },
-        'kevinc#3600'           : { 'name' : 'kevin'  , 'id' : '<@131389918998953985>' },
-        # 'clem#1138'             : { 'name' : 'clem'   , 'id' : '<@304579645003530251>' },
-    }
     channel = client.get_channel(channel_id)
     message_to_check = await channel.fetch_message(arg)
     for reaction in message_to_check.reactions:
@@ -159,33 +160,50 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    global is_weekend
     if message.content.startswith('ryuh weekend'):
-        is_weekend = True
-        await message.channel.send(schedule_weekend_msg)
+        members = ''
+        msg_sent = await message.channel.send(schedule_weekend_msg)
+        msg_id = msg_sent.id
+        msg_to_react = await message.channel.fetch_message(msg_id)
+        await msg_to_react.add_reaction("🐱")
+        await msg_to_react.add_reaction("🐶")
+        await msg_to_react.add_reaction("🐰")
+        await msg_to_react.add_reaction("🐹")
+        await msg_to_react.add_reaction("🐻")
+        await msg_to_react.add_reaction("🐯")
+        await msg_to_react.add_reaction("🦁")
+        await msg_to_react.add_reaction("🐼")
+        await msg_to_react.add_reaction("🐷")
+        await msg_to_react.add_reaction("🐮")
+        await msg_to_react.add_reaction("🙃")
+        for dis_tag, dis_info in users_dict.items():
+            for key in dis_info:
+                if(key == 'id'):
+                    members += dis_info[key] # To append all mention ID into one single variable
+                    members += ' ' # add space
+        # mention all at once
+        await message.channel.send(members)
+
     if message.content.startswith('ryuh weekday'):
-        is_weekend = False
-        await message.channel.send(schedule_weekday_msg)
+        members = ''
+        msg_sent = await message.channel.send(schedule_weekday_msg)
+        msg_id = msg_sent.id
+        msg_to_react = await message.channel.fetch_message(msg_id)
+        await msg_to_react.add_reaction("🐠")
+        await msg_to_react.add_reaction("🐟")
+        await msg_to_react.add_reaction("🐬")
+        await msg_to_react.add_reaction("🐳")
+        await msg_to_react.add_reaction("🐙")
+        await msg_to_react.add_reaction("🙃")
+        for dis_tag, dis_info in users_dict.items():
+            for key in dis_info:
+                if(key == 'id'):
+                    members += dis_info[key]
+                    members += ' '
+        await message.channel.send(members)
+
     if message.author == client.user:
-        if is_weekend:
-            await message.add_reaction("🐱")
-            await message.add_reaction("🐶")
-            await message.add_reaction("🐰")
-            await message.add_reaction("🐹")
-            await message.add_reaction("🐻")
-            await message.add_reaction("🐯")
-            await message.add_reaction("🦁")
-            await message.add_reaction("🐼")
-            await message.add_reaction("🐷")
-            await message.add_reaction("🐮")
-            await message.add_reaction("🙃")
-        else:
-            await message.add_reaction("🐠")
-            await message.add_reaction("🐟")
-            await message.add_reaction("🐬")
-            await message.add_reaction("🐳")
-            await message.add_reaction("🐙")
-            await message.add_reaction("🙃")
+        return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
     await client.process_commands(message)
 
