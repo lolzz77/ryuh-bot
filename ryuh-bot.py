@@ -116,10 +116,10 @@ intents.message_content = True
 
 
 # Jumping Sushi hboss-sellherbs channel
-channel_id = 963160372385296414
+# channel_id = 963160372385296414
 
 # my #general channel
-# channel_id = 803958155935219724
+channel_id = 803958155935219724
 
 # This is nested dictionary
 users_dict = {
@@ -139,19 +139,23 @@ client = commands.Bot(command_prefix='!', intents=intents)
 # https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
 @client.command()
 async def check(ctx, arg):
+    # you have to use .copy()
+    # else anything u chg on _temp will affect on the ori dict also
+    users_dict_temp = users_dict.copy()
     message = ''
     channel = client.get_channel(channel_id)
     message_to_check = await channel.fetch_message(arg)
     for reaction in message_to_check.reactions:
         async for user in reaction.users():
-            if(None == users_dict[str(user)]):
+            # you have to str(user) else python will treat this if as true for all users
+            if str(user) not in users_dict_temp:
                 continue
-            users_dict.pop(str(user))
+            users_dict_temp.pop(str(user))
     # if dict is empty
-    if({} == users_dict):
+    if({} == users_dict_temp):
         message = 'everyone voted'
     else:
-        for dis_tag, dis_info in users_dict.items():
+        for dis_tag, dis_info in users_dict_temp.items():
             for key in dis_info:
                 # print(dis_info)
                 if(key == 'name'):
