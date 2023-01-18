@@ -171,6 +171,9 @@ async def on_message(message):
         members = ''
         msg_sent = await message.channel.send(schedule_weekend_msg)
         msg_id = msg_sent.id
+        f = open("last_scheduled_msg_id.txt", "w")
+        f.write(str(msg_id))
+        f.close()
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐱")
         await msg_to_react.add_reaction("🐶")
@@ -195,6 +198,9 @@ async def on_message(message):
         members = ''
         msg_sent = await message.channel.send(schedule_weekday_msg)
         msg_id = msg_sent.id
+        f = open("last_scheduled_msg_id.txt", "w")
+        f.write(str(msg_id))
+        f.close()
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐠")
         await msg_to_react.add_reaction("🐟")
@@ -209,6 +215,11 @@ async def on_message(message):
                     members += ' '
         await message.channel.send(members)
 
+    if message.content.startswith('ryuh check'):
+        f = open("last_scheduled_msg_id.txt", "r")
+        last_scheduled_msg_id = f.read()
+        f.close()
+        await message.channel.send(last_scheduled_msg_id)
     if message.author == client.user:
         return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
