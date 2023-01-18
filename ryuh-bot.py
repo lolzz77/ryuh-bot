@@ -116,10 +116,10 @@ intents.message_content = True
 
 
 # Jumping Sushi hboss-sellherbs channel
-# channel_id = 963160372385296414
+channel_id = 963160372385296414
 
 # my #general channel
-channel_id = 803958155935219724
+# channel_id = 803958155935219724
 
 # This is nested dictionary
 users_dict = {
@@ -162,8 +162,9 @@ async def check(ctx, arg):
                     # print(dis_info[key])
                     message += dis_info[key]
                     message += ', '
-        message = message[:-2] + ' not yet vote'
-    await ctx.send(message)
+        # Remove last 2 char, because the msg will be "UserA, UserB, "
+        message = message[:-2] + ' haven\'t vote'
+    await message_to_check.reply(message)
 
 @client.event
 async def on_ready():
@@ -223,7 +224,19 @@ async def on_message(message):
         f = open("last_scheduled_msg_id.txt", "r")
         last_scheduled_msg_id = f.read()
         f.close()
-        await message.channel.send(last_scheduled_msg_id)
+        # if you want bot to execute bot command
+        # e.g.: bot to call "!check [msg_id]"
+        # you dont need to, u just need to call the function
+        # as for funciton 1st param "ctx", just pass you have to pass message.channel
+        # because in the function, there's "ctx.send()"
+        # and only "message.channel" has ".send()" method
+        # UPDATE 1: now you want to use "reply()"
+        # Then pass only "message"
+        # "message.channel" -> has method ".send()
+        # "message" -> has method .reply()
+        # UPDATE 2: Since you want bot to reply to specific msg ID
+        # then you dont need to pass anything for 1st param, just pass None
+        await check(None, last_scheduled_msg_id)
     if message.author == client.user:
         return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
