@@ -67,48 +67,89 @@ first_day_of_week_offset+=1
 sunday = now + timedelta(days=first_day_of_week_offset)
 sunday = sunday.strftime("%d/%b/%y")
 
+mon_10_pm = "10pm - 🐠"
+mon_11_pm = "11pm - 🐟"
+tue_10_pm = "10pm - 🐬"
+tue_11_pm = "11pm - 🐳"
+wed_10_pm = "10pm - 🐙"
+
+thu_10_pm = "10pm - 🐱"
+thu_11_pm = "11pm - 🐶"
+fri_10_pm = "10pm - 🐰"
+fri_11_pm = "11pm - 🐹"
+fri_12_am = "12am - 🐻"
+sat_10_pm = "10pm - 🐯"
+sat_11_pm = "11pm - 🦁"
+sat_12_am = "12am - 🐼"
+sun_10_pm = "10pm - 🐷"
+sun_11_pm = "11pm - 🐮"
+
+all_cannot = "all cannot - 🙃"
+
+
 schedule_weekend_msg = '''\
 Thursday Night - **{thursday}**
 
-10pm - 🐱 
-11pm - 🐶 
+{thu_10_pm}
+{thu_11_pm}
 
 Friday Night - **{friday}**
 
-10pm - 🐰 
-11pm - 🐹 
-12am - 🐻 
+{fri_10_pm}
+{fri_11_pm}
+{fri_12_am}
 
 Saturday Night - **{saturday}**
 
-10pm - 🐯 
-11pm - 🦁 
-12am - 🐼
+{sat_10_pm}
+{sat_11_pm}
+{sat_12_am}
 
 Sunday Night - **{sunday}**
 
-10pm - 🐷
-11pm - 🐮
-all cannot - 🙃\
-'''.format(thursday=thursday, friday=friday, saturday=saturday, sunday=sunday)
+{sun_10_pm}
+{sun_11_pm}
+{all_cannot}\
+'''.format( thursday=thursday, 
+            friday=friday, 
+            saturday=saturday, 
+            sunday=sunday,
+            thu_10_pm=thu_10_pm,
+            thu_11_pm=thu_11_pm,
+            fri_10_pm=fri_10_pm,
+            fri_11_pm=fri_11_pm,
+            fri_12_am=fri_12_am,
+            sat_10_pm=sat_10_pm,
+            sat_11_pm=sat_11_pm,
+            sat_12_am=sat_12_am,
+            sun_10_pm=sun_10_pm,
+            sun_11_pm=sun_11_pm,
+            all_cannot=all_cannot)
 
 schedule_weekday_msg = '''\
 Monday Night - **{monday}**
 
-10pm - 🐠
-11pm - 🐟
+{mon_10_pm}
+{mon_11_pm}
 
 Tuesday Night - **{tuesday}**
 
-10pm - 🐬
-11pm - 🐳
+{tue_10_pm}
+{tue_11_pm}
 
 Wednesday Night - **{wednesday}**
 
-10pm - 🐙
-
-all cannot - 🙃\
-'''.format(monday=monday, tuesday=tuesday, wednesday=wednesday)
+{wed_10_pm}
+{all_cannot}\
+'''.format( monday=monday, 
+            tuesday=tuesday,
+            wednesday=wednesday,
+            mon_10_pm=mon_10_pm,
+            mon_11_pm=mon_11_pm,
+            tue_10_pm=tue_10_pm,
+            tue_11_pm=tue_11_pm,
+            wed_10_pm=wed_10_pm,
+            all_cannot=all_cannot)
 
 # default
 intents = discord.Intents.default()
@@ -122,14 +163,16 @@ js_hboss_channel_id = 963160372385296414
 my_gen_channel_id = 803958155935219724
 
 # This is nested dictionary
+# To get emoji, upload emoji in ur server, type "\:<emoji name>:"
+# discord will output <:emoji:emoji_id>
 users_dict = {
-    'hwangz#8075'           : { 'name' : 'hwangz' , 'id' : '<@490507365704138763>' },
-    'Fruit#8143'            : { 'name' : 'kong'   , 'id' : '<@274075256275206145>' },
-    'FloatLikeBubble#0529'  : { 'name' : 'tele'   , 'id' : '<@311477931576918016>' },
-    'Jasmine#4582'          : { 'name' : 'jazz'   , 'id' : '<@389193536043483138>' },
-    'LL#2409'               : { 'name' : 'ryuh'   , 'id' : '<@702529999068200970>' },
-    'kevinc#3600'           : { 'name' : 'kevin'  , 'id' : '<@131389918998953985>' },
-    # 'clem#1138'             : { 'name' : 'clem'   , 'id' : '<@304579645003530251>' },
+    'hwangz#8075'           : { 'name' : 'hwangz' , 'id' : '<@490507365704138763>' , 'emoji' : '<:hwangz:1065984480860446781>'},
+    'Fruit#8143'            : { 'name' : 'kong'   , 'id' : '<@274075256275206145>' , 'emoji' : '<:kong:1065984511290134568>'},
+    'FloatLikeBubble#0529'  : { 'name' : 'tele'   , 'id' : '<@311477931576918016>' , 'emoji' : '<:tele:1065984513215303700>'},
+    'Jasmine#4582'          : { 'name' : 'jazz'   , 'id' : '<@389193536043483138>' , 'emoji' : '<:jazz:1065984516734328832>'},
+    'LL#2409'               : { 'name' : 'ryuh'   , 'id' : '<@702529999068200970>' , 'emoji' : '<:ryuh:1065984507980812320>'},
+    'kevinc#3600'           : { 'name' : 'kevin'  , 'id' : '<@131389918998953985>' , 'emoji' : '<:farty:1065984505934000249>'},
+    # 'clem#1138'             : { 'name' : 'clem'   , 'id' : '<@304579645003530251>' , 'emoji' : '<:clem:1065984502343663637>'},
 }
 
 # https://stackoverflow.com/questions/73393567/discord-py-client-run-and-bot-run-in-one-code
@@ -148,14 +191,87 @@ async def check(ctx, arg):
     channel = client.get_channel(cur_ch_id)
     message_to_check = await channel.fetch_message(arg)
     for reaction in message_to_check.reactions:
+        if(str(reaction) == "🐠"):
+            message += "[Mon]\n"
+            # message += mon_10_pm
+            message += str(reaction)
+        if(str(reaction) == "🐟"):
+            # message += "mon "
+            # message += mon_11_pm
+            message += str(reaction)
+        if(str(reaction) == "🐬"):
+            message += "[Tue]\n"
+            # message += tue_10_pm
+            message += str(reaction)
+        if(str(reaction) == "🐳"):
+            # message += "tue "
+            # message += tue_11_pm
+            message += str(reaction)
+        if(str(reaction) == "🐙"):
+            message += "[Wed]\n"
+            # message += wed_10_pm
+            message += str(reaction)
+
+        if(str(reaction) == "🐱"):
+            message += "[Thu]\n"
+            # message += thu_10_pm
+            message += str(reaction)
+        if(str(reaction) == "🐶"):
+            # message += "thu"
+            # message += thu_11_pm
+            message += str(reaction)
+        if(str(reaction) == "🐰"):
+            message += "[Fri]\n"
+            # message += fri_10_pm
+            message += str(reaction)
+        if(str(reaction) == "🐹"):
+            # message += "fri"
+            # message += fri_11_pm
+            message += str(reaction)
+        if(str(reaction) == "🐻"):
+            # message += "fri"
+            # message += fri_12_am
+            message += str(reaction)
+        if(str(reaction) == "🐯"):
+            message += "[Sat]\n"
+            # message += sat_10_pm
+            message += str(reaction)
+        if(str(reaction) == "🦁"):
+            # message += "sat"
+            # message += sat_11_pm
+            message += str(reaction)
+        if(str(reaction) == "🐼"):
+            # message += "sat"
+            # message += sat_12_am
+            message += str(reaction)
+        if(str(reaction) == "🐷"):
+            message += "[Sun]\n"
+            # message += sun_10_pm
+            message += str(reaction)
+        if(str(reaction) == "🐮"):
+            # message += "sun"
+            # message += sun_11_pm
+            message += str(reaction)
+
+        if(str(reaction) == "🙃"):
+            message += "[Probably OT]\n"
+            message += str(reaction)
+
+        message += " : "
         async for user in reaction.users():
+            if(str(user) in users_dict):
+                message += users_dict[str(user)]['emoji']
+            # if is bot itself, dont add the blank emoji
+            elif(user == client.user):
+                continue
             # you have to str(user) else python will treat this if as true for all users
             if str(user) not in users_dict_temp:
                 continue
             users_dict_temp.pop(str(user))
+        message += "\n"
     # if dict is empty
     if({} == users_dict_temp):
-        message = 'everyone voted'
+        message += 'everyone voted'
     else:
         for dis_tag, dis_info in users_dict_temp.items():
             for key in dis_info:
