@@ -116,10 +116,10 @@ intents.message_content = True
 
 
 # Jumping Sushi hboss-sellherbs channel
-channel_id = 963160372385296414
+js_hboss_channel_id = 963160372385296414
 
 # my #general channel
-# channel_id = 803958155935219724
+my_gen_channel_id = 803958155935219724
 
 # This is nested dictionary
 users_dict = {
@@ -143,7 +143,7 @@ async def check(ctx, arg):
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users_dict.copy()
     message = ''
-    channel = client.get_channel(channel_id)
+    channel = client.get_channel(js_hboss_channel_id)
     message_to_check = await channel.fetch_message(arg)
     for reaction in message_to_check.reactions:
         async for user in reaction.users():
@@ -176,9 +176,10 @@ async def on_message(message):
         members = ''
         msg_sent = await message.channel.send(schedule_weekend_msg)
         msg_id = msg_sent.id
-        f = open("last_scheduled_msg_id.txt", "w")
-        f.write(str(msg_id))
-        f.close()
+        if(message.channel.id == js_hboss_channel_id):
+            f = open("last_scheduled_msg_id.txt", "w")
+            f.write(str(msg_id))
+            f.close()
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐱")
         await msg_to_react.add_reaction("🐶")
@@ -203,9 +204,10 @@ async def on_message(message):
         members = ''
         msg_sent = await message.channel.send(schedule_weekday_msg)
         msg_id = msg_sent.id
-        f = open("last_scheduled_msg_id.txt", "w")
-        f.write(str(msg_id))
-        f.close()
+        if(message.channel.id == js_hboss_channel_id):
+            f = open("last_scheduled_msg_id.txt", "w")
+            f.write(str(msg_id))
+            f.close()
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐠")
         await msg_to_react.add_reaction("🐟")
