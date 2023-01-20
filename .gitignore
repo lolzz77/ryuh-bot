@@ -1,5 +1,8 @@
 *.txt
 
+# Photoshop
+*.psd
+
 # Python
 __pycache__/
 
