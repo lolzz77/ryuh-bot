@@ -143,7 +143,9 @@ async def check(ctx, arg):
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users_dict.copy()
     message = ''
-    channel = client.get_channel(js_hboss_channel_id)
+    # Have to do this, else you get error channel has no attribute 'fetch_message'
+    cur_ch_id = ctx.channel.id
+    channel = client.get_channel(cur_ch_id)
     message_to_check = await channel.fetch_message(arg)
     for reaction in message_to_check.reactions:
         async for user in reaction.users():
@@ -168,7 +170,8 @@ async def check(ctx, arg):
 
 @client.command()
 async def delete(ctx, arg):
-    channel = client.get_channel(js_hboss_channel_id)
+    cur_ch_id = ctx.channel.id
+    channel = client.get_channel(cur_ch_id)
     message_to_delete = await channel.fetch_message(arg)
     await message_to_delete.delete()
 
@@ -244,7 +247,7 @@ async def on_message(message):
         # "message" -> has method .reply()
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
-        await check(None, last_scheduled_msg_id)
+        await check(message, last_scheduled_msg_id)
     if message.author == client.user:
         return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
