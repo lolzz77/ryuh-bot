@@ -166,6 +166,12 @@ async def check(ctx, arg):
         message = message[:-2] + ' haven\'t vote'
     await message_to_check.reply(message)
 
+@client.command()
+async def delete(ctx, arg):
+    channel = client.get_channel(js_hboss_channel_id)
+    message_to_delete = await channel.fetch_message(arg)
+    await message_to_delete.delete()
+
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
