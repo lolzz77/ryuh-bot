@@ -289,7 +289,10 @@ async def delete(ctx, arg):
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
     message_to_delete = await channel.fetch_message(arg)
-    await message_to_delete.delete()
+    if(message_to_delete.author == client.user):
+        await message_to_delete.delete()
+    else:
+        await ctx.channel.send("That message does not belong to me! I won't delete it.")
 
 @client.event
 async def on_ready():
