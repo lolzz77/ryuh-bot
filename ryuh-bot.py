@@ -44,98 +44,103 @@ async def check(ctx, arg):
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
     message_to_check = await channel.fetch_message(arg)
-    for reaction in message_to_check.reactions:
-        if(str(reaction) == "🐠"):
-            message += "[Mon]\n"
-            # message += mon_10_pm
-            message += str(reaction)
-        if(str(reaction) == "🐟"):
-            # message += "mon "
-            # message += mon_11_pm
-            message += str(reaction)
-        if(str(reaction) == "🐬"):
-            message += "[Tue]\n"
-            # message += tue_10_pm
-            message += str(reaction)
-        if(str(reaction) == "🐳"):
-            # message += "tue "
-            # message += tue_11_pm
-            message += str(reaction)
-        if(str(reaction) == "🐙"):
-            message += "[Wed]\n"
-            # message += wed_10_pm
-            message += str(reaction)
+    # Show ryuh-bot is typing...
+    # 2 approaches:
+    # a. ctx.typing()
+    # b. message.channel.typing() <- this works both for 'ryuh check' n '!check <msg ID>' cmd
+    async with message_to_check.channel.typing(): 
+        for reaction in message_to_check.reactions:
+            if(str(reaction) == "🐠"):
+                message += "[Mon]\n"
+                # message += mon_10_pm
+                message += str(reaction)
+            if(str(reaction) == "🐟"):
+                # message += "mon "
+                # message += mon_11_pm
+                message += str(reaction)
+            if(str(reaction) == "🐬"):
+                message += "[Tue]\n"
+                # message += tue_10_pm
+                message += str(reaction)
+            if(str(reaction) == "🐳"):
+                # message += "tue "
+                # message += tue_11_pm
+                message += str(reaction)
+            if(str(reaction) == "🐙"):
+                message += "[Wed]\n"
+                # message += wed_10_pm
+                message += str(reaction)
 
-        if(str(reaction) == "🐱"):
-            message += "[Thu]\n"
-            # message += thu_10_pm
-            message += str(reaction)
-        if(str(reaction) == "🐶"):
-            # message += "thu"
-            # message += thu_11_pm
-            message += str(reaction)
-        if(str(reaction) == "🐰"):
-            message += "[Fri]\n"
-            # message += fri_10_pm
-            message += str(reaction)
-        if(str(reaction) == "🐹"):
-            # message += "fri"
-            # message += fri_11_pm
-            message += str(reaction)
-        if(str(reaction) == "🐻"):
-            # message += "fri"
-            # message += fri_12_am
-            message += str(reaction)
-        if(str(reaction) == "🐯"):
-            message += "[Sat]\n"
-            # message += sat_10_pm
-            message += str(reaction)
-        if(str(reaction) == "🦁"):
-            # message += "sat"
-            # message += sat_11_pm
-            message += str(reaction)
-        if(str(reaction) == "🐼"):
-            # message += "sat"
-            # message += sat_12_am
-            message += str(reaction)
-        if(str(reaction) == "🐷"):
-            message += "[Sun]\n"
-            # message += sun_10_pm
-            message += str(reaction)
-        if(str(reaction) == "🐮"):
-            # message += "sun"
-            # message += sun_11_pm
-            message += str(reaction)
+            if(str(reaction) == "🐱"):
+                message += "[Thu]\n"
+                # message += thu_10_pm
+                message += str(reaction)
+            if(str(reaction) == "🐶"):
+                # message += "thu"
+                # message += thu_11_pm
+                message += str(reaction)
+            if(str(reaction) == "🐰"):
+                message += "[Fri]\n"
+                # message += fri_10_pm
+                message += str(reaction)
+            if(str(reaction) == "🐹"):
+                # message += "fri"
+                # message += fri_11_pm
+                message += str(reaction)
+            if(str(reaction) == "🐻"):
+                # message += "fri"
+                # message += fri_12_am
+                message += str(reaction)
+            if(str(reaction) == "🐯"):
+                message += "[Sat]\n"
+                # message += sat_10_pm
+                message += str(reaction)
+            if(str(reaction) == "🦁"):
+                # message += "sat"
+                # message += sat_11_pm
+                message += str(reaction)
+            if(str(reaction) == "🐼"):
+                # message += "sat"
+                # message += sat_12_am
+                message += str(reaction)
+            if(str(reaction) == "🐷"):
+                message += "[Sun]\n"
+                # message += sun_10_pm
+                message += str(reaction)
+            if(str(reaction) == "🐮"):
+                # message += "sun"
+                # message += sun_11_pm
+                message += str(reaction)
 
-        if(str(reaction) == "🙃"):
-            message += "[Probably OT]\n"
-            message += str(reaction)
+            if(str(reaction) == "🙃"):
+                message += "[Probably OT]\n"
+                message += str(reaction)
 
-        message += " : "
-        async for user in reaction.users():
-            if(str(user) in users.users_dict):
-                message += users.users_dict[str(user)]['emoji']
-            # if is bot itself, dont add the blank emoji
-            elif(user == client.user):
-                continue
-            # you have to str(user) else python will treat this if as true for all users
-            if str(user) not in users_dict_temp:
-                continue
-            users_dict_temp.pop(str(user))
-        message += "\n"
-    # if dict is empty
-    if({} == users_dict_temp):
-        message += 'everyone voted'
-    else:
-        for dis_tag, dis_info in users_dict_temp.items():
-            for key in dis_info:
-                # print(dis_info)
-                if(key == 'name'):
-                    # print(dis_info[key])
-                    message += dis_info[key]
-                    message += ', '
-        # Remove last 2 char, because the msg will be "UserA, UserB, "
-        message = message[:-2] + ' haven\'t vote'
+            message += " : "
+            async for user in reaction.users():
+                if(str(user) in users.users_dict):
+                    message += users.users_dict[str(user)]['emoji']
+                # if is bot itself, dont add the blank emoji
+                elif(user == client.user):
+                    continue
+                # you have to str(user) else python will treat this if as true for all users
+                if str(user) not in users_dict_temp:
+                    continue
+                users_dict_temp.pop(str(user))
+            message += "\n"
+        # if dict is empty
+        if({} == users_dict_temp):
+            message += 'everyone voted'
+        else:
+            for dis_tag, dis_info in users_dict_temp.items():
+                for key in dis_info:
+                    # print(dis_info)
+                    if(key == 'name'):
+                        # print(dis_info[key])
+                        message += dis_info[key]
+                        message += ', '
+            # Remove last 2 char, because the msg will be "UserA, UserB, "
+            message = message[:-2] + ' haven\'t vote'
     await message_to_check.reply(message)
 
 @client.command()
