@@ -1,3 +1,6 @@
+# Note: you cannot put comment after the string
+# this will cause gitignore to treat as [string # string]
+
 *.txt
 
 # Photoshop

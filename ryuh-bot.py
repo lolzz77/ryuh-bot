@@ -164,9 +164,11 @@ async def on_message(message):
         msg_sent = await message.channel.send(scheduler.schedule_weekend_msg)
         msg_id = msg_sent.id
         if(message.channel.id == channels.js_hboss_channel_id):
-            f = open("last_scheduled_msg_id.txt", "w")
-            f.write(str(msg_id))
-            f.close()
+            f = open("last_scheduled_msg_id_js.txt", "w")
+        else:
+            f = open("last_scheduled_msg_id_lz.txt", "w")
+        f.write(str(msg_id))
+        f.close()
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐱")
         await msg_to_react.add_reaction("🐶")
@@ -192,9 +194,11 @@ async def on_message(message):
         msg_sent = await message.channel.send(scheduler.schedule_weekday_msg)
         msg_id = msg_sent.id
         if(message.channel.id == channels.js_hboss_channel_id):
-            f = open("last_scheduled_msg_id.txt", "w")
-            f.write(str(msg_id))
-            f.close()
+            f = open("last_scheduled_msg_id_js.txt", "w")
+        else:
+            f = open("last_scheduled_msg_id_lz.txt", "w")
+        f.write(str(msg_id))
+        f.close()
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐠")
         await msg_to_react.add_reaction("🐟")
@@ -210,7 +214,11 @@ async def on_message(message):
         await message.channel.send(members)
 
     if message.content.startswith('ryuh check'):
-        f = open("last_scheduled_msg_id.txt", "r")
+        cur_ch_id = message.channel.id
+        if(cur_ch_id == channels.js_hboss_channel_id):
+            f = open("last_scheduled_msg_id_js.txt", "r")
+        else:
+            f = open("last_scheduled_msg_id_lz.txt", "r")
         last_scheduled_msg_id = f.read()
         f.close()
         # if you want bot to execute bot command
