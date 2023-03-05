@@ -21,7 +21,7 @@ import pytz
 # perhaps .today() is similar to .now() and it overwrites
 
 my_timezone = pytz.timezone('Asia/Singapore')
-now = datetime.now()
+now = datetime.now(my_timezone)
 today_weekday = now.weekday()
 # Get negative value, for calculation
 first_day_of_week_offset = -today_weekday
