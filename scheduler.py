@@ -1,6 +1,9 @@
 from datetime import date, timedelta, datetime
 import pytz
 
+# Resets every monday
+# if you call it on monday, the schedule on monday will be next week's one
+
 # datetime.datetime.today().weekday()
 # output:
 # 0 = Monday
@@ -14,7 +17,7 @@ import pytz
 # perhaps .today() is similar to .now() and it overwrites
 
 my_timezone = pytz.timezone('Asia/Singapore')
-now = datetime.now()
+now = datetime.now(my_timezone)
 today_weekday = now.weekday()
 first_day_of_week_offset = -today_weekday
 
