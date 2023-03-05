@@ -12,7 +12,6 @@ import discord
 from discord.ext import commands
 import scheduler
 import users
-import channels
 
 # if you get error 
 # 'NoneType' object has no attribute 'fetch_message'
@@ -161,14 +160,26 @@ async def on_ready():
 async def on_message(message):
     if message.content.lower() == 'ryuh bot':
         members = ''
+
+        # Send schedule message to channel
         msg_sent = await message.channel.send(scheduler.schedule_message)
-        msg_id = msg_sent.id
-        if(message.channel.id == channels.js_hboss_channel_id):
-            f = open("last_scheduled_msg_id_js.txt", "w")
-        else:
-            f = open("last_scheduled_msg_id_lz.txt", "w")
+
+        # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
+        msg_id = msg_sent.id 
+
+        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
+        
+        # Check if file exists
+        isExist = os.path.exists(file_path)
+
+        # If not, create it
+        if(False == isExist):
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        f = open(file_path, "w")
         f.write(str(msg_id))
         f.close()
+
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐱")
         await msg_to_react.add_reaction("🐶")
@@ -200,12 +211,9 @@ async def on_message(message):
         msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
 
     if message.content.lower() == 'ryuh check':
-        cur_ch_id = message.channel.id
-        if(cur_ch_id == channels.js_hboss_channel_id):
-            f = open("last_scheduled_msg_id_js.txt", "r")
-        else:
-            f = open("last_scheduled_msg_id_lz.txt", "r")
-        last_scheduled_msg_id = f.read()
+        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
+        f = open(file_path, "r")
+        msg_id = f.read()
         f.close()
         # if you want bot to execute bot command
         # e.g.: bot to call "!check [msg_id]"
@@ -219,7 +227,7 @@ async def on_message(message):
         # "message" -> has method .reply()
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
-        await check(message, last_scheduled_msg_id)
+        await check(message, msg_id)
     if message.author == client.user:
         return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running

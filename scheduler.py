@@ -20,6 +20,8 @@ import pytz
 # this can be seen if you datetime.now(ytz.timezone('Asia/Singapore')).today()
 # perhaps .today() is similar to .now() and it overwrites
 
+SCHEDULE_PATH = './schedule/'
+
 my_timezone = pytz.timezone('Asia/Singapore')
 now = datetime.now(my_timezone)
 today_weekday = now.weekday()

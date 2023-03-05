@@ -3,6 +3,9 @@
 
 *.txt
 
+# Bot schedule message ID
+/schedule
+
 # Photoshop
 *.psd
 
