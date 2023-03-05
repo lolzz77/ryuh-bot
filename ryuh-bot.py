@@ -159,7 +159,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startwith('ryuh bot'):
+    if message.content.lower() == 'ryuh bot':
         members = ''
         msg_sent = await message.channel.send(scheduler.schedule_message)
         msg_id = msg_sent.id
@@ -195,7 +195,7 @@ async def on_message(message):
         # mention all at once
         await message.channel.send(members)
 
-    if message.content.startswith('ryuh check'):
+    if message.content.lower() == 'ryuh check':
         cur_ch_id = message.channel.id
         if(cur_ch_id == channels.js_hboss_channel_id):
             f = open("last_scheduled_msg_id_js.txt", "r")
