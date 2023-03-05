@@ -1,0 +1,1 @@
+JUMPING_SUSHI_BOSSING_CHANNEL = "last_scheduled_msg_id_js.txt"

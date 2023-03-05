@@ -2,8 +2,6 @@
 # this will cause gitignore to treat as [string # string]
 
 # jumping sushi server
-last_scheduled_msg_id_js.txt 
-# my own server
-last_scheduled_msg_id_lz.txt 
+*.txt
 ps.psd
 __pycache__/

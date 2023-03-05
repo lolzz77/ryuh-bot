@@ -16,12 +16,16 @@ import pytz
 # this can be seen if you datetime.now(ytz.timezone('Asia/Singapore')).today()
 # perhaps .today() is similar to .now() and it overwrites
 
+SCHEDULE_PATH = './schedule/'
+
 my_timezone = pytz.timezone('Asia/Singapore')
 now = datetime.now(my_timezone)
 today_weekday = now.weekday()
 first_day_of_week_offset = -today_weekday
 
 monday = now + timedelta(days=first_day_of_week_offset+7)
+monday_midnight = monday
+monday_midnight = monday_midnight.replace(hour=0, minute=0, second=0, microsecond=0)
 monday = monday.strftime("%d/%b/%y")
 first_day_of_week_offset+=1
 
@@ -46,6 +50,8 @@ saturday = saturday.strftime("%d/%b/%y")
 first_day_of_week_offset+=1
 
 sunday = now + timedelta(days=first_day_of_week_offset)
+sunday_before_midnight = sunday
+sunday_before_midnight = sunday_before_midnight.replace(hour=23, minute=59, second=59, microsecond=59)
 sunday = sunday.strftime("%d/%b/%y")
 
 
