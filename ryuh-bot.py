@@ -195,6 +195,10 @@ async def on_message(message):
         # mention all at once
         await message.channel.send(members)
 
+    if message.content.lower() == 'ryuh weekday' or message.content.lower() == 'ryuh weekend':
+        # Send schedule message to channel
+        msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
+
     if message.content.lower() == 'ryuh check':
         cur_ch_id = message.channel.id
         if(cur_ch_id == channels.js_hboss_channel_id):
