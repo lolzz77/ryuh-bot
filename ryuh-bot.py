@@ -118,15 +118,15 @@ async def check(ctx, arg):
 
             message += " : "
             async for user in reaction.users():
-                if(str(user) in users.users_dict):
-                    message += users.users_dict[str(user)]['emoji']
+                if(str(user.id) in users.users_dict):
+                    message += users.users_dict[str(user.id)]['emoji']
                 # if is bot itself, dont add the blank emoji
                 elif(user == client.user):
                     continue
-                # you have to str(user) else python will treat this if as true for all users
-                if str(user) not in users_dict_temp:
+                # you have to put str(), like str(user.id), else python will treat this if as true for all users
+                if str(user.id) not in users_dict_temp:
                     continue
-                users_dict_temp.pop(str(user))
+                users_dict_temp.pop(str(user.id))
             message += "\n"
         # if dict is empty
         if({} == users_dict_temp):
@@ -181,11 +181,12 @@ async def on_message(message):
         await msg_to_react.add_reaction("🐷")
         await msg_to_react.add_reaction("🐮")
         await msg_to_react.add_reaction("🙃")
+        # dis_tag = 490507365704138763
+        # dis_info = { 'name' : 'hwangz' , 'emoji' : '<:hwangz:1065984480860446781>'}
         for dis_tag, dis_info in users.users_dict.items():
-            for key in dis_info:
-                if(key == 'id'):
-                    members += dis_info[key] # To append all mention ID into one single variable
-                    members += ' ' # add space
+            members += '<@'
+            members += dis_tag # To append all mention ID into one single variable
+            members += '> ' # add space
         # mention all at once
         await message.channel.send(members)
 
@@ -207,10 +208,10 @@ async def on_message(message):
         await msg_to_react.add_reaction("🐙")
         await msg_to_react.add_reaction("🙃")
         for dis_tag, dis_info in users.users_dict.items():
-            for key in dis_info:
-                if(key == 'id'):
-                    members += dis_info[key]
-                    members += ' '
+            members += '<@'
+            members += dis_tag # To append all mention ID into one single variable
+            members += '> ' # add space
+        # mention all at once
         await message.channel.send(members)
 
     if message.content.startswith('ryuh check'):
