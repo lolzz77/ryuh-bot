@@ -81,33 +81,44 @@ sun_11_pm = "11pm - 🐮"
 all_cannot = "all cannot - 🙃"
 
 
-schedule_weekend_msg = '''\
+schedule_message = '''\
 Thursday Night - **{thursday}**
-
 {thu_10_pm}
 {thu_11_pm}
 
 Friday Night - **{friday}**
-
 {fri_10_pm}
 {fri_11_pm}
 {fri_12_am}
 
 Saturday Night - **{saturday}**
-
 {sat_10_pm}
 {sat_11_pm}
 {sat_12_am}
 
 Sunday Night - **{sunday}**
-
 {sun_10_pm}
 {sun_11_pm}
+
+Monday Night - **{monday}**
+{mon_10_pm}
+{mon_11_pm}
+
+Tuesday Night - **{tuesday}**
+{tue_10_pm}
+{tue_11_pm}
+
+Wednesday Night - **{wednesday}**
+{wed_10_pm}
+
 {all_cannot}\
 '''.format( thursday=thursday, 
             friday=friday, 
             saturday=saturday, 
             sunday=sunday,
+            monday=monday, 
+            tuesday=tuesday,
+            wednesday=wednesday,
             thu_10_pm=thu_10_pm,
             thu_11_pm=thu_11_pm,
             fri_10_pm=fri_10_pm,
@@ -118,26 +129,6 @@ Sunday Night - **{sunday}**
             sat_12_am=sat_12_am,
             sun_10_pm=sun_10_pm,
             sun_11_pm=sun_11_pm,
-            all_cannot=all_cannot)
-
-schedule_weekday_msg = '''\
-Monday Night - **{monday}**
-
-{mon_10_pm}
-{mon_11_pm}
-
-Tuesday Night - **{tuesday}**
-
-{tue_10_pm}
-{tue_11_pm}
-
-Wednesday Night - **{wednesday}**
-
-{wed_10_pm}
-{all_cannot}\
-'''.format( monday=monday, 
-            tuesday=tuesday,
-            wednesday=wednesday,
             mon_10_pm=mon_10_pm,
             mon_11_pm=mon_11_pm,
             tue_10_pm=tue_10_pm,

@@ -159,9 +159,9 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('ryuh weekend'):
+    if message.content.startwith('ryuh bot'):
         members = ''
-        msg_sent = await message.channel.send(scheduler.schedule_weekend_msg)
+        msg_sent = await message.channel.send(scheduler.schedule_message)
         msg_id = msg_sent.id
         if(message.channel.id == channels.js_hboss_channel_id):
             f = open("last_scheduled_msg_id_js.txt", "w")
@@ -180,33 +180,14 @@ async def on_message(message):
         await msg_to_react.add_reaction("🐼")
         await msg_to_react.add_reaction("🐷")
         await msg_to_react.add_reaction("🐮")
-        await msg_to_react.add_reaction("🙃")
-        # dis_tag = 490507365704138763
-        # dis_info = { 'name' : 'hwangz' , 'emoji' : '<:hwangz:1065984480860446781>'}
-        for dis_tag, dis_info in users.users_dict.items():
-            members += '<@'
-            members += dis_tag # To append all mention ID into one single variable
-            members += '> ' # add space
-        # mention all at once
-        await message.channel.send(members)
-
-    if message.content.startswith('ryuh weekday'):
-        members = ''
-        msg_sent = await message.channel.send(scheduler.schedule_weekday_msg)
-        msg_id = msg_sent.id
-        if(message.channel.id == channels.js_hboss_channel_id):
-            f = open("last_scheduled_msg_id_js.txt", "w")
-        else:
-            f = open("last_scheduled_msg_id_lz.txt", "w")
-        f.write(str(msg_id))
-        f.close()
-        msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐠")
         await msg_to_react.add_reaction("🐟")
         await msg_to_react.add_reaction("🐬")
         await msg_to_react.add_reaction("🐳")
         await msg_to_react.add_reaction("🐙")
         await msg_to_react.add_reaction("🙃")
+        # dis_tag = 490507365704138763
+        # dis_info = { 'name' : 'hwangz' , 'emoji' : '<:hwangz:1065984480860446781>'}
         for dis_tag, dis_info in users.users_dict.items():
             members += '<@'
             members += dis_tag # To append all mention ID into one single variable
