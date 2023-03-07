@@ -159,8 +159,6 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.lower() == 'ryuh bot':
-        members = ''
-
         # Send schedule message to channel
         msg_sent = await message.channel.send(scheduler.schedule_message)
 
@@ -197,14 +195,10 @@ async def on_message(message):
         await msg_to_react.add_reaction("🐳")
         await msg_to_react.add_reaction("🐙")
         await msg_to_react.add_reaction("🙃")
-        # dis_tag = 490507365704138763
-        # dis_info = { 'name' : 'hwangz' , 'emoji' : '<:hwangz:1065984480860446781>'}
-        for dis_tag, dis_info in users.users_dict.items():
-            members += '<@'
-            members += dis_tag # To append all mention ID into one single variable
-            members += '> ' # add space
-        # mention all at once
-        await message.channel.send(members)
+
+        # Mention by role, have to have '&' for role mentions
+        mention = '<@&' + str(users.party_role_id) + '>'
+        await message.channel.send(mention)
 
     if message.content.lower() == 'ryuh weekday' or message.content.lower() == 'ryuh weekend':
         # Send schedule message to channel
