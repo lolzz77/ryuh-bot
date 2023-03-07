@@ -3,6 +3,9 @@
 
 *.txt
 
+# Do not ignore this file
+!requirements.txt
+
 # Bot schedule message ID
 /schedule
 
