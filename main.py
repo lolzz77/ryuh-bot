@@ -39,6 +39,8 @@ async def check(ctx, arg):
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users.users_dict.copy()
     message = ''
+    bossing_day_message = []
+    bossing_day = ''
     # Have to do this, else you get error channel has no attribute 'fetch_message'
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
@@ -51,74 +53,68 @@ async def check(ctx, arg):
         for reaction in message_to_check.reactions:
             if(str(reaction) == "🐠"):
                 message += "[Mon]\n"
-                # message += mon_10_pm
+                bossing_day = 'Monday 10pm!'
                 message += str(reaction)
             if(str(reaction) == "🐟"):
-                # message += "mon "
-                # message += mon_11_pm
                 message += str(reaction)
+                bossing_day = 'Monday 11pm!'
             if(str(reaction) == "🐬"):
                 message += "[Tue]\n"
-                # message += tue_10_pm
                 message += str(reaction)
+                bossing_day = 'Tuesday 10pm!'
             if(str(reaction) == "🐳"):
-                # message += "tue "
-                # message += tue_11_pm
                 message += str(reaction)
+                bossing_day = 'Tuesday 11pm!'
             if(str(reaction) == "🐙"):
                 message += "[Wed]\n"
-                # message += wed_10_pm
                 message += str(reaction)
+                bossing_day = 'Wednesday 10pm!'
 
             if(str(reaction) == "🐱"):
                 message += "[Thu]\n"
-                # message += thu_10_pm
                 message += str(reaction)
+                bossing_day = 'Thursday 10pm!'
             if(str(reaction) == "🐶"):
-                # message += "thu"
-                # message += thu_11_pm
                 message += str(reaction)
+                bossing_day = 'Thursday 11pm!'
             if(str(reaction) == "🐰"):
                 message += "[Fri]\n"
-                # message += fri_10_pm
                 message += str(reaction)
+                bossing_day = 'Friday 10pm!'
             if(str(reaction) == "🐹"):
-                # message += "fri"
-                # message += fri_11_pm
                 message += str(reaction)
+                bossing_day = 'Friday 11pm!'
             if(str(reaction) == "🐻"):
-                # message += "fri"
-                # message += fri_12_am
                 message += str(reaction)
+                bossing_day = 'Friday 12am!'
             if(str(reaction) == "🐯"):
                 message += "[Sat]\n"
-                # message += sat_10_pm
                 message += str(reaction)
+                bossing_day = 'Saturday 10pm!'
             if(str(reaction) == "🦁"):
-                # message += "sat"
-                # message += sat_11_pm
                 message += str(reaction)
+                bossing_day = 'Saturday 11pm!'
             if(str(reaction) == "🐼"):
-                # message += "sat"
-                # message += sat_12_am
                 message += str(reaction)
+                bossing_day = 'Saturday 12am!'
             if(str(reaction) == "🐷"):
                 message += "[Sun]\n"
-                # message += sun_10_pm
                 message += str(reaction)
+                bossing_day = 'Sunday 10pm!'
             if(str(reaction) == "🐮"):
-                # message += "sun"
-                # message += sun_11_pm
                 message += str(reaction)
+                bossing_day = 'Sunday 11pm!'
 
             if(str(reaction) == "🙃"):
                 message += "[Probably OT]\n"
                 message += str(reaction)
 
             message += " : "
+            count = 0
             async for user in reaction.users():
                 if(str(user.id) in users.users_dict):
                     message += users.users_dict[str(user.id)]['emoji']
+                    count += 1
                 # if is bot itself, dont add the blank emoji
                 elif(user == client.user):
                     continue
@@ -127,9 +123,18 @@ async def check(ctx, arg):
                     continue
                 users_dict_temp.pop(str(user.id))
             message += "\n"
+            if count == 6:
+                bossing_day_message.append(bossing_day)
         # if dict is empty
         if({} == users_dict_temp):
             message += 'everyone voted'
+            message += '\n'
+            if not bossing_day_message:
+                message += "there's no consensus on the bossing date"
+            else:
+                for day in bossing_day_message:
+                    message += day
+                    message += '\n'
         else:
             for dis_tag, dis_info in users_dict_temp.items():
                 for key in dis_info:
