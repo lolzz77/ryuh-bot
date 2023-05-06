@@ -1,3 +1,11 @@
+# Cake emoji
+# <:pepe_birthday:1087764773615194212>
+# 🍰
+# <a:cake2:1087764775754280961>
+# 🎂
+# <a:cake1:1087763631346810912>
+# 🧁
+
 from datetime import date, timedelta, datetime
 import pytz
 
@@ -79,6 +87,23 @@ sat_11_pm = "11pm - 🦁"
 sat_12_am = "12am - 🐼"
 sun_10_pm = "10pm - 🐷"
 sun_11_pm = "11pm - 🐮"
+
+# mon_10_pm = "10pm - 🐠"
+# mon_11_pm = "11pm - 🐟"
+# tue_10_pm = "10pm - 🐬"
+# tue_11_pm = "11pm - 🐳"
+# wed_10_pm = "10pm - 🐙"
+
+# thu_10_pm = "10pm - 🐱"
+# thu_11_pm = "11pm - 🐶"
+# fri_10_pm = "10pm - 🐰"
+# fri_11_pm = "11pm - 🐹"
+# fri_12_am = "12am - 🐻"
+# sat_10_pm = "10pm - <:pepe_birthday:1087764773615194212>"
+# sat_11_pm = "11pm - 🍰"
+# sat_12_am = "12am - <a:cake2:1087764775754280961>"
+# sun_10_pm = "10pm - 🎂"
+# sun_11_pm = "11pm - <a:cake1:1087763631346810912>"
 
 all_cannot = "all cannot - 🙃"
 

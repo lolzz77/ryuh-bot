@@ -105,6 +105,60 @@ async def check(ctx, arg):
                 message += str(reaction)
                 bossing_day = 'Sunday 11pm!'
 
+            # if(str(reaction) == "🐠"):
+            #     message += "[Mon]\n"
+            #     bossing_day = 'Monday 10pm!'
+            #     message += str(reaction)
+            # if(str(reaction) == "🐟"):
+            #     message += str(reaction)
+            #     bossing_day = 'Monday 11pm!'
+            # if(str(reaction) == "🐬"):
+            #     message += "[Tue]\n"
+            #     message += str(reaction)
+            #     bossing_day = 'Tuesday 10pm!'
+            # if(str(reaction) == "🐳"):
+            #     message += str(reaction)
+            #     bossing_day = 'Tuesday 11pm!'
+            # if(str(reaction) == "🐙"):
+            #     message += "[Wed]\n"
+            #     message += str(reaction)
+            #     bossing_day = 'Wednesday 10pm!'
+
+            # if(str(reaction) == "🐱"):
+            #     message += "[Thu]\n"
+            #     message += str(reaction)
+            #     bossing_day = 'Thursday 10pm!'
+            # if(str(reaction) == "🐶"):
+            #     message += str(reaction)
+            #     bossing_day = 'Thursday 11pm!'
+            # if(str(reaction) == "🐰"):
+            #     message += "[Fri]\n"
+            #     message += str(reaction)
+            #     bossing_day = 'Friday 10pm!'
+            # if(str(reaction) == "🐹"):
+            #     message += str(reaction)
+            #     bossing_day = 'Friday 11pm!'
+            # if(str(reaction) == "🐻"):
+            #     message += str(reaction)
+            #     bossing_day = 'Friday 12am!'
+            # if(str(reaction) == "<:pepe_birthday:1087764773615194212>"):
+            #     message += "[Sat]\n"
+            #     message += str(reaction)
+            #     bossing_day = 'Saturday 10pm!'
+            # if(str(reaction) == "🍰"):
+            #     message += str(reaction)
+            #     bossing_day = 'Saturday 11pm!'
+            # if(str(reaction) == "<a:cake2:1087764775754280961>"):
+            #     message += str(reaction)
+            #     bossing_day = 'Saturday 12am!'
+            # if(str(reaction) == "🎂"):
+            #     message += "[Sun]\n"
+            #     message += str(reaction)
+            #     bossing_day = 'Sunday 10pm!'
+            # if(str(reaction) == "<a:cake1:1087763631346810912>"):
+            #     message += str(reaction)
+            #     bossing_day = 'Sunday 11pm!'
+
             if(str(reaction) == "🙃"):
                 message += "[Probably OT]\n"
                 message += str(reaction)
@@ -157,6 +211,20 @@ async def delete(ctx, arg):
     else:
         await ctx.channel.send("That message does not belong to me! I won't delete it.")
 
+@client.command()
+async def test(ctx):
+    # get emoji id by running '\:name:'
+    js_bossing_channel = 963160372385296414
+    # my_discord_general_channel = 803958155935219724
+    channel = client.get_channel(js_bossing_channel)
+    # guild = 491039338659053568
+    # emoji = discord.utils.get(ctx.guild.emojis, id=811260045307543553)
+    # emoji = discord.utils.get(client.emojis, name='Birthday_Cake')
+    # await channel.send("<a:Birthday_Cake:811260045307543553>")
+    # emoji = client.get_emoji(811260045307543553)
+    # await channel.send(emoji)
+    await channel.send("<:thumbsupright:1079644743107092511>")
+
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
@@ -200,6 +268,23 @@ async def on_message(message):
         await msg_to_react.add_reaction("🐳")
         await msg_to_react.add_reaction("🐙")
         await msg_to_react.add_reaction("🙃")
+
+        # await msg_to_react.add_reaction("🐱")
+        # await msg_to_react.add_reaction("🐶")
+        # await msg_to_react.add_reaction("🐰")
+        # await msg_to_react.add_reaction("🐹")
+        # await msg_to_react.add_reaction("🐻")
+        # await msg_to_react.add_reaction("<:pepe_birthday:1087764773615194212>")
+        # await msg_to_react.add_reaction("🍰")
+        # await msg_to_react.add_reaction("<a:cake2:1087764775754280961>")
+        # await msg_to_react.add_reaction("🎂")
+        # await msg_to_react.add_reaction("<a:cake1:1087763631346810912>")
+        # await msg_to_react.add_reaction("🐠")
+        # await msg_to_react.add_reaction("🐟")
+        # await msg_to_react.add_reaction("🐬")
+        # await msg_to_react.add_reaction("🐳")
+        # await msg_to_react.add_reaction("🐙")
+        # await msg_to_react.add_reaction("🙃")
 
         # Mention by role, have to have '&' for role mentions
         mention = '<@&' + str(users.party_role_id) + '>'
