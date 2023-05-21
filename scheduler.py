@@ -70,6 +70,8 @@ first_day_of_week_offset+=1
 sunday = now + timedelta(days=first_day_of_week_offset)
 sunday = sunday.strftime("%d/%b/%y")
 
+# Emoji
+emoji_cat_angery = '<:cat_angery:814753563854503966>' # From Jumping Sushi server
 
 mon_10_pm = "10pm - 🐠"
 mon_11_pm = "11pm - 🐟"

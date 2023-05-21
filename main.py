@@ -190,15 +190,12 @@ async def check(ctx, arg):
                     message += day
                     message += '\n'
         else:
-            for dis_tag, dis_info in users_dict_temp.items():
-                for key in dis_info:
-                    # print(dis_info)
-                    if(key == 'name'):
-                        # print(dis_info[key])
-                        message += dis_info[key]
-                        message += ', '
-            # Remove last 2 char, because the msg will be "UserA, UserB, "
-            message = message[:-2] + ' haven\'t vote'
+            # get discord user ID, append in message, ping them
+            for dis_tag in users_dict_temp:
+                message += '<@'
+                message += str(dis_tag)
+                message += '> '
+            message += 'oi ' + scheduler.emoji_cat_angery
     await message_to_check.reply(message)
 
 @client.command()
