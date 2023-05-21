@@ -1,6 +1,11 @@
 # This is nested dictionary
 # To get emoji, upload emoji in ur server, type "\:<emoji name>:"
 # discord will output <:emoji:emoji_id>
+
+# Structure
+# DiscordID1 : { Key1 : Value, Key2 : Value },
+# DiscordID2 : { Key1 : Value, Key2 : Value }
+
 users_dict = {
     '490507365704138763'  : { 'name' : 'hwangz' , 'emoji' : '<:hwangz:1065984480860446781>'},
     '274075256275206145'  : { 'name' : 'kong'   , 'emoji' : '<:kong:1065984511290134568>'},
