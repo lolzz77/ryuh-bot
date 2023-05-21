@@ -108,8 +108,25 @@ sun_11_pm = "11pm - 🐮"
 all_cannot = "all cannot - 🙃"
 
 
+result_monday_10pm = 'Monday 10pm!'
+result_monday_11pm = 'Monday 11pm!'
+result_tuesday_10pm = 'Tuesday 10pm!'
+result_tuesday_11pm = 'Tuesday 11pm!'
+result_wednesday_10pm = 'Wednesday 10pm!'
+result_thursday_10pm = 'Curseday 10pm!'
+result_thursday_11pm = 'Curseday 11pm!'
+result_friday_10pm = 'Friday 10pm!'
+result_friday_11pm = 'Friday 11pm!'
+result_friday_12am = 'Friday 12am!'
+result_saturday_10pm = 'Saturday 10pm!'
+result_saturday_11pm = 'Saturday 11pm!'
+result_saturday_12am = 'Saturday 12am!'
+result_sunday_10pm = 'Sunday 10pm!'
+result_sunday_11pm = 'Sunday 11pm!'
+
+
 schedule_message = '''\
-Thursday Night - **{thursday}**
+Curseday Night - **{thursday}**
 {thu_10_pm}
 {thu_11_pm}
 

@@ -53,57 +53,57 @@ async def check(ctx, arg):
         for reaction in message_to_check.reactions:
             if(str(reaction) == "🐠"):
                 message += "[Mon]\n"
-                bossing_day = 'Monday 10pm!'
+                bossing_day = scheduler.result_monday_10pm
                 message += str(reaction)
             if(str(reaction) == "🐟"):
                 message += str(reaction)
-                bossing_day = 'Monday 11pm!'
+                bossing_day = scheduler.result_monday_11pm
             if(str(reaction) == "🐬"):
                 message += "[Tue]\n"
                 message += str(reaction)
-                bossing_day = 'Tuesday 10pm!'
+                bossing_day = scheduler.result_tuesday_10pm
             if(str(reaction) == "🐳"):
                 message += str(reaction)
-                bossing_day = 'Tuesday 11pm!'
+                bossing_day = scheduler.result_tuesday_11pm
             if(str(reaction) == "🐙"):
                 message += "[Wed]\n"
                 message += str(reaction)
-                bossing_day = 'Wednesday 10pm!'
+                bossing_day = scheduler.result_wednesday_10pm
 
             if(str(reaction) == "🐱"):
-                message += "[Thu]\n"
+                message += "[Curse]\n"
                 message += str(reaction)
-                bossing_day = 'Thursday 10pm!'
+                bossing_day = scheduler.result_thursday_10pm
             if(str(reaction) == "🐶"):
                 message += str(reaction)
-                bossing_day = 'Thursday 11pm!'
+                bossing_day = scheduler.result_thursday_11pm
             if(str(reaction) == "🐰"):
                 message += "[Fri]\n"
                 message += str(reaction)
-                bossing_day = 'Friday 10pm!'
+                bossing_day = scheduler.result_friday_10pm
             if(str(reaction) == "🐹"):
                 message += str(reaction)
-                bossing_day = 'Friday 11pm!'
+                bossing_day = scheduler.result_friday_11pm
             if(str(reaction) == "🐻"):
                 message += str(reaction)
-                bossing_day = 'Friday 12am!'
+                bossing_day = scheduler.result_friday_12am
             if(str(reaction) == "🐯"):
                 message += "[Sat]\n"
                 message += str(reaction)
-                bossing_day = 'Saturday 10pm!'
+                bossing_day = scheduler.result_saturday_10pm
             if(str(reaction) == "🦁"):
                 message += str(reaction)
-                bossing_day = 'Saturday 11pm!'
+                bossing_day = scheduler.result_saturday_11pm
             if(str(reaction) == "🐼"):
                 message += str(reaction)
-                bossing_day = 'Saturday 12am!'
+                bossing_day = scheduler.result_saturday_12am
             if(str(reaction) == "🐷"):
                 message += "[Sun]\n"
                 message += str(reaction)
-                bossing_day = 'Sunday 10pm!'
+                bossing_day = scheduler.result_sunday_10pm
             if(str(reaction) == "🐮"):
                 message += str(reaction)
-                bossing_day = 'Sunday 11pm!'
+                bossing_day = scheduler.result_sunday_11pm
 
             # if(str(reaction) == "🐠"):
             #     message += "[Mon]\n"
