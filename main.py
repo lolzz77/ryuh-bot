@@ -222,10 +222,6 @@ async def test(ctx):
     # await channel.send(emoji)
     await channel.send("<:thumbsupright:1079644743107092511>")
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
-
     # js_bossing_channel = 963160372385296414
     # channel = client.get_channel(js_bossing_channel)
     # await channel.send("Monday (15 May 23) 10pm! Tele carry y`all!")
@@ -240,6 +236,11 @@ async def on_ready():
     # msg_id = 1106578766131630140
     # msg_to_react = await channel.fetch_message(msg_id)
     # await msg_to_react.add_reaction("👍")
+
+
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
 
 
 @client.event
@@ -325,9 +326,11 @@ async def on_message(message):
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
         await check(message, msg_id)
+    # If message is sent by bot, do nothing
     if message.author == client.user:
         return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
+    # This line is necessary to run '@client.command()' functions
     await client.process_commands(message)
 
 
