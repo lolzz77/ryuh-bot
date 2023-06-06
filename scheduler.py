@@ -73,59 +73,46 @@ sunday = sunday.strftime("%d/%b/%y")
 # Emoji
 emoji_cat_angery = '<:cat_angery:814753563854503966>' # From Jumping Sushi server
 
-mon_10_pm = "10pm - 🐠"
-mon_11_pm = "11pm - 🐟"
-tue_10_pm = "10pm - 🐬"
-tue_11_pm = "11pm - 🐳"
-wed_10_pm = "10pm - 🐙"
+reaction_mapping = {
+    "🐠" : ["Monday",       "10pm"],
+    "🐟" : ["Monday",       "11pm"],
+    "🐬" : ["Tuesday",      "10pm"],
+    "🐳" : ["Tuesday",      "11pm"],
+    "🐙" : ["Wednesday",    "10pm"],
+    "🐱" : ["Curseday",     "10pm"],
+    "🐶" : ["Curseday",     "11pm"],
+    "🐰" : ["Friday",       "10pm"],
+    "🐹" : ["Friday",       "11pm"],
+    "🐻" : ["Friday",       "12am"],
+    "🐯" : ["Saturday",     "10pm"],
+    "🦁" : ["Saturday",     "11pm"],
+    "🐼" : ["Saturday",     "12am"],
+    "🐷" : ["Sunday",       "10pm"],
+    "🐮" : ["Sunday",       "11pm"],
+    "🙃" : ["Probably OT"]
+}
 
-thu_10_pm = "10pm - 🐱"
-thu_11_pm = "11pm - 🐶"
-fri_10_pm = "10pm - 🐰"
-fri_11_pm = "11pm - 🐹"
-fri_12_am = "12am - 🐻"
-sat_10_pm = "10pm - 🐯"
-sat_11_pm = "11pm - 🦁"
-sat_12_am = "12am - 🐼"
-sun_10_pm = "10pm - 🐷"
-sun_11_pm = "11pm - 🐮"
+# Get the list of keys. In other words, get the emoji
+reaction_mapping_keys = list(reaction_mapping)
 
+# Construct string in this format
 # mon_10_pm = "10pm - 🐠"
-# mon_11_pm = "11pm - 🐟"
-# tue_10_pm = "10pm - 🐬"
-# tue_11_pm = "11pm - 🐳"
-# wed_10_pm = "10pm - 🐙"
-
-# thu_10_pm = "10pm - 🐱"
-# thu_11_pm = "11pm - 🐶"
-# fri_10_pm = "10pm - 🐰"
-# fri_11_pm = "11pm - 🐹"
-# fri_12_am = "12am - 🐻"
-# sat_10_pm = "10pm - <:pepe_birthday:1087764773615194212>"
-# sat_11_pm = "11pm - 🍰"
-# sat_12_am = "12am - <a:cake2:1087764775754280961>"
-# sun_10_pm = "10pm - 🎂"
-# sun_11_pm = "11pm - <a:cake1:1087763631346810912>"
-
-all_cannot = "all cannot - 🙃"
-
-
-result_monday_10pm = 'Monday 10pm!'
-result_monday_11pm = 'Monday 11pm!'
-result_tuesday_10pm = 'Tuesday 10pm!'
-result_tuesday_11pm = 'Tuesday 11pm!'
-result_wednesday_10pm = 'Wednesday 10pm!'
-result_thursday_10pm = 'Curseday 10pm!'
-result_thursday_11pm = 'Curseday 11pm!'
-result_friday_10pm = 'Friday 10pm!'
-result_friday_11pm = 'Friday 11pm!'
-result_friday_12am = 'Friday 12am!'
-result_saturday_10pm = 'Saturday 10pm!'
-result_saturday_11pm = 'Saturday 11pm!'
-result_saturday_12am = 'Saturday 12am!'
-result_sunday_10pm = 'Sunday 10pm!'
-result_sunday_11pm = 'Sunday 11pm!'
-
+mon_10_pm = reaction_mapping[reaction_mapping_keys[0]][1] + " - " + reaction_mapping_keys[0]
+mon_11_pm = reaction_mapping[reaction_mapping_keys[1]][1] + " - " + reaction_mapping_keys[1]
+tue_10_pm = reaction_mapping[reaction_mapping_keys[2]][1] + " - " + reaction_mapping_keys[2]
+tue_11_pm = reaction_mapping[reaction_mapping_keys[3]][1] + " - " + reaction_mapping_keys[3]
+wed_10_pm = reaction_mapping[reaction_mapping_keys[4]][1] + " - " + reaction_mapping_keys[4]
+thu_10_pm = reaction_mapping[reaction_mapping_keys[5]][1] + " - " + reaction_mapping_keys[5]
+thu_11_pm = reaction_mapping[reaction_mapping_keys[6]][1] + " - " + reaction_mapping_keys[6]
+fri_10_pm = reaction_mapping[reaction_mapping_keys[7]][1] + " - " + reaction_mapping_keys[7]
+fri_11_pm = reaction_mapping[reaction_mapping_keys[8]][1] + " - " + reaction_mapping_keys[8]
+fri_12_am = reaction_mapping[reaction_mapping_keys[9]][1] + " - " + reaction_mapping_keys[9]
+sat_10_pm = reaction_mapping[reaction_mapping_keys[10]][1] + " - " + reaction_mapping_keys[10]
+sat_11_pm = reaction_mapping[reaction_mapping_keys[11]][1] + " - " + reaction_mapping_keys[11]
+sat_12_am = reaction_mapping[reaction_mapping_keys[12]][1] + " - " + reaction_mapping_keys[12]
+sun_10_pm = reaction_mapping[reaction_mapping_keys[13]][1] + " - " + reaction_mapping_keys[13]
+sun_11_pm = reaction_mapping[reaction_mapping_keys[14]][1] + " - " + reaction_mapping_keys[14]
+all_cannot = reaction_mapping[reaction_mapping_keys[15]][0] + " - " + reaction_mapping_keys[15]
 
 schedule_message = '''\
 Curseday Night - **{thursday}**

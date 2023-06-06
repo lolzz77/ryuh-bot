@@ -8,10 +8,11 @@ load_dotenv()
 # From .env file, get the variable named 'BOT_TOKEN'
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-import discord
 from discord.ext import commands
 import scheduler
 import users
+import utils
+import client
 
 # if you get error 
 # 'NoneType' object has no attribute 'fetch_message'
@@ -24,170 +25,12 @@ import users
 # Stackoverflow: It seems like you are trying to call a bot's functionality before actually running your bot.
 # Try to add your code inside on_ready() callback to ensure that you are trying to get your channel only after initializing the bot itself.
 
-# default
-intents = discord.Intents.default()
-intents.message_content = True
-
-# https://stackoverflow.com/questions/73393567/discord-py-client-run-and-bot-run-in-one-code
-# client = discord.Client(intents=intents)
-client = commands.Bot(command_prefix='!', intents=intents)
-
-# https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
-@client.command()
-async def check(ctx, arg):
-    # you have to use .copy()
-    # else anything u chg on _temp will affect on the ori dict also
-    users_dict_temp = users.users_dict.copy()
-    message = ''
-    bossing_day_message = []
-    bossing_day = ''
-    # Have to do this, else you get error channel has no attribute 'fetch_message'
-    cur_ch_id = ctx.channel.id
-    channel = client.get_channel(cur_ch_id)
-    message_to_check = await channel.fetch_message(arg)
-    # Show ryuh-bot is typing...
-    # 2 approaches:
-    # a. ctx.typing()
-    # b. message.channel.typing() <- this works both for 'ryuh check' n '!check <msg ID>' cmd
-    async with message_to_check.channel.typing(): 
-        for reaction in message_to_check.reactions:
-            if(str(reaction) == "🐠"):
-                message += "[Mon]\n"
-                bossing_day = scheduler.result_monday_10pm
-                message += str(reaction)
-            if(str(reaction) == "🐟"):
-                message += str(reaction)
-                bossing_day = scheduler.result_monday_11pm
-            if(str(reaction) == "🐬"):
-                message += "[Tue]\n"
-                message += str(reaction)
-                bossing_day = scheduler.result_tuesday_10pm
-            if(str(reaction) == "🐳"):
-                message += str(reaction)
-                bossing_day = scheduler.result_tuesday_11pm
-            if(str(reaction) == "🐙"):
-                message += "[Wed]\n"
-                message += str(reaction)
-                bossing_day = scheduler.result_wednesday_10pm
-
-            if(str(reaction) == "🐱"):
-                message += "[Curse]\n"
-                message += str(reaction)
-                bossing_day = scheduler.result_thursday_10pm
-            if(str(reaction) == "🐶"):
-                message += str(reaction)
-                bossing_day = scheduler.result_thursday_11pm
-            if(str(reaction) == "🐰"):
-                message += "[Fri]\n"
-                message += str(reaction)
-                bossing_day = scheduler.result_friday_10pm
-            if(str(reaction) == "🐹"):
-                message += str(reaction)
-                bossing_day = scheduler.result_friday_11pm
-            if(str(reaction) == "🐻"):
-                message += str(reaction)
-                bossing_day = scheduler.result_friday_12am
-            if(str(reaction) == "🐯"):
-                message += "[Sat]\n"
-                message += str(reaction)
-                bossing_day = scheduler.result_saturday_10pm
-            if(str(reaction) == "🦁"):
-                message += str(reaction)
-                bossing_day = scheduler.result_saturday_11pm
-            if(str(reaction) == "🐼"):
-                message += str(reaction)
-                bossing_day = scheduler.result_saturday_12am
-            if(str(reaction) == "🐷"):
-                message += "[Sun]\n"
-                message += str(reaction)
-                bossing_day = scheduler.result_sunday_10pm
-            if(str(reaction) == "🐮"):
-                message += str(reaction)
-                bossing_day = scheduler.result_sunday_11pm
-
-            if(str(reaction) == "🙃"):
-                message += "[Probably OT]\n"
-                message += str(reaction)
-
-            message += " : "
-            count = 0
-            async for user in reaction.users():
-                if(str(user.id) in users.users_dict):
-                    message += users.users_dict[str(user.id)]['emoji']
-                    count += 1
-                # if is bot itself, dont add the blank emoji
-                elif(user == client.user):
-                    continue
-                # you have to put str(), like str(user.id), else python will treat this if as true for all users
-                if str(user.id) not in users_dict_temp:
-                    continue
-                users_dict_temp.pop(str(user.id))
-            message += "\n"
-            if count == 6:
-                bossing_day_message.append(bossing_day)
-        # if dict is empty
-        if({} == users_dict_temp):
-            message += 'everyone voted'
-            message += '\n'
-            if not bossing_day_message:
-                message += "there's no consensus on the bossing date"
-            else:
-                for day in bossing_day_message:
-                    message += day
-                    message += '\n'
-        else:
-            # get discord user ID, append in message, ping them
-            for dis_tag in users_dict_temp:
-                message += '<@'
-                message += str(dis_tag)
-                message += '> '
-            message += 'oi ' + scheduler.emoji_cat_angery
-    await message_to_check.reply(message)
-
-@client.command()
-async def delete(ctx, arg):
-    cur_ch_id = ctx.channel.id
-    channel = client.get_channel(cur_ch_id)
-    message_to_delete = await channel.fetch_message(arg)
-    if(message_to_delete.author == client.user):
-        await message_to_delete.delete()
-    else:
-        await ctx.channel.send("That message does not belong to me! I won't delete it.")
-
-@client.command()
-async def test(ctx):
-    # get emoji id by running '\:name:'
-    js_bossing_channel = 963160372385296414
-    # my_discord_general_channel = 803958155935219724
-    channel = client.get_channel(js_bossing_channel)
-    # guild = 491039338659053568
-    # emoji = discord.utils.get(ctx.guild.emojis, id=811260045307543553)
-    # emoji = discord.utils.get(client.emojis, name='Birthday_Cake')
-    # await channel.send("<a:Birthday_Cake:811260045307543553>")
-    # emoji = client.get_emoji(811260045307543553)
-    # await channel.send(emoji)
-    await channel.send("<:thumbsupright:1079644743107092511>")
-
-    # js_bossing_channel = 963160372385296414
-    # channel = client.get_channel(js_bossing_channel)
-    # await channel.send("Monday (15 May 23) 10pm! Tele carry y`all!")
-
-    # msg_sent = await message.channel.send("Ryuh! Ryuh! Scammer spotted!")
-    # msg_sent = await message.channel.send("Using rate 8/b, 3.33 = ?")
-    # msg_sent = await message.channel.send("8 x α = 3.33, α = 3.33/8, α = 0.41625")
-    # msg_sent = await message.channel.send("0.41625b x 1000 = 416.25m! Not 415m!!!")
-
-    # js_bossing_channel = 963160372385296414
-    # channel = client.get_channel(js_bossing_channel)
-    # msg_id = 1106578766131630140
-    # msg_to_react = await channel.fetch_message(msg_id)
-    # await msg_to_react.add_reaction("👍")
-
+intents = client.intents
+client = client.client
 
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
-
 
 @client.event
 async def on_message(message):
@@ -195,21 +38,7 @@ async def on_message(message):
         # Send schedule message to channel
         msg_sent = await message.channel.send(scheduler.schedule_message)
 
-        # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
-        msg_id = msg_sent.id 
-
-        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
-        
-        # Check if file exists
-        isExist = os.path.exists(file_path)
-
-        # If not, create it
-        if(False == isExist):
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        f = open(file_path, "w")
-        f.write(str(msg_id))
-        f.close()
+        msg_id = utils.write_file(message, msg_sent)
 
         msg_to_react = await message.channel.fetch_message(msg_id)
         await msg_to_react.add_reaction("🐱")
@@ -238,10 +67,8 @@ async def on_message(message):
         msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
 
     if message.content.lower() == 'ryuh check':
-        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
-        f = open(file_path, "r")
-        msg_id = f.read()
-        f.close()
+        msg_id = utils.read_file(message)
+
         # if you want bot to execute bot command
         # e.g.: bot to call "!check [msg_id]"
         # you dont need to, u just need to call the function
@@ -254,10 +81,12 @@ async def on_message(message):
         # "message" -> has method .reply()
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
-        await check(message, msg_id)
+        await utils.check(message, msg_id)
+
     # If message is sent by bot, do nothing
     if message.author == client.user:
         return
+    
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
     # This line is necessary to run '@client.command()' functions
     await client.process_commands(message)
