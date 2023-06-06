@@ -7,11 +7,18 @@ load_dotenv()
 
 # From .env file, get the variable named 'BOT_TOKEN'
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+OPENAI_TOKEN = os.getenv('OPENAI_TOKEN')
 
 import discord
 from discord.ext import commands
 import scheduler
 import users
+
+import openai
+
+model_engine = "text-davinci-003"
+openai.api_key = OPENAI_TOKEN
+
 
 # if you get error 
 # 'NoneType' object has no attribute 'fetch_message'
@@ -222,10 +229,6 @@ async def test(ctx):
     # await channel.send(emoji)
     await channel.send("<:thumbsupright:1079644743107092511>")
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
-
     # js_bossing_channel = 963160372385296414
     # channel = client.get_channel(js_bossing_channel)
     # await channel.send("Monday (15 May 23) 10pm! Tele carry y`all!")
@@ -241,94 +244,112 @@ async def on_ready():
     # msg_to_react = await channel.fetch_message(msg_id)
     # await msg_to_react.add_reaction("👍")
 
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_message(message):
-    if message.content.lower() == 'ryuh bot':
-        # Send schedule message to channel
-        msg_sent = await message.channel.send(scheduler.schedule_message)
+    # if message.content.lower() == 'ryuh bot':
+    #     # Send schedule message to channel
+    #     msg_sent = await message.channel.send(scheduler.schedule_message)
 
-        # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
-        msg_id = msg_sent.id 
+    #     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
+    #     msg_id = msg_sent.id 
 
-        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
+    #     file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
         
-        # Check if file exists
-        isExist = os.path.exists(file_path)
+    #     # Check if file exists
+    #     isExist = os.path.exists(file_path)
 
-        # If not, create it
-        if(False == isExist):
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    #     # If not, create it
+    #     if(False == isExist):
+    #         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         
-        f = open(file_path, "w")
-        f.write(str(msg_id))
-        f.close()
+    #     f = open(file_path, "w")
+    #     f.write(str(msg_id))
+    #     f.close()
 
-        msg_to_react = await message.channel.fetch_message(msg_id)
-        await msg_to_react.add_reaction("🐱")
-        await msg_to_react.add_reaction("🐶")
-        await msg_to_react.add_reaction("🐰")
-        await msg_to_react.add_reaction("🐹")
-        await msg_to_react.add_reaction("🐻")
-        await msg_to_react.add_reaction("🐯")
-        await msg_to_react.add_reaction("🦁")
-        await msg_to_react.add_reaction("🐼")
-        await msg_to_react.add_reaction("🐷")
-        await msg_to_react.add_reaction("🐮")
-        await msg_to_react.add_reaction("🐠")
-        await msg_to_react.add_reaction("🐟")
-        await msg_to_react.add_reaction("🐬")
-        await msg_to_react.add_reaction("🐳")
-        await msg_to_react.add_reaction("🐙")
-        await msg_to_react.add_reaction("🙃")
+    #     msg_to_react = await message.channel.fetch_message(msg_id)
+    #     await msg_to_react.add_reaction("🐱")
+    #     await msg_to_react.add_reaction("🐶")
+    #     await msg_to_react.add_reaction("🐰")
+    #     await msg_to_react.add_reaction("🐹")
+    #     await msg_to_react.add_reaction("🐻")
+    #     await msg_to_react.add_reaction("🐯")
+    #     await msg_to_react.add_reaction("🦁")
+    #     await msg_to_react.add_reaction("🐼")
+    #     await msg_to_react.add_reaction("🐷")
+    #     await msg_to_react.add_reaction("🐮")
+    #     await msg_to_react.add_reaction("🐠")
+    #     await msg_to_react.add_reaction("🐟")
+    #     await msg_to_react.add_reaction("🐬")
+    #     await msg_to_react.add_reaction("🐳")
+    #     await msg_to_react.add_reaction("🐙")
+    #     await msg_to_react.add_reaction("🙃")
 
-        # await msg_to_react.add_reaction("🐱")
-        # await msg_to_react.add_reaction("🐶")
-        # await msg_to_react.add_reaction("🐰")
-        # await msg_to_react.add_reaction("🐹")
-        # await msg_to_react.add_reaction("🐻")
-        # await msg_to_react.add_reaction("<:pepe_birthday:1087764773615194212>")
-        # await msg_to_react.add_reaction("🍰")
-        # await msg_to_react.add_reaction("<a:cake2:1087764775754280961>")
-        # await msg_to_react.add_reaction("🎂")
-        # await msg_to_react.add_reaction("<a:cake1:1087763631346810912>")
-        # await msg_to_react.add_reaction("🐠")
-        # await msg_to_react.add_reaction("🐟")
-        # await msg_to_react.add_reaction("🐬")
-        # await msg_to_react.add_reaction("🐳")
-        # await msg_to_react.add_reaction("🐙")
-        # await msg_to_react.add_reaction("🙃")
+    #     # await msg_to_react.add_reaction("🐱")
+    #     # await msg_to_react.add_reaction("🐶")
+    #     # await msg_to_react.add_reaction("🐰")
+    #     # await msg_to_react.add_reaction("🐹")
+    #     # await msg_to_react.add_reaction("🐻")
+    #     # await msg_to_react.add_reaction("<:pepe_birthday:1087764773615194212>")
+    #     # await msg_to_react.add_reaction("🍰")
+    #     # await msg_to_react.add_reaction("<a:cake2:1087764775754280961>")
+    #     # await msg_to_react.add_reaction("🎂")
+    #     # await msg_to_react.add_reaction("<a:cake1:1087763631346810912>")
+    #     # await msg_to_react.add_reaction("🐠")
+    #     # await msg_to_react.add_reaction("🐟")
+    #     # await msg_to_react.add_reaction("🐬")
+    #     # await msg_to_react.add_reaction("🐳")
+    #     # await msg_to_react.add_reaction("🐙")
+    #     # await msg_to_react.add_reaction("🙃")
 
-        # Mention by role, have to have '&' for role mentions
-        mention = '<@&' + str(users.party_role_id) + '>'
-        await message.channel.send(mention)
+    #     # Mention by role, have to have '&' for role mentions
+    #     mention = '<@&' + str(users.party_role_id) + '>'
+    #     await message.channel.send(mention)
 
-    if message.content.lower() == 'ryuh weekday' or message.content.lower() == 'ryuh weekend':
-        # Send schedule message to channel
-        msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
+    # if message.content.lower() == 'ryuh weekday' or message.content.lower() == 'ryuh weekend':
+    #     # Send schedule message to channel
+    #     msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
 
-    if message.content.lower() == 'ryuh check':
-        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
-        f = open(file_path, "r")
-        msg_id = f.read()
-        f.close()
-        # if you want bot to execute bot command
-        # e.g.: bot to call "!check [msg_id]"
-        # you dont need to, u just need to call the function
-        # as for funciton 1st param "ctx", just pass you have to pass message.channel
-        # because in the function, there's "ctx.send()"
-        # and only "message.channel" has ".send()" method
-        # UPDATE 1: now you want to use "reply()"
-        # Then pass only "message"
-        # "message.channel" -> has method ".send()
-        # "message" -> has method .reply()
-        # UPDATE 2: Since you want bot to reply to specific msg ID
-        # then you dont need to pass anything for 1st param, just pass None
-        await check(message, msg_id)
+    # if message.content.lower() == 'ryuh check':
+    #     file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
+    #     f = open(file_path, "r")
+    #     msg_id = f.read()
+    #     f.close()
+    #     # if you want bot to execute bot command
+    #     # e.g.: bot to call "!check [msg_id]"
+    #     # you dont need to, u just need to call the function
+    #     # as for funciton 1st param "ctx", just pass you have to pass message.channel
+    #     # because in the function, there's "ctx.send()"
+    #     # and only "message.channel" has ".send()" method
+    #     # UPDATE 1: now you want to use "reply()"
+    #     # Then pass only "message"
+    #     # "message.channel" -> has method ".send()
+    #     # "message" -> has method .reply()
+    #     # UPDATE 2: Since you want bot to reply to specific msg ID
+    #     # then you dont need to pass anything for 1st param, just pass None
+    #     await check(message, msg_id)
+
+    prompt = str(message)
+
+    completion = openai.Completion.create(
+        engine=model_engine,
+        prompt=prompt,
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+
+    response = completion["choices"][0]["text"]
+    await message.channel.send(response)
+
+    # If the message is sent by bot itself, dont do anything
     if message.author == client.user:
         return
     # https://stackoverflow.com/questions/65207823/discord-py-bot-command-not-running
     await client.process_commands(message)
-
 
 client.run(BOT_TOKEN)
