@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import ai
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file
@@ -34,6 +35,20 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    # Get channel name and ID
+    # output: my discord general channel, the output will be 'general'
+    channel_name = message.channel.name
+    # output: 803958155935219724
+    channel_id = message.channel.id
+    # print(channel_name)
+    # print(channel_id)
+
+    if channel_id == utils.my_discord_general_channel:
+        if message.author == client.user:
+            return
+        message_to_send = ai.chat(message)
+        await message.channel.send(message_to_send)
+
     if message.content.lower() == 'ryuh bot':
         # Send schedule message to channel
         msg_sent = await message.channel.send(scheduler.schedule_message)

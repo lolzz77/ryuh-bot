@@ -6,12 +6,17 @@ import discord
 
 client = client.client
 
+js_bossing_channel = 963160372385296414
+my_discord_general_channel = 803958155935219724
+
 @client.command()
 async def test(ctx):
-    # get emoji id by running '\:name:'
-    js_bossing_channel = 963160372385296414
-    my_discord_general_channel = 803958155935219724
+    # if you happen to comment out all code in this function
+    # it will output next line 'expected intended code'
+    random_code = 1
+
     channel = client.get_channel(my_discord_general_channel)
+    # get emoji id by running '\:name:'
 
     # guild = 491039338659053568
     # emoji = discord.utils.get(ctx.guild.emojis, id=811260045307543553)

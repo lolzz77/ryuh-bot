@@ -34,3 +34,21 @@ outputfile will be in /dist/main.out
 ![image](https://github.com/lolzz77/ryuh-bot/assets/61287457/ed6004bb-a0bf-4aa0-b09b-6767b460afd4)
 
 ![image](https://github.com/lolzz77/ryuh-bot/assets/61287457/bd54da48-edc7-4f20-9fce-f9356ac7e1b8)
+
+
+
+------------------------
+Install NLTK
+
+pip3 install nltk
+python3
+import nltk
+nltk.download()
+# download 'brown' package
+# verify that it is downlaoded
+from nltk.corpus import brown
+brown.words()
+
+# Now download 'punkt'
+nltk.download('punkt')
+
