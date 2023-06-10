@@ -1,6 +1,5 @@
 import nltk
 from nltk.stem.lancaster import LancasterStemmer
-stemmer = LancasterStemmer()
 
 import numpy
 import tflearn
@@ -11,6 +10,7 @@ import json
 with open('intent.json') as file:
     data = json.load(file)
 
+stemmer = LancasterStemmer()
 words = []
 labels = []
 docs_x = []
@@ -74,11 +74,11 @@ model = tflearn.DNN(net)
 # For first time runner, u will encounter error at this line
 # comment out all except model.fit() and model.save()
 # after run 1 time, revert all code changes n you should be fine
-# try:
-#     model.load("./model/ai/model.tflearn")
-# except:
-model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-model.save("./model/ai/model.tflearn")
+try:
+    model.load("./model/ai/model.tflearn")
+except:
+    model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
+    model.save("./model/ai/model.tflearn")
 
 
 def bag_of_words(s, words):
@@ -95,13 +95,12 @@ def bag_of_words(s, words):
     return numpy.array(bag)
 
 def chat(message):
-    print("Start talking with the bot (type quit to stop)!")
-    # while True:
-    inp = str(message)
+    inp = message.content
 
     results = model.predict([bag_of_words(inp, words)])
     results_index = numpy.argmax(results)
     tag = labels[results_index]
+    print(tag)
 
     for tg in data["intents"]:
         if tg['intent'] == tag:
