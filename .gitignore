@@ -21,3 +21,6 @@ dist/
 # npm
 .env
 node_modules/
+
+# image files
+image/

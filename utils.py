@@ -2,6 +2,7 @@ import os
 import scheduler
 import client
 import users
+import discord
 
 client = client.client
 
@@ -11,17 +12,14 @@ async def test(ctx):
     js_bossing_channel = 963160372385296414
     my_discord_general_channel = 803958155935219724
     channel = client.get_channel(my_discord_general_channel)
+
     # guild = 491039338659053568
     # emoji = discord.utils.get(ctx.guild.emojis, id=811260045307543553)
     # emoji = discord.utils.get(client.emojis, name='Birthday_Cake')
     # await channel.send("<a:Birthday_Cake:811260045307543553>")
     # emoji = client.get_emoji(811260045307543553)
     # await channel.send(emoji)
-    send = utils.tokenizer()
-    await channel.send(send)
 
-    # js_bossing_channel = 963160372385296414
-    # channel = client.get_channel(js_bossing_channel)
     # await channel.send("Monday (15 May 23) 10pm! Tele carry y`all!")
 
     # msg_sent = await message.channel.send("Ryuh! Ryuh! Scammer spotted!")
@@ -29,11 +27,20 @@ async def test(ctx):
     # msg_sent = await message.channel.send("8 x α = 3.33, α = 3.33/8, α = 0.41625")
     # msg_sent = await message.channel.send("0.41625b x 1000 = 416.25m! Not 415m!!!")
 
-    # js_bossing_channel = 963160372385296414
-    # channel = client.get_channel(js_bossing_channel)
     # msg_id = 1106578766131630140
     # msg_to_react = await channel.fetch_message(msg_id)
     # await msg_to_react.add_reaction("👍")
+
+    # Send image
+    # Reply to message method
+    # msg_to_reply_id = 1116729780553912392
+    # msg_to_reply = await channel.fetch_message(msg_to_reply_id)
+    # image = discord.File('./image/peanut.jpg')
+    # await msg_to_reply.reply(file = image)
+
+    # No reply method
+    # await channel.send(file = image)
+
 
 
 # https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
