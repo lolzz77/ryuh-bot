@@ -36,7 +36,7 @@ for intent in data["intents"]:
 # Apparently some word will be incorrectly stemmed
 # there -> ther
 # hola -> hol
-user_input_trigger_words = [lemmatizer.lemmatize(w.lower()) for w in user_input_trigger_words if w != "?" and w != "'" and w != "," and w != "!"]
+user_input_trigger_words = [stemmer.stem(w.lower()) for w in user_input_trigger_words if w != "?" and w != "'" and w != "," and w != "!"]
 # set() - remove duplicate user_input_trigger_words
 # list() - make it into list
 # sorted - sort it
@@ -54,7 +54,7 @@ out_empty = [0 for _ in range(len(intents))]
 for x, doc in enumerate(docs_x):
     bag = []
 
-    words_stem = [lemmatizer.lemmatize(w.lower()) for w in doc]
+    words_stem = [stemmer.stem(w.lower()) for w in doc]
 
     for w in user_input_trigger_words:
         if w in words_stem:
@@ -104,7 +104,7 @@ def bag_of_words(s, user_input_trigger_words):
     bag = [0 for _ in range(len(user_input_trigger_words))]
 
     s_words = nltk.word_tokenize(s)
-    s_words = [lemmatizer.lemmatize(word.lower()) for word in s_words]
+    s_words = [stemmer.stem(word.lower()) for word in s_words]
 
     for se in s_words:
         for i, w in enumerate(user_input_trigger_words):
