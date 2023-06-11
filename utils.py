@@ -15,7 +15,7 @@ async def test(ctx):
     # it will output next line 'expected intended code'
     random_code = 1
 
-    channel = client.get_channel(my_discord_general_channel)
+    channel = client.get_channel(js_bossing_channel)
     # get emoji id by running '\:name:'
 
     # guild = 491039338659053568
@@ -25,7 +25,7 @@ async def test(ctx):
     # emoji = client.get_emoji(811260045307543553)
     # await channel.send(emoji)
 
-    # await channel.send("Monday (15 May 23) 10pm! Tele carry y`all!")
+    # await channel.send("<:xmas_hype:919267649169555467>")
 
     # msg_sent = await message.channel.send("Ryuh! Ryuh! Scammer spotted!")
     # msg_sent = await message.channel.send("Using rate 8/b, 3.33 = ?")
@@ -38,10 +38,10 @@ async def test(ctx):
 
     # Send image
     # Reply to message method
-    # msg_to_reply_id = 1116729780553912392
-    # msg_to_reply = await channel.fetch_message(msg_to_reply_id)
-    # image = discord.File('./image/peanut.jpg')
-    # await msg_to_reply.reply(file = image)
+    msg_to_reply_id = 1117143150499201026
+    msg_to_reply = await channel.fetch_message(msg_to_reply_id)
+    image = discord.File('./image/peanut.jpg')
+    await msg_to_reply.reply('<:xmas_hype:919267649169555467>')
 
     # No reply method
     # await channel.send(file = image)

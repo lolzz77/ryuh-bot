@@ -49,6 +49,7 @@ nltk.download()
 from nltk.corpus import brown
 brown.words()
 
-# Now download 'punkt'
+# Now download the rest of the packages
 nltk.download('punkt')
+nltk.download('wordnet')
 
