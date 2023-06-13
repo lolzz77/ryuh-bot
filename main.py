@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-import ai
+# import ai
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file
@@ -46,8 +46,8 @@ async def on_message(message):
     if channel_id == utils.my_discord_general_channel:
         if message.author == client.user:
             return
-        message_to_send = ai.chat(message)
-        await message.channel.send(message_to_send)
+        # message_to_send = ai.chat(message)
+        # await message.channel.send(message_to_send)
 
     if message.content.lower() == 'ryuh bot':
         # Send schedule message to channel
@@ -56,22 +56,9 @@ async def on_message(message):
         msg_id = utils.write_file(message, msg_sent)
 
         msg_to_react = await message.channel.fetch_message(msg_id)
-        await msg_to_react.add_reaction("🐱")
-        await msg_to_react.add_reaction("🐶")
-        await msg_to_react.add_reaction("🐰")
-        await msg_to_react.add_reaction("🐹")
-        await msg_to_react.add_reaction("🐻")
-        await msg_to_react.add_reaction("🐯")
-        await msg_to_react.add_reaction("🦁")
-        await msg_to_react.add_reaction("🐼")
-        await msg_to_react.add_reaction("🐷")
-        await msg_to_react.add_reaction("🐮")
-        await msg_to_react.add_reaction("🐠")
-        await msg_to_react.add_reaction("🐟")
-        await msg_to_react.add_reaction("🐬")
-        await msg_to_react.add_reaction("🐳")
-        await msg_to_react.add_reaction("🐙")
-        await msg_to_react.add_reaction("🙃")
+
+        for e in scheduler.reaction_mapping:
+            await msg_to_react.add_reaction(e)
 
         # Mention by role, have to have '&' for role mentions
         mention = '<@&' + str(users.party_role_id) + '>'
