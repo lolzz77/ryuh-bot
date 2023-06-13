@@ -13,7 +13,7 @@ import json
 with open('intent.json') as file:
     data = json.load(file)
 
-stemmer = LancasterStemmer()
+# Google stem vs lemmatizer. Lemmatizer more suitable
 lemmatizer = WordNetLemmatizer()
 # List of words that given by user, and based on these words, trigger the 'intents' for bots
 user_input_trigger_words = [] 
@@ -36,7 +36,7 @@ for intent in data["intents"]:
 # Apparently some word will be incorrectly stemmed
 # there -> ther
 # hola -> hol
-user_input_trigger_words = [lemmatizer.lemmatize(w.lower()) for w in user_input_trigger_words if w != "?" and w != "'" and w != "," and w != "!"]
+user_input_trigger_words = [lemmatizer.lemmatize(w.lower()) for w in user_input_trigger_words if w.isalnum()]
 # set() - remove duplicate user_input_trigger_words
 # list() - make it into list
 # sorted - sort it
@@ -54,10 +54,10 @@ out_empty = [0 for _ in range(len(intents))]
 for x, doc in enumerate(docs_x):
     bag = []
 
-    words_stem = [lemmatizer.lemmatize(w.lower()) for w in doc]
+    words_lammatized = [lemmatizer.lemmatize(w.lower()) for w in doc]
 
     for w in user_input_trigger_words:
-        if w in words_stem:
+        if w in words_lammatized:
             bag.append(1)
         else:
             bag.append(0)
@@ -79,13 +79,15 @@ for x, doc in enumerate(docs_x):
 training = numpy.array(training)
 output = numpy.array(output)
 
-
+# Step 3: Train model
+# Reset graph
 tensorflow.compat.v1.reset_default_graph() 
 
-net = tflearn.input_data(shape=[None, len(training[0])])
-net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, 8)
-net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
+# Neural Network
+net = tflearn.input_data(shape=[None, len(training[0])]) # layer 1 - input layer
+net = tflearn.fully_connected(net, 8) # layer 2 - hidden layer
+net = tflearn.fully_connected(net, 8) # layer 3 - hidden layer
+net = tflearn.fully_connected(net, len(output[0]), activation="softmax") # last layer - output layer
 net = tflearn.regression(net)
 
 model = tflearn.DNN(net)
@@ -96,7 +98,9 @@ model = tflearn.DNN(net)
 try:
     model.load("./model/ai/model.tflearn")
 except:
+    # Train model (?)
     model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
+    # Save model
     model.save("./model/ai/model.tflearn")
 
 
@@ -113,6 +117,7 @@ def bag_of_words(s, user_input_trigger_words):
             
     return numpy.array(bag)
 
+# Main function - call this to start chatting
 def chat(message):
     inp = message.content
 

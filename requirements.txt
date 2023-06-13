@@ -5,3 +5,5 @@ nltk
 numpy
 tflearn
 tensorflow
+SpeechRecognition 
+pydub

@@ -53,3 +53,28 @@ brown.words()
 nltk.download('punkt')
 nltk.download('wordnet')
 
+# attempting to install pyaudio
+# Because if you run pip3 install pyaudio, u get error
+apt-get install curl
+# isntall brew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# add brew to PATH
+# by default, brew is installed in /home/linuxbrew/.linuxbrew/bin
+echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bashrc
+# Execute bashrc
+./bashrc
+
+# then
+brew update
+brew install portaudio
+brew link --overwrite portaudio
+pip3 install pyaudio
+
+
+# above all wrong, just do
+
+apt install python3-pyaudio
+
+# to get `arecord` command
+apt-get install alsa-utils
+
