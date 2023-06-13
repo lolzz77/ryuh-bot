@@ -46,6 +46,13 @@ async def test(ctx):
     # No reply method
     # await channel.send(file = image)
 
+# havent test
+@client.command()
+async def edit(ctx):
+    channel = client.get_channel(js_bossing_channel)
+    message_id = 1118187820268396696
+    messaeg_to_edit = await channel.fetch_message(message_id)
+    await messaeg_to_edit.edit(content="newcontent")
 
 
 # https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
@@ -56,7 +63,9 @@ async def check(ctx, arg):
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users_dict.copy()
     message = ''
-    bossing_day = ''
+    # bossing_day = ''
+    # is_time = False
+    # is_day = False
 
     # Have to do this, else you get error channel has no attribute 'fetch_message'
     cur_ch_id = ctx.channel.id
@@ -71,22 +80,25 @@ async def check(ctx, arg):
         # Check for each reaction
         for reaction in message_to_check.reactions:
             reaction_str = str(reaction)
-            reaction_mapping = scheduler.reaction_mapping
+            emoji_time_dict = scheduler.emoji_time_dict
+            emoji_day_dict = scheduler.emoji_day_dict
 
-            # Construct string
-            if reaction_str in reaction_mapping:
-                # I want to print full 'curseday' and 'probably OT'
-                if reaction_mapping[reaction_str][0] == 'Curseday' or reaction_mapping[reaction_str][0] == 'Probably OT':
-                    day = '[' + reaction_mapping[reaction_str][0] + ']\n'
-                # else, print 1st 3 char only
-                else:
-                    # From the 'key', get the 1st element from the list, and get 1st 3 character
-                    # Essentially, get the 'day' - Mon, Tue, Wed etc
-                    day = '[' + reaction_mapping[reaction_str][0][:3] + ']\n'
-                # there are multiple emoji on same day, just print the 'day' once
-                # e.i: Monday has 2 emojis, this will make sure print 'day' only once
-                if day not in message:
-                    message += day
+            # # Requried for printing out consesus bossing date
+            # if reaction_str in emoji_time_dict:
+            #     is_time = True
+            #     is_day = False
+            # elif reaction_str in emoji_day_dict:
+            #     is_time = False
+            #     is_day = True
+
+            # Get "[8pm]" string
+            if reaction_str in emoji_time_dict:
+                # this one prints [8pm]
+                # message += emoji_time_dict[reaction_str] + ' ' + reaction_str
+
+                # this one no, just print emoji
+                message += reaction_str
+            if reaction_str in emoji_day_dict:
                 message += reaction_str
 
             message += " : "
@@ -111,19 +123,20 @@ async def check(ctx, arg):
 
             message += "\n"
 
-            # found a concensus bossing date
-            if count == 6:
-                bossing_day = " ".join(reaction_mapping[reaction_str])
-                bossing_day += "!\n"
+            # # found a concensus bossing date
+            # if count == 6 and is_time:
+            #     bossing_day += reaction_str
+            # if count == 6 and is_day:
+            #     bossing_day += reaction_str
 
         # if temp dict is empty
         if({} == users_dict_temp):
             message += 'everyone voted'
             message += '\n'
-            if not bossing_day:
-                message += "there's no consensus on the bossing date"
-            else:
-                message += bossing_day
+            # if not bossing_day:
+            #     message += "there's no consensus on the bossing date"
+            # else:
+            #     message += bossing_day
         else:
             # get discord user ID, append in message, ping them
             for dis_tag in users_dict_temp:
