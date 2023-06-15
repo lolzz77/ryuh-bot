@@ -100,26 +100,26 @@ reaction_mapping = {
 reaction_mapping_keys = list(reaction_mapping)
 
 # Construct string in this format
-# mon_10_pm = "10pm - 🐠"
-thu_8_pm    = reaction_mapping[reaction_mapping_keys[0]][1] + " - " + reaction_mapping_keys[0]
-thu_9_pm    = reaction_mapping[reaction_mapping_keys[1]][1] + " - " + reaction_mapping_keys[1]
-thu_10_pm   = reaction_mapping[reaction_mapping_keys[2]][1] + " - " + reaction_mapping_keys[2]
-fri_8_pm    = reaction_mapping[reaction_mapping_keys[3]][1] + " - " + reaction_mapping_keys[3]
-fri_9_pm    = reaction_mapping[reaction_mapping_keys[4]][1] + " - " + reaction_mapping_keys[4]
-fri_10_pm   = reaction_mapping[reaction_mapping_keys[5]][1] + " - " + reaction_mapping_keys[5]
-fri_11_pm   = reaction_mapping[reaction_mapping_keys[6]][1] + " - " + reaction_mapping_keys[6]
-fri_12_am   = reaction_mapping[reaction_mapping_keys[7]][1] + " - " + reaction_mapping_keys[7]
-sat_8_pm    = reaction_mapping[reaction_mapping_keys[8]][1] + " - " + reaction_mapping_keys[8]
-sat_9_pm    = reaction_mapping[reaction_mapping_keys[9]][1] + " - " + reaction_mapping_keys[9]
-sat_10_pm   = reaction_mapping[reaction_mapping_keys[10]][1] + " - " + reaction_mapping_keys[10]
-sat_11_pm   = reaction_mapping[reaction_mapping_keys[11]][1] + " - " + reaction_mapping_keys[11]
-sat_12_am   = reaction_mapping[reaction_mapping_keys[12]][1] + " - " + reaction_mapping_keys[12]
-sun_8_pm    = reaction_mapping[reaction_mapping_keys[13]][1] + " - " + reaction_mapping_keys[13]
-sun_9_pm    = reaction_mapping[reaction_mapping_keys[14]][1] + " - " + reaction_mapping_keys[14]
-sun_10_pm   = reaction_mapping[reaction_mapping_keys[15]][1] + " - " + reaction_mapping_keys[15]
-mon_time    = reaction_mapping[reaction_mapping_keys[16]][0] + " - " + reaction_mapping_keys[16]
-tue_time    = reaction_mapping[reaction_mapping_keys[17]][0] + " - " + reaction_mapping_keys[17]
-all_cannot  = reaction_mapping[reaction_mapping_keys[18]][0] + " - " + reaction_mapping_keys[18]
+# mon_10_pm = "🐠 - 10pm"
+thu_8_pm    = reaction_mapping_keys[0] + " - " + reaction_mapping[reaction_mapping_keys[0]][1]
+thu_9_pm    = reaction_mapping_keys[1] + " - " + reaction_mapping[reaction_mapping_keys[1]][1]
+thu_10_pm   = reaction_mapping_keys[2] + " - " + reaction_mapping[reaction_mapping_keys[2]][1]
+fri_8_pm    = reaction_mapping_keys[3] + " - " + reaction_mapping[reaction_mapping_keys[3]][1]
+fri_9_pm    = reaction_mapping_keys[4] + " - " + reaction_mapping[reaction_mapping_keys[4]][1]
+fri_10_pm   = reaction_mapping_keys[5] + " - " + reaction_mapping[reaction_mapping_keys[5]][1]
+fri_11_pm   = reaction_mapping_keys[6] + " - " + reaction_mapping[reaction_mapping_keys[6]][1]
+fri_12_am   = reaction_mapping_keys[7] + " - " + reaction_mapping[reaction_mapping_keys[7]][1]
+sat_8_pm    = reaction_mapping_keys[8] + " - " + reaction_mapping[reaction_mapping_keys[8]][1]
+sat_9_pm    = reaction_mapping_keys[9] + " - " + reaction_mapping[reaction_mapping_keys[9]][1]
+sat_10_pm   = reaction_mapping_keys[10] + " - " + reaction_mapping[reaction_mapping_keys[10]][1]
+sat_11_pm   = reaction_mapping_keys[11] + " - " + reaction_mapping[reaction_mapping_keys[11]][1]
+sat_12_am   = reaction_mapping_keys[12] + " - " + reaction_mapping[reaction_mapping_keys[12]][1]
+sun_8_pm    = reaction_mapping_keys[13] + " - " + reaction_mapping[reaction_mapping_keys[13]][1]
+sun_9_pm    = reaction_mapping_keys[14] + " - " + reaction_mapping[reaction_mapping_keys[14]][1]
+sun_10_pm   = reaction_mapping_keys[15] + " - " + reaction_mapping[reaction_mapping_keys[15]][1]
+mon_time    = reaction_mapping_keys[16] + " - " + reaction_mapping[reaction_mapping_keys[16]][0]
+tue_time    = reaction_mapping_keys[17] + " - " + reaction_mapping[reaction_mapping_keys[17]][0]
+all_cannot  = reaction_mapping_keys[18] + " - " + reaction_mapping[reaction_mapping_keys[18]][0]
 
 schedule_message = '''\
 Curseday Night - **{thursday}**
