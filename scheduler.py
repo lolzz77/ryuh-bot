@@ -73,23 +73,27 @@ sunday = sunday.strftime("%d/%b/%y")
 # Emoji
 emoji_cat_angery = '<:cat_angery:814753563854503966>' # From Jumping Sushi server
 
+
 reaction_mapping = {
-    "🐱" : ["Curseday",     "10pm"],
-    "🐶" : ["Curseday",     "11pm"],
-    "🐰" : ["Friday",       "10pm"],
-    "🐹" : ["Friday",       "11pm"],
-    "🐻" : ["Friday",       "12am"],
-    "🐯" : ["Saturday",     "10pm"],
-    "🦁" : ["Saturday",     "11pm"],
-    "🐼" : ["Saturday",     "12am"],
-    "🐷" : ["Sunday",       "10pm"],
-    "🐮" : ["Sunday",       "11pm"],
-    "🐠" : ["Monday",       "10pm"],
-    "🐟" : ["Monday",       "11pm"],
-    "🐬" : ["Tuesday",      "10pm"],
-    "🐳" : ["Tuesday",      "11pm"],
-    "🐙" : ["Wednesday",    "10pm"],
-    "🙃" : ["Probably OT"]
+    "🐱" : ["Curseday",     "8pm"],
+    "🐹" : ["Curseday",     "9pm"],
+    "🦁" : ["Curseday",     "10pm+"],
+    "🐶" : ["Friday",       "8pm"],
+    "🐻" : ["Friday",       "9pm"],
+    "🐯" : ["Friday",       "10pm"],
+    "🐰" : ["Friday",       "11pm"],
+    "🐼" : ["Friday",       "12am"],
+    "🐷" : ["Saturday",     "8pm"],
+    "🐮" : ["Saturday",     "9pm"],
+    "🐔" : ["Saturday",     "10pm"],
+    "🐻‍❄️" : ["Saturday",     "11pm"],
+    "🦉" : ["Saturday",     "12am"],
+    "🐣" : ["Sunday",       "8pm"],
+    "🐩" : ["Sunday",       "9pm"],
+    "🐵" : ["Sunday",       "10pm+"],
+    "1️⃣" : ["I can do on Monday", None],
+    "2️⃣" : ["I can do on Tuesday", None],
+    "🙃" : ["Probably OT", None]
 }
 
 # Get the list of keys. In other words, get the emoji
@@ -97,52 +101,56 @@ reaction_mapping_keys = list(reaction_mapping)
 
 # Construct string in this format
 # mon_10_pm = "10pm - 🐠"
-mon_10_pm = reaction_mapping[reaction_mapping_keys[0]][1] + " - " + reaction_mapping_keys[0]
-mon_11_pm = reaction_mapping[reaction_mapping_keys[1]][1] + " - " + reaction_mapping_keys[1]
-tue_10_pm = reaction_mapping[reaction_mapping_keys[2]][1] + " - " + reaction_mapping_keys[2]
-tue_11_pm = reaction_mapping[reaction_mapping_keys[3]][1] + " - " + reaction_mapping_keys[3]
-wed_10_pm = reaction_mapping[reaction_mapping_keys[4]][1] + " - " + reaction_mapping_keys[4]
-thu_10_pm = reaction_mapping[reaction_mapping_keys[5]][1] + " - " + reaction_mapping_keys[5]
-thu_11_pm = reaction_mapping[reaction_mapping_keys[6]][1] + " - " + reaction_mapping_keys[6]
-fri_10_pm = reaction_mapping[reaction_mapping_keys[7]][1] + " - " + reaction_mapping_keys[7]
-fri_11_pm = reaction_mapping[reaction_mapping_keys[8]][1] + " - " + reaction_mapping_keys[8]
-fri_12_am = reaction_mapping[reaction_mapping_keys[9]][1] + " - " + reaction_mapping_keys[9]
-sat_10_pm = reaction_mapping[reaction_mapping_keys[10]][1] + " - " + reaction_mapping_keys[10]
-sat_11_pm = reaction_mapping[reaction_mapping_keys[11]][1] + " - " + reaction_mapping_keys[11]
-sat_12_am = reaction_mapping[reaction_mapping_keys[12]][1] + " - " + reaction_mapping_keys[12]
-sun_10_pm = reaction_mapping[reaction_mapping_keys[13]][1] + " - " + reaction_mapping_keys[13]
-sun_11_pm = reaction_mapping[reaction_mapping_keys[14]][1] + " - " + reaction_mapping_keys[14]
-all_cannot = reaction_mapping[reaction_mapping_keys[15]][0] + " - " + reaction_mapping_keys[15]
+thu_8_pm    = reaction_mapping[reaction_mapping_keys[0]][1] + " - " + reaction_mapping_keys[0]
+thu_9_pm    = reaction_mapping[reaction_mapping_keys[1]][1] + " - " + reaction_mapping_keys[1]
+thu_10_pm   = reaction_mapping[reaction_mapping_keys[2]][1] + " - " + reaction_mapping_keys[2]
+fri_8_pm    = reaction_mapping[reaction_mapping_keys[3]][1] + " - " + reaction_mapping_keys[3]
+fri_9_pm    = reaction_mapping[reaction_mapping_keys[4]][1] + " - " + reaction_mapping_keys[4]
+fri_10_pm   = reaction_mapping[reaction_mapping_keys[5]][1] + " - " + reaction_mapping_keys[5]
+fri_11_pm   = reaction_mapping[reaction_mapping_keys[6]][1] + " - " + reaction_mapping_keys[6]
+fri_12_am   = reaction_mapping[reaction_mapping_keys[7]][1] + " - " + reaction_mapping_keys[7]
+sat_8_pm    = reaction_mapping[reaction_mapping_keys[8]][1] + " - " + reaction_mapping_keys[8]
+sat_9_pm    = reaction_mapping[reaction_mapping_keys[9]][1] + " - " + reaction_mapping_keys[9]
+sat_10_pm   = reaction_mapping[reaction_mapping_keys[10]][1] + " - " + reaction_mapping_keys[10]
+sat_11_pm   = reaction_mapping[reaction_mapping_keys[11]][1] + " - " + reaction_mapping_keys[11]
+sat_12_am   = reaction_mapping[reaction_mapping_keys[12]][1] + " - " + reaction_mapping_keys[12]
+sun_8_pm    = reaction_mapping[reaction_mapping_keys[13]][1] + " - " + reaction_mapping_keys[13]
+sun_9_pm    = reaction_mapping[reaction_mapping_keys[14]][1] + " - " + reaction_mapping_keys[14]
+sun_10_pm   = reaction_mapping[reaction_mapping_keys[15]][1] + " - " + reaction_mapping_keys[15]
+mon_time    = reaction_mapping[reaction_mapping_keys[16]][0] + " - " + reaction_mapping_keys[16]
+tue_time    = reaction_mapping[reaction_mapping_keys[17]][0] + " - " + reaction_mapping_keys[17]
+all_cannot  = reaction_mapping[reaction_mapping_keys[18]][0] + " - " + reaction_mapping_keys[18]
 
 schedule_message = '''\
 Curseday Night - **{thursday}**
+{thu_8_pm}
+{thu_9_pm}
 {thu_10_pm}
-{thu_11_pm}
 
 Friday Night - **{friday}**
+{fri_8_pm}
+{fri_9_pm}
 {fri_10_pm}
 {fri_11_pm}
 {fri_12_am}
 
 Saturday Night - **{saturday}**
+{sat_8_pm}
+{sat_9_pm}
 {sat_10_pm}
 {sat_11_pm}
 {sat_12_am}
 
 Sunday Night - **{sunday}**
+{sun_8_pm}
+{sun_9_pm}
 {sun_10_pm}
-{sun_11_pm}
 
 Monday Night - **{monday}**
-{mon_10_pm}
-{mon_11_pm}
+{mon_time}
 
 Tuesday Night - **{tuesday}**
-{tue_10_pm}
-{tue_11_pm}
-
-Wednesday Night - **{wednesday}**
-{wed_10_pm}
+{tue_time}
 
 {all_cannot}\
 '''.format( thursday=thursday, 
@@ -152,19 +160,22 @@ Wednesday Night - **{wednesday}**
             monday=monday, 
             tuesday=tuesday,
             wednesday=wednesday,
+            thu_8_pm=thu_8_pm,
+            thu_9_pm=thu_9_pm,
             thu_10_pm=thu_10_pm,
-            thu_11_pm=thu_11_pm,
+            fri_8_pm=fri_8_pm,
+            fri_9_pm=fri_9_pm,
             fri_10_pm=fri_10_pm,
             fri_11_pm=fri_11_pm,
             fri_12_am=fri_12_am,
+            sat_8_pm=sat_8_pm,
+            sat_9_pm=sat_9_pm,
             sat_10_pm=sat_10_pm,
             sat_11_pm=sat_11_pm,
             sat_12_am=sat_12_am,
+            sun_8_pm=sun_8_pm,
+            sun_9_pm=sun_9_pm,
             sun_10_pm=sun_10_pm,
-            sun_11_pm=sun_11_pm,
-            mon_10_pm=mon_10_pm,
-            mon_11_pm=mon_11_pm,
-            tue_10_pm=tue_10_pm,
-            tue_11_pm=tue_11_pm,
-            wed_10_pm=wed_10_pm,
+            mon_time=mon_time,
+            tue_time=tue_time,
             all_cannot=all_cannot)

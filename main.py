@@ -34,6 +34,14 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    # Get channel name and ID
+    # output: my discord general channel, the output will be 'general'
+    channel_name = message.channel.name
+    # output: 803958155935219724
+    channel_id = message.channel.id
+    # print(channel_name)
+    # print(channel_id)
+
     if message.content.lower() == 'ryuh bot':
         # Send schedule message to channel
         msg_sent = await message.channel.send(scheduler.schedule_message)
@@ -41,9 +49,10 @@ async def on_message(message):
         msg_id = utils.write_file(message, msg_sent)
 
         msg_to_react = await message.channel.fetch_message(msg_id)
+
         for e in scheduler.reaction_mapping:
             await msg_to_react.add_reaction(e)
-            
+
         # Mention by role, have to have '&' for role mentions
         mention = '<@&' + str(users.party_role_id) + '>'
         await message.channel.send(mention)

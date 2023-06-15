@@ -70,8 +70,11 @@ async def check(ctx, arg):
 
             # Construct string
             if reaction_str in reaction_mapping:
-                # I want to print full 'curseday' and 'probably OT'
-                if reaction_mapping[reaction_str][0] == 'Curseday' or reaction_mapping[reaction_str][0] == 'Probably OT':
+                # I want to print full 'curseday'
+                if reaction_mapping[reaction_str][0] == 'Curseday':
+                    day = '[' + reaction_mapping[reaction_str][0] + ']\n'
+                # For 'I can do on Monday' & 'Probably OT' those, print full
+                elif reaction_mapping[reaction_str][1] == None:
                     day = '[' + reaction_mapping[reaction_str][0] + ']\n'
                 # else, print 1st 3 char only
                 else:
