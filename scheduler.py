@@ -74,11 +74,6 @@ sunday = sunday.strftime("%d/%b/%y")
 emoji_cat_angery = '<:cat_angery:814753563854503966>' # From Jumping Sushi server
 
 reaction_mapping = {
-    "🐠" : ["Monday",       "10pm"],
-    "🐟" : ["Monday",       "11pm"],
-    "🐬" : ["Tuesday",      "10pm"],
-    "🐳" : ["Tuesday",      "11pm"],
-    "🐙" : ["Wednesday",    "10pm"],
     "🐱" : ["Curseday",     "10pm"],
     "🐶" : ["Curseday",     "11pm"],
     "🐰" : ["Friday",       "10pm"],
@@ -89,6 +84,11 @@ reaction_mapping = {
     "🐼" : ["Saturday",     "12am"],
     "🐷" : ["Sunday",       "10pm"],
     "🐮" : ["Sunday",       "11pm"],
+    "🐠" : ["Monday",       "10pm"],
+    "🐟" : ["Monday",       "11pm"],
+    "🐬" : ["Tuesday",      "10pm"],
+    "🐳" : ["Tuesday",      "11pm"],
+    "🐙" : ["Wednesday",    "10pm"],
     "🙃" : ["Probably OT"]
 }
 

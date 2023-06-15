@@ -41,23 +41,9 @@ async def on_message(message):
         msg_id = utils.write_file(message, msg_sent)
 
         msg_to_react = await message.channel.fetch_message(msg_id)
-        await msg_to_react.add_reaction("🐱")
-        await msg_to_react.add_reaction("🐶")
-        await msg_to_react.add_reaction("🐰")
-        await msg_to_react.add_reaction("🐹")
-        await msg_to_react.add_reaction("🐻")
-        await msg_to_react.add_reaction("🐯")
-        await msg_to_react.add_reaction("🦁")
-        await msg_to_react.add_reaction("🐼")
-        await msg_to_react.add_reaction("🐷")
-        await msg_to_react.add_reaction("🐮")
-        await msg_to_react.add_reaction("🐠")
-        await msg_to_react.add_reaction("🐟")
-        await msg_to_react.add_reaction("🐬")
-        await msg_to_react.add_reaction("🐳")
-        await msg_to_react.add_reaction("🐙")
-        await msg_to_react.add_reaction("🙃")
-
+        for e in scheduler.reaction_mapping:
+            await msg_to_react.add_reaction(e)
+            
         # Mention by role, have to have '&' for role mentions
         mention = '<@&' + str(users.party_role_id) + '>'
         await message.channel.send(mention)
