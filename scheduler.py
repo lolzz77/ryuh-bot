@@ -142,6 +142,7 @@ Saturday Night - **{saturday}**
 {sat_12_am}
 
 Sunday Night - **{sunday}**
+Reminder - Guild Skill reset after 12
 {sun_8_pm}
 {sun_9_pm}
 {sun_10_pm}
@@ -151,6 +152,9 @@ Monday Night - **{monday}**
 
 Tuesday Night - **{tuesday}**
 {tue_time}
+
+Wednesday Night - **{wednesday}**
+last resort
 
 {all_cannot}\
 '''.format( thursday=thursday, 
