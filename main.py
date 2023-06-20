@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import ai
-import speech_to_text
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file
@@ -33,7 +32,6 @@ client = client.client
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
-    speech_to_text.speech_to_text()
 
 @client.event
 async def on_message(message):
