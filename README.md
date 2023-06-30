@@ -25,10 +25,16 @@ To run the bot,
 python3 main.py
 
 
-To build an executable pytohn file
+To build an executable python file
 pip3 install pyinstaller
 pyinstaller --onefile main.py
 outputfile will be in /dist/main.out
+
+How to create executable python file and run on docker
+git clone
+create .env file
+run pyinstaller
+run .out file
 
 How to create bash script that make your file
 touch make.sh
