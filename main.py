@@ -23,6 +23,10 @@ from module import scheduler
 from module import users
 from module import utils
 from module import client
+from module import version
+
+version = version.version
+print("Version: " + version)
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file

@@ -1,5 +1,10 @@
 # ryuh-bot
 
+## preparation
+1. create .env file that contains your bot token
+2. Remember to setup 'post-commit' script for your git repo
+
+## Setup
 To find out what libraries needed to install
 
 pip3 install pipreqs (pip requirements)
@@ -45,12 +50,24 @@ touch make.sh
 chmod u+x make.sh
 ./make.sh
 
+Then, in docker, you can put in .bashrc, so that everytime you start container, it will run
+But, probably this is not a good idea
+once the docker run, dont know how to stop it unless u edit the bashrc, and restart the whole container
+if u dont, your vs code cannot start your bot, because container is already started it
+# run ryuh bot
+# cannot do like './~/ryuh-bot/main' it has a lot environment errors
+cd ~/ryuh-bot
+./main
+
+
 If you get error after built, cannot run
 Then you tried to do code change in this vs code,
 and rebuild again and realize same error
 rmb, your vs code currently is opening file from your local computer
 whereas ur docker, is opening another file within that docker
 2 different folders/repo you're editting
+
+
 
 ------------------------
 ![image](https://github.com/lolzz77/ryuh-bot/assets/61287457/ed6004bb-a0bf-4aa0-b09b-6767b460afd4)
