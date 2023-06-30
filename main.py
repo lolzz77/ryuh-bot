@@ -1,5 +1,16 @@
+import sys
+# Im putting my sub source file into /module/ folder
+# This will ensure when i include them, they can be found
+# Just this one line is enough ady, next line just do 'import ABC' and done
+sys.path.append("module")
+
 import os
 from dotenv import load_dotenv
+from discord.ext import commands
+import scheduler
+import users
+import utils
+import client
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file
@@ -8,11 +19,9 @@ load_dotenv()
 # From .env file, get the variable named 'BOT_TOKEN'
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-from discord.ext import commands
-import scheduler
-import users
-import utils
-import client
+if not BOT_TOKEN:
+    print("BOT TOKEN is null")
+    exit()
 
 # if you get error 
 # 'NoneType' object has no attribute 'fetch_message'

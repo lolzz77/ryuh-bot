@@ -1,12 +1,14 @@
 # Note: you cannot put comment after the string
 # this will cause gitignore to treat as [string # string]
 
+# ignore all .txt files
 *.txt
 
-# Do not ignore this file
+# But do not ignore this file
 !requirements.txt
 
 # Bot schedule message ID
+# When bot prints schedule, it will save message ID into this folder
 /schedule
 
 # Photoshop
@@ -14,13 +16,15 @@
 
 # Python
 __pycache__/
+
 # pthon build files
 build/
 dist/
+*.spec
 
 # npm
 .env
 node_modules/
 
-# image files
-image/
+# temporary folders
+temp/
