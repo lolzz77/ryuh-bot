@@ -66,7 +66,7 @@ once the docker run, dont know how to stop it unless u edit the bashrc, and rest
 
 if u dont stop it, your vs code cannot start your bot, because container is already started it
 
-Well, there is one way, in docker terminal, run
+Well, there is one way, in docker terminal or vs code terminal that runs the container, run
 
 ```ps aux | grep <executable name>```
 
