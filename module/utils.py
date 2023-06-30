@@ -3,11 +3,15 @@ import discord
 from module import scheduler
 from module import client
 from module import users
+from module import version as version_file
 
 client = client.client
 
 @client.command()
 async def test(ctx):
+    """
+    test command for testing
+    """
     # get emoji id by running '\:name:'
     js_bossing_channel = 963160372385296414
     my_discord_general_channel = 803958155935219724
@@ -41,11 +45,25 @@ async def test(ctx):
     # No reply method
     # await channel.send(file = image)
 
+@client.command()
+async def ver(ctx):
+    """
+    to get current version and send to discord chat
+    """
+    cur_ch_id = ctx.channel.id
+    channel = client.get_channel(cur_ch_id)
 
+    version = version_file.version
+    print(version)
+
+    await channel.send(version)
 
 # https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
 @client.command()
 async def check(ctx, arg):
+    """
+    to check votes
+    """
     users_dict = users.users_dict
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
@@ -54,6 +72,7 @@ async def check(ctx, arg):
     bossing_day = ''
 
     # Have to do this, else you get error channel has no attribute 'fetch_message'
+    # get current channel id
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
     message_to_check = await channel.fetch_message(arg)
@@ -134,6 +153,10 @@ async def check(ctx, arg):
 
 @client.command()
 async def delete(ctx, arg):
+    """
+    To delete bot's message
+    If the message is not bot's, it wont delete
+    """
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
     message_to_delete = await channel.fetch_message(arg)
@@ -143,6 +166,9 @@ async def delete(ctx, arg):
         await ctx.channel.send("That message does not belong to me! I won't delete it.")
 
 def write_file(message, msg_sent):
+    """
+    To write data into file
+    """
     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
     msg_id = msg_sent.id 
 
@@ -161,15 +187,20 @@ def write_file(message, msg_sent):
     return msg_id
 
 def read_file(message):
+    """
+    To read data from a file
+    """
     file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
     f = open(file_path, "r")
     msg_id = f.read()
     f.close()
     return msg_id
 
-# Return list of emojis from the scheduler.time_list
-# Not in used
 def tokenizer():
+    """
+    Return list of emojis from the scheduler.time_list
+    Not in used
+    """
     token_list = []
     delimiter = "-"
     time_list = scheduler.time_list
@@ -183,9 +214,11 @@ def tokenizer():
 
     return token_list
 
-# make dictionary
-# Not fisnihed, discontinued
 def make_dict(input_list):
+    """
+    make dictionary
+    Not fisnihed, discontinued
+    """
     my_dict = {}
     for item in input_list:
         my_dict[item] = "[Mon]\n" + str(item)
