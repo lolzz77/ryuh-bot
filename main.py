@@ -1,16 +1,28 @@
 import sys
-# Im putting my sub source file into /module/ folder
-# This will ensure when i include them, they can be found
-# Just this one line is enough ady, next line just do 'import ABC' and done
-sys.path.append("module")
-
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
-import scheduler
-import users
-import utils
-import client
+
+# To import python from other directory, you can do in 2 ways:
+# way 1:
+# import sys
+# sys.path.append("module")
+#
+# this method is dangerous
+# when run in vs code or in command line 'python3 main.py'
+# it will have no problem
+# however, this got problem when you build executable
+# it will compain cannot find module 'pytz' and other modules
+# because you modified the path to have 'module' in the path
+# if you do this, you have to copy 'module' folder into where .exe is located
+# then, copy 'pytz' module into this 'module' folder as well
+
+# way 2:
+# from 'path to include' import 'file name'
+from module import scheduler
+from module import users
+from module import utils
+from module import client
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file

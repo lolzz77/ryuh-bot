@@ -2,15 +2,18 @@
 
 To find out what libraries needed to install
 
-pip install pipreqs (pip requirements)
+pip3 install pipreqs (pip requirements)
 
 pipreqs /path/to/project
 
 Then it will create requirements.txt for you
 
-Then to intall the libraries, run
+Before you install the requirement.txt, create virtual environment first
+python3 -m venv virtual_env
+source virtual_env/bin/activate
 
-pip install -r requirements.txt
+Then to intall the libraries, run
+pip3 install -r requirements.txt
 
 
 To run the bot, 

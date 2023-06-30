@@ -1,8 +1,8 @@
 import os        
-import scheduler
-import client
-import users
 import discord
+from module import scheduler
+from module import client
+from module import users
 
 client = client.client
 
