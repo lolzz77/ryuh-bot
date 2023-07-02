@@ -16,16 +16,30 @@
 To find out what libraries needed to install
 
 ```pip3 install pipreqs``` (pip requirements)
+
 ```pipreqs /path/to/project```
 
 Then it will create requirements.txt for you
 
 Before you install the requirement.txt, create virtual environment first
 
-```python3 -m venv virtual_env```
-```source virtual_env/bin/activate```
+```python3 -m venv venv_```
 
-Then to intall the libraries, run
+Then, activate the environment
+
+```source venv_/bin/activate```
+
+In case of you're having multiple environment, just activate the one you want
+
+That is, you have `venv_a` and `venv_b`
+
+`venv_a` has installed all packages
+
+`venv_b` has no
+
+Activating `venv_b` then run `python3 main.py` will output error because no module installed
+
+Next, to intall the libraries, run
 
 ```pip3 install -r requirements.txt```
 

@@ -22,8 +22,13 @@ build/
 dist/
 *.spec
 
-# npm
+# environment variable file
 .env
+
+# python environment folders
+venv_*/
+
+# npm
 node_modules/
 
 # temporary folders
