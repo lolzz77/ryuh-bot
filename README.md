@@ -96,3 +96,35 @@ rmb, your vs code currently is opening file from your local computer
 whereas ur docker, is opening another file within that docker
 
 2 different folders/repo you're editting
+
+# Stable Diffusion
+## Have to use python 3.10
+
+install python 3.10
+```sudo apt-get update```
+
+```sudo apt-get install python3.10```
+
+Then, if you want to run python 3.10, just
+
+```python3.10```
+
+Then, you can see it output python version on the terminal
+
+Similarly, you can 
+
+```python3```
+
+and you see that the version is the latest one
+
+to create virtual environment that uses python 3.10
+
+first, install venv for python 3.10
+
+```apt install python3.10-venv -y```
+
+```python3.10 -m venv "venv_python3.10"```
+
+If you get error, just re-try, probably timeout error or something
+
+```pip3 install imaginairy```
