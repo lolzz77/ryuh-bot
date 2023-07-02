@@ -122,64 +122,100 @@ tue_time    = reaction_mapping_keys[17] + " - " + reaction_mapping[reaction_mapp
 all_cannot  = reaction_mapping_keys[18] + " - " + reaction_mapping[reaction_mapping_keys[18]][0]
 
 schedule_message = '''\
-Curseday Night - **{thursday}**
+Curseday - **{thursday}**
 {thu_8_pm}
 {thu_9_pm}
 {thu_10_pm}
+{thu_11_pm}
+{thu_12_am}
 
-Friday Night - **{friday}**
+Friday - **{friday}**
 {fri_8_pm}
 {fri_9_pm}
 {fri_10_pm}
 {fri_11_pm}
 {fri_12_am}
 
-Saturday Night - **{saturday}**
+Saturday - **{saturday}**
+{sat_11_am}
+{sat_12_pm}
+{sat_1_pm}
+{sat_2_pm}
+{sat_3_pm}
+{sat_4_pm}
+{sat_5_pm}
+{sat_6_pm}
+{sat_7_pm}
 {sat_8_pm}
 {sat_9_pm}
 {sat_10_pm}
 {sat_11_pm}
 {sat_12_am}
 
-Sunday Night - **{sunday}**
+Sunday - **{sunday}**
 Reminder - Guild Skill reset after 12
+{sun_11_am}
+{sun_12_pm}
+{sun_1_pm}
+{sun_2_pm}
+{sun_3_pm}
+{sun_4_pm}
+{sun_5_pm}
+{sun_6_pm}
+{sun_7_pm}
 {sun_8_pm}
 {sun_9_pm}
 {sun_10_pm}
+{sun_11_pm}
+{sun_12_am}
 
-Monday Night - **{monday}**
-{mon_time}
+Monday - **{monday}**
+{mon_8_pm}
+{mon_9_pm}
+{mon_10_pm}
+{mon_11_pm}
+{mon_12_am}
 
-Tuesday Night - **{tuesday}**
-{tue_time}
+Tuesday - **{tuesday}**
+{tue_8_pm}
+{tue_9_pm}
+{tue_10_pm}
+{tue_11_pm}
+{tue_12_am}
 
-Wednesday Night - **{wednesday}**
-last resort
+Wednesday - **{wednesday}**
+{wed_8_pm}
+{wed_9_pm}
+{wed_10_pm}
+{wed_11_pm}
+{wed_12_am}
 
 {all_cannot}\
-'''.format( thursday=thursday, 
-            friday=friday, 
-            saturday=saturday, 
-            sunday=sunday,
-            monday=monday, 
-            tuesday=tuesday,
-            wednesday=wednesday,
-            thu_8_pm=thu_8_pm,
-            thu_9_pm=thu_9_pm,
-            thu_10_pm=thu_10_pm,
-            fri_8_pm=fri_8_pm,
-            fri_9_pm=fri_9_pm,
-            fri_10_pm=fri_10_pm,
-            fri_11_pm=fri_11_pm,
-            fri_12_am=fri_12_am,
-            sat_8_pm=sat_8_pm,
-            sat_9_pm=sat_9_pm,
-            sat_10_pm=sat_10_pm,
-            sat_11_pm=sat_11_pm,
-            sat_12_am=sat_12_am,
-            sun_8_pm=sun_8_pm,
-            sun_9_pm=sun_9_pm,
-            sun_10_pm=sun_10_pm,
-            mon_time=mon_time,
-            tue_time=tue_time,
-            all_cannot=all_cannot)
+'''.format( 
+thursday=thursday, 
+friday=friday, 
+saturday=saturday, 
+sunday=sunday,
+monday=monday, 
+tuesday=tuesday,
+wednesday=wednesday,
+thu_8_pm=thu_8_pm,
+thu_9_pm=thu_9_pm,
+thu_10_pm=thu_10_pm,
+fri_8_pm=fri_8_pm,
+fri_9_pm=fri_9_pm,
+fri_10_pm=fri_10_pm,
+fri_11_pm=fri_11_pm,
+fri_12_am=fri_12_am,
+sat_8_pm=sat_8_pm,
+sat_9_pm=sat_9_pm,
+sat_10_pm=sat_10_pm,
+sat_11_pm=sat_11_pm,
+sat_12_am=sat_12_am,
+sun_8_pm=sun_8_pm,
+sun_9_pm=sun_9_pm,
+sun_10_pm=sun_10_pm,
+mon_time=mon_time,
+tue_time=tue_time,
+all_cannot=all_cannot
+)
