@@ -28,3 +28,9 @@ node_modules/
 
 # temporary folders
 temp/
+
+# environment dir
+venv_*/
+
+# stable diffusion output folder
+outputs/

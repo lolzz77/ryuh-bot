@@ -39,11 +39,11 @@ async def test(ctx):
     # Reply to message method
     # msg_to_reply_id = 1116729780553912392
     # msg_to_reply = await channel.fetch_message(msg_to_reply_id)
-    # image = discord.File('./image/peanut.jpg')
+    image = discord.File('./outputs/generated/000001_564068588_kdpmpp2m15_PS7.5_a_photo_of_a_dog_[generated].jpg')
     # await msg_to_reply.reply(file = image)
 
     # No reply method
-    # await channel.send(file = image)
+    await channel.send(file = image)
 
 @client.command()
 async def ver(ctx):
