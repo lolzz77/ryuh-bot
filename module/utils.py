@@ -92,9 +92,9 @@ async def check(ctx, arg):
                 # I want to print full 'curseday'
                 if reaction_mapping[reaction_str][0] == 'Curseday':
                     day = '[' + reaction_mapping[reaction_str][0] + ']\n'
-                # For 'I can do on Monday' & 'Probably OT' those, print full
-                elif reaction_mapping[reaction_str][1] == None:
-                    day = '[' + reaction_mapping[reaction_str][0] + ']\n'
+                # For 'All cannot', print full 'Probably OT'
+                elif reaction_mapping[reaction_str][0] == 'All cannot':
+                    day = '[' + reaction_mapping[reaction_str][1] + ']\n'
                 # else, print 1st 3 char only
                 else:
                     # From the 'key', get the 1st element from the list, and get 1st 3 character
@@ -150,6 +150,65 @@ async def check(ctx, arg):
             message += 'oi ' + scheduler.emoji_cat_angery
 
     await message_to_check.reply(message)
+
+async def construct_schedule():
+    """
+    To construct schedule message
+    Format:
+    Curseday - 13/Jul/23
+    🐱 - 8pm
+    🐹 - 9pm
+    🦁 - 10pm+
+
+    Friday - 14/Jul/23
+    ...
+    """
+    reaction_mapping = scheduler.reaction_mapping
+    schedule_message = scheduler.schedule_message
+    for reaction in reaction_mapping:
+        day = reaction_mapping[reaction][0] # Get day string
+        time = reaction_mapping[reaction][1] # Get time
+
+        # Special handling for 'all cannot'
+        if day == "All cannot":
+            schedule_message += '\n'
+            schedule_message += reaction
+            schedule_message += ' - '
+            schedule_message += day
+            continue
+
+        # Print 'Friday - 14/Jul/23'
+        if day not in schedule_message:
+            schedule_message += '\n'
+            schedule_message += day
+            schedule_message += ' - '
+            schedule_message += '**' # Bold
+            
+            if(day == 'Thursday' or day == 'Curseday'):
+                schedule_message += scheduler.thursday
+            if(day == 'Friday'):
+                schedule_message += scheduler.friday
+            if(day == 'Saturday'):
+                schedule_message += scheduler.saturday
+            if(day == 'Sunday'):
+                schedule_message += scheduler.sunday
+            if(day == 'Monday'):
+                schedule_message += scheduler.monday
+            if(day == 'Tuesday'):
+                schedule_message += scheduler.tuesday
+            if(day == 'Wednesday'):
+                schedule_message += scheduler.wednesday
+
+            schedule_message += '**' # Bold
+            schedule_message += '\n'
+        
+        # Print '🐱 - 8pm'
+        schedule_message += reaction
+        schedule_message += ' - '
+        schedule_message += time
+        schedule_message += '\n'
+
+    scheduler.schedule_message = schedule_message
 
 @client.command()
 async def delete(ctx, arg):

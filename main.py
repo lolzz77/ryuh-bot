@@ -55,6 +55,7 @@ client = client.client
 
 @client.event
 async def on_ready():
+    await utils.construct_schedule()
     print(f'We have logged in as {client.user}')
 
 @client.event
