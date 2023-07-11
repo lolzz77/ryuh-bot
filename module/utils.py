@@ -208,6 +208,16 @@ async def construct_schedule():
         schedule_message += time
         schedule_message += '\n'
 
+    # Last resort
+    schedule_message += '\n'
+    schedule_message += 'Wednesday'
+    schedule_message += ' - '
+    schedule_message += '**' # Bold
+    schedule_message += scheduler.wednesday
+    schedule_message += '**' # Bold
+    schedule_message += '\n'
+    schedule_message += 'last resort'
+
     scheduler.schedule_message = schedule_message
 
 @client.command()
