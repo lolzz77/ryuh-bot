@@ -26,7 +26,7 @@ dist/
 .env
 
 # python environment folders
-venv_*/
+venv*/
 
 # npm
 node_modules/
