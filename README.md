@@ -4,8 +4,8 @@
 
 ![image](https://github.com/lolzz77/ryuh-bot/assets/61287457/bd54da48-edc7-4f20-9fce-f9356ac7e1b8)
 
-
 # preparation
+
 1. create .env file that contains your bot token
 - ```vim .env```
 - ```BOT_TOKEN="STRING"```
@@ -13,6 +13,10 @@
 
 
 # Setup
+```apt-get install python3```
+
+```pip3 install pyinstaller```
+
 To find out what libraries needed to install
 
 ```pip3 install pipreqs``` (pip requirements)
