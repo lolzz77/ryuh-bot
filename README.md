@@ -95,7 +95,6 @@ Okay, that's how to stop it
 Now, this is how you put in .bashrc to run the bot
 
 ```
-cd ~/ryuh-bot
 # run ryuh bot
 # cannot do like './~/ryuh-bot/main' it has a lot environment errors
 cd ~/ryuh-bot
@@ -104,9 +103,9 @@ cd ~/ryuh-bot
 # This `if` checks if the command got output
 # if no, then run the 'main' exe
 # this is to prevent running container/connecting container resulting running the exe multiple times
-if ! pgrep main > /dev/null
+if ! pgrep main.out > /dev/null
 then
-        ./main
+        ./main.out
 fi
 ```
 
