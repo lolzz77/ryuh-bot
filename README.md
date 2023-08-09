@@ -57,6 +57,20 @@ Now, you installed python3, so you use python3 command to run the bot
 
 ```python3 main.py```
 
+To run debugger in VS Code, you have to make VS code to use your python environment file
+
+```CTRL + SHIFT + P```
+
+Choose `Python: Create Environemnt`
+
+Choose `venv`
+
+Choose your environment
+
+It will ask to install dependencies, choose `requirements.txt`
+
+Then, status bar below will show progress
+
 To build an executable python file
 
 ```pip3 install pyinstaller```
