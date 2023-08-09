@@ -71,7 +71,11 @@ sunday = now + timedelta(days=first_day_of_week_offset)
 sunday = sunday.strftime("%d/%b/%y")
 
 # Emoji
-emoji_cat_angery = '<:cat_angery:814753563854503966>' # From Jumping Sushi server
+# From Jumping Sushi server
+emoji_cat_angery = '<:cat_angery:814753563854503966>' 
+# From my server
+emoji_monkey_how_1 = '<:how1:1138852944519897159>'
+emoji_monkey_how_2 = '<:how2:1138852939025354782>'
 
 # For printing out the schedule message
 schedule_message = ''

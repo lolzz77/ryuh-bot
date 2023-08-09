@@ -70,6 +70,7 @@ async def check(ctx, arg):
     users_dict_temp = users_dict.copy()
     message = ''
     bossing_day = ''
+    next_msg = False # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
 
     # Have to do this, else you get error channel has no attribute 'fetch_message'
     # get current channel id
@@ -139,6 +140,11 @@ async def check(ctx, arg):
             message += '\n'
             if not bossing_day:
                 message += "there's no consensus on the bossing date"
+                message += '\n'
+                message = '<@&' + str(users.party_role_id) + '>'
+                message += '\n'
+                message += 'how?' 
+                next_msg = True
             else:
                 message += bossing_day
         else:
@@ -150,6 +156,12 @@ async def check(ctx, arg):
             message += 'oi ' + scheduler.emoji_cat_angery
 
     await message_to_check.reply(message)
+    
+    if(next_msg):
+        message = '' 
+        message = scheduler.emoji_monkey_how_1 + scheduler.emoji_monkey_how_2
+        await message_to_check.channel.send(message)
+
 
 async def construct_schedule():
     """
