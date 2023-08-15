@@ -141,7 +141,7 @@ async def check(ctx, arg):
             if not bossing_day:
                 message += "there's no consensus on the bossing date"
                 message += '\n'
-                message = '<@&' + str(users.party_role_id) + '>'
+                message += '<@&' + str(users.party_role_id) + '>'
                 message += '\n'
                 message += 'how?' 
                 next_msg = True
