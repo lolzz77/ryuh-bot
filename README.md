@@ -61,6 +61,8 @@ Now, you installed python3, so you use python3 command to run the bot
 
 To run debugger in VS Code, you have to make VS code to use your python environment file
 
+```First, install python extension in vscode```
+
 ```CTRL + SHIFT + P```
 
 Choose `Python: Create Environemnt`
