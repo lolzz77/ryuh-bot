@@ -27,11 +27,13 @@ Then it will create requirements.txt for you
 
 Before you install the requirement.txt, create virtual environment first
 
-```python3 -m venv venv_```
+```apt install python3.10-venv -y```
+
+```python3 -m venv venv_python3```
 
 Then, activate the environment
 
-```source venv_/bin/activate```
+```source venv_python3/bin/activate```
 
 In case of you're having multiple environment, just activate the one you want
 
