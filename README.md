@@ -111,7 +111,7 @@ Now, this is how you put in .bashrc to run the bot
 ```
 # run ryuh bot
 # cannot do like './~/ryuh-bot/main' it has a lot environment errors
-cd ~/ryuh-bot
+cd /workspace/ryuh-bot/
 # 'pgrep main' will check if 'main' exe is running
 # It will output PID if it is running
 # This `if` checks if the command got output
