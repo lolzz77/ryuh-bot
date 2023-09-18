@@ -11,6 +11,8 @@ client = client.client
 async def test(ctx):
     """
     test command for testing
+    To trigger this command, run `!test`
+    in discord chat channel that discord bot has access to
     """
     # get emoji id by running '\:name:'
     js_bossing_channel = 963160372385296414
