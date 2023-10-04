@@ -68,7 +68,7 @@ async def on_message(message):
     # print(channel_name)
     # print(channel_id)
 
-    if message.content.lower() == 'ryuh bot':
+    if message.content.lower() == 'ryuh bot' or message.content.lower() == 'chagee':
         # Send schedule message to channel
         msg_sent = await message.channel.send(scheduler.schedule_message)
 
@@ -87,7 +87,7 @@ async def on_message(message):
         # Send schedule message to channel
         msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
 
-    if message.content.lower() == 'ryuh check':
+    if message.content.lower() == 'ryuh check' or message.content.lower() == 'checkgee':
         msg_id = utils.read_file(message)
 
         # if you want bot to execute bot command
