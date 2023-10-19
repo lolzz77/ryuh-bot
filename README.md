@@ -15,7 +15,10 @@
 # Setup
 To find out what libraries needed to install
 
-```pip3 install pipreqs``` (pip requirements)
+```pip3 install pipreqs``` (pipreqs = pip requirements)
+
+then run
+
 ```pipreqs /path/to/project```
 
 Then it will create requirements.txt for you
