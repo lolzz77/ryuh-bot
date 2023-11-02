@@ -81,9 +81,9 @@ emoji_monkey_how_2 = '<:how2:1138852939025354782>'
 schedule_message = ''
 
 reaction_mapping = {
-    "🐱" : ["Curseday",     "8pm"],
-    "🐹" : ["Curseday",     "9pm"],
-    "🦁" : ["Curseday",     "10pm+"],
+    "🐱" : ["GuanYinMaday",     "8pm"],
+    "🐹" : ["GuanYinMaday",     "9pm"],
+    "🦁" : ["GuanYinMaday",     "10pm+"],
     "🐶" : ["Friday",       "8pm"],
     "🐻" : ["Friday",       "9pm"],
     "🐯" : ["Friday",       "10pm"],

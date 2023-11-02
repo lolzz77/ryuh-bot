@@ -93,7 +93,7 @@ async def check(ctx, arg):
             # Construct string
             if reaction_str in reaction_mapping:
                 # I want to print full 'curseday'
-                if reaction_mapping[reaction_str][0] == 'Curseday':
+                if reaction_mapping[reaction_str][0] == 'Curseday' or reaction_mapping[reaction_str][0] == 'GuanYinMaday':
                     day = '[' + reaction_mapping[reaction_str][0] + ']\n'
                 # For 'All cannot', print full 'Probably OT'
                 elif reaction_mapping[reaction_str][0] == 'All cannot':
@@ -198,7 +198,7 @@ async def construct_schedule():
             schedule_message += ' - '
             schedule_message += '**' # Bold
             
-            if(day == 'Thursday' or day == 'Curseday'):
+            if(day == 'Thursday' or day == 'Curseday' or day == 'GuanYinMaday'):
                 schedule_message += scheduler.thursday
             if(day == 'Friday'):
                 schedule_message += scheduler.friday
