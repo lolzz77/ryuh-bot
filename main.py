@@ -2,6 +2,7 @@ import sys
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
+from module import testData
 
 # To import python from other directory, you can do in 2 ways:
 # way 1:
@@ -69,18 +70,30 @@ async def on_message(message):
     # print(channel_id)
 
     if message.content.lower() == 'ryuh bot' or message.content.lower() == 'chagee':
-        # Send schedule message to channel
-        msg_sent = await message.channel.send(scheduler.schedule_message)
+        mention = ''
+        
+        # Fetch required data from discord chat
+        schedule_message, emoji_list = await utils.read_schedule(testData.my_discord_ryuh_bot_channel_schedule)
+        users_dict = await utils.read_user(testData.my_discord_ryuh_bot_channel_user)
 
+        # Send schedule message to channel
+        msg_sent = await message.channel.send(schedule_message)
+
+        # write the sent message ID into a file, to retrieve for 'checking' feature
         msg_id = utils.write_file(message, msg_sent)
 
+        # get the sent message ID
         msg_to_react = await message.channel.fetch_message(msg_id)
 
-        for e in scheduler.reaction_mapping:
+        # react on the message
+        for e in emoji_list:
             await msg_to_react.add_reaction(e)
 
-        # Mention by role, have to have '&' for role mentions
-        mention = '<@&' + str(users.party_role_id) + '>'
+        # ping those affected users
+        # If want mention by role, have to have '&' for role mentions
+        # eg: '<@&[role_id]>'
+        for user in users_dict:
+            mention += '<@' + str(user) + '> '
         await message.channel.send(mention)
 
     if message.content.lower() == 'ryuh weekday' or message.content.lower() == 'ryuh weekend':

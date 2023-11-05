@@ -4,6 +4,7 @@ from module import scheduler
 from module import client
 from module import users
 from module import version as version_file
+from module import testData
 
 client = client.client
 
@@ -66,7 +67,9 @@ async def check(ctx, arg):
     """
     to check votes
     """
-    users_dict = users.users_dict
+
+    # Fetch user & schedule data from discord chat
+    users_dict = await read_user(testData.my_discord_ryuh_bot_channel_user)
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users_dict.copy()
@@ -80,6 +83,9 @@ async def check(ctx, arg):
     channel = client.get_channel(cur_ch_id)
     message_to_check = await channel.fetch_message(arg)
 
+    # my intention is to fetch the emoji list only
+    schedule_message, emoji_list = await read_schedule(testData.my_discord_ryuh_bot_channel_schedule)
+
     # Show ryuh-bot is typing...
     # 2 approaches:
     # a. ctx.typing()
@@ -88,21 +94,14 @@ async def check(ctx, arg):
         # Check for each reaction
         for reaction in message_to_check.reactions:
             reaction_str = str(reaction)
-            reaction_mapping = scheduler.reaction_mapping
 
-            # Construct string
-            if reaction_str in reaction_mapping:
-                # I want to print full 'curseday'
-                if reaction_mapping[reaction_str][0] == 'Curseday' or reaction_mapping[reaction_str][0] == 'GuanYinMaday':
-                    day = '[' + reaction_mapping[reaction_str][0] + ']\n'
-                # For 'All cannot', print full 'Probably OT'
-                elif reaction_mapping[reaction_str][0] == 'All cannot':
-                    day = '[' + reaction_mapping[reaction_str][1] + ']\n'
-                # else, print 1st 3 char only
-                else:
-                    # From the 'key', get the 1st element from the list, and get 1st 3 character
-                    # Essentially, get the 'day' - Mon, Tue, Wed etc
-                    day = '[' + reaction_mapping[reaction_str][0][:3] + ']\n'
+            # Construct 'day' string
+            """
+            [MONDAY]         <-------
+            [emoji] : [user]
+            """
+            if reaction_str in emoji_list:
+                day = '[' + emoji_list[reaction_str] + ']\n'
                 # there are multiple emoji on same day, just print the 'day' once
                 # e.i: Monday has 2 emojis, this will make sure print 'day' only once
                 if day not in message:
@@ -116,7 +115,7 @@ async def check(ctx, arg):
             async for user in reaction.users():
                 # If the user reacted to the message contains in the user dictionary
                 if(str(user.id) in users_dict):
-                    message += users_dict[str(user.id)]['emoji']
+                    message += users_dict[str(user.id)]
                     count += 1
                 # if is bot itself, dont add the blank emoji
                 elif(user == client.user):
@@ -133,17 +132,23 @@ async def check(ctx, arg):
 
             # found a concensus bossing date
             if count == 6:
-                bossing_day = " ".join(reaction_mapping[reaction_str])
+                bossing_day = " ".join(emoji_list[reaction_str])
                 bossing_day += "!\n"
 
         # if temp dict is empty
         if({} == users_dict_temp):
             message += 'everyone voted'
             message += '\n'
+
+            # check if vote has reached consensus
             if not bossing_day:
                 message += "there's no consensus on the bossing date"
                 message += '\n'
-                message += '<@&' + str(users.party_role_id) + '>'
+                # ping everyone
+                # if you wan to ping role, '<@&[role_id]>'
+                # the differences is '&'
+                for user in users_dict:
+                    message += '<@' + str(user) + '> '
                 message += '\n'
                 message += 'how?' 
                 next_msg = True
@@ -247,6 +252,110 @@ async def delete(ctx, arg):
         await message_to_delete.delete()
     else:
         await ctx.channel.send("That message does not belong to me! I won't delete it.")
+
+async def read_user(channel_id):
+    """
+    given a message: [emoji]/[user ID]
+    this func will return [emoji] & [user ID]
+
+    the message format shall be:
+    [emoji]/[user ID]
+    it will split with '/' symbols
+    whitespaces will be removed
+
+    if multiple strings, put new one in newline
+    [emoji]/[user ID]
+    [emoji]/[user ID]
+
+    function will split each row
+    """
+    user_dict = dict()
+    user_list = list()
+
+    # fetch channel & message
+    channel = client.get_channel(channel_id)
+    last_message_id = channel.last_message_id
+    message_fetched = await channel.fetch_message(last_message_id)
+    content = message_fetched.content
+
+    # split into individual row
+    rows = content.split('\n')
+
+    # split message
+    for row in rows:
+        user_list.append(row.split('/'))
+
+    # remove leading n traling whitespaces
+    for user in user_list:
+        user[0] = user[0].strip()
+        user[1] = user[1].strip()
+        user_emoji = user[0]
+        user_id = user[1]
+        """
+        dictionary format:
+        dict = {'user id' : 'user emoji'}
+        """
+        user_dict[user_id] = user_emoji
+
+    return user_dict
+
+async def read_schedule(channel_id):
+    """
+    1. return schedule message with @MONDAY@ replaced with actual date
+    2. return list of emoji found in the schedule message
+
+    emoji condition:
+    1. emoji has to be the 1st chracter in the row
+    2. emoji has to be discord default emoji
+    3. emoji cannot be literally num/alphabet like `:one:` emoji
+    """
+    # fetch channel & message
+    channel = client.get_channel(channel_id)
+    last_message_id = channel.last_message_id
+    message_fetched = await channel.fetch_message(last_message_id)
+    content = message_fetched.content
+    rows = content.split('\n')
+    emoji_list = dict()
+    days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@',}
+    day = ''
+
+    # fetch emoji
+    for row in rows:
+        # for row that contains only new line in it
+        if len(row) <= 0:
+            continue
+
+        if any(x in row for x in days_set):
+            day = row.split(' ')[0]
+
+        # only can use discord default emoji,
+        # but cannot use emoji that lietrally is number/alphabet
+        # like discord `:one:` emoji will show `1` and this code will treat as number rather than emoji
+        # Then, if you use custom uploaded emoji, it will be transalted into `<emoji_name:emoji_ID>`
+        # then your row[0] will be '<'
+        if not row[0].isalnum():
+            emoji_list[row[0]] = day
+
+    # replace '@MONDAY@' symbol to actual date
+    for day in days_set:
+        if day == '@MONDAY@':
+            content = content.replace(day, "**" + scheduler.monday + "**")
+        elif day == '@TUESDAY@':
+            content = content.replace(day, "**" + scheduler.tuesday + "**")
+        elif day == '@WEDNESDAY@':
+            content = content.replace(day, "**" + scheduler.wednesday + "**")
+        elif day == '@THURSDAY@':
+            content = content.replace(day, "**" + scheduler.thursday + "**")
+        elif day == '@FRIDAY@':
+            content = content.replace(day, "**" + scheduler.friday + "**")
+        elif day == '@SATURDAY@':
+            content = content.replace(day, "**" + scheduler.saturday + "**")
+        elif day == '@SUNDAY@':
+            content = content.replace(day, "**" + scheduler.sunday + "**")
+
+    schedule_message = content
+
+    return schedule_message, emoji_list
 
 def write_file(message, msg_sent):
     """

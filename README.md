@@ -71,9 +71,15 @@ Choose `venv`
 
 Choose your environment
 
+`Enter interpreter path...` -> `Find` -> `your virtual environment/bin/python3.10`
+
 It will ask to install dependencies, choose `requirements.txt`
 
 Then, status bar below will show progress
+
+To ensure you have selected the correct python interpreter
+
+`CTRL+SHIFT+P` -> `PythonL Seelct Interpreter` -> `select yoru correct virtual environment python interpreter`
 
 To build an executable python file
 
