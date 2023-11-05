@@ -2,7 +2,6 @@ import os
 import discord
 from module import scheduler
 from module import client
-from module import users
 from module import version as version_file
 from module import testData
 
@@ -168,76 +167,6 @@ async def check(ctx, arg):
         message = '' 
         message = scheduler.emoji_monkey_how_1 + scheduler.emoji_monkey_how_2
         await message_to_check.channel.send(message)
-
-
-async def construct_schedule():
-    """
-    To construct schedule message
-    Format:
-    Curseday - 13/Jul/23
-    🐱 - 8pm
-    🐹 - 9pm
-    🦁 - 10pm+
-
-    Friday - 14/Jul/23
-    ...
-    """
-    reaction_mapping = scheduler.reaction_mapping
-    schedule_message = scheduler.schedule_message
-    for reaction in reaction_mapping:
-        day = reaction_mapping[reaction][0] # Get day string
-        time = reaction_mapping[reaction][1] # Get time
-
-        # Special handling for 'all cannot'
-        if day == "All cannot":
-            schedule_message += '\n'
-            schedule_message += reaction
-            schedule_message += ' - '
-            schedule_message += day
-            continue
-
-        # Print 'Friday - 14/Jul/23'
-        if day not in schedule_message:
-            schedule_message += '\n'
-            schedule_message += day
-            schedule_message += ' - '
-            schedule_message += '**' # Bold
-            
-            if(day == 'Thursday' or day == 'Curseday' or day == 'GuanYinMaday'):
-                schedule_message += scheduler.thursday
-            if(day == 'Friday'):
-                schedule_message += scheduler.friday
-            if(day == 'Saturday'):
-                schedule_message += scheduler.saturday
-            if(day == 'Sunday'):
-                schedule_message += scheduler.sunday
-            if(day == 'Monday'):
-                schedule_message += scheduler.monday
-            if(day == 'Tuesday'):
-                schedule_message += scheduler.tuesday
-            if(day == 'Wednesday'):
-                schedule_message += scheduler.wednesday
-
-            schedule_message += '**' # Bold
-            schedule_message += '\n'
-        
-        # Print '🐱 - 8pm'
-        schedule_message += reaction
-        schedule_message += ' - '
-        schedule_message += time
-        schedule_message += '\n'
-
-    # Last resort
-    schedule_message += '\n'
-    schedule_message += 'Wednesday'
-    schedule_message += ' - '
-    schedule_message += '**' # Bold
-    schedule_message += scheduler.wednesday
-    schedule_message += '**' # Bold
-    schedule_message += '\n'
-    schedule_message += 'last resort'
-
-    scheduler.schedule_message = schedule_message
 
 @client.command()
 async def delete(ctx, arg):

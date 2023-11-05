@@ -76,29 +76,3 @@ emoji_cat_angery = '<:cat_angery:814753563854503966>'
 # From my server
 emoji_monkey_how_1 = '<:how1:1138852944519897159>'
 emoji_monkey_how_2 = '<:how2:1138852939025354782>'
-
-# For printing out the schedule message
-schedule_message = ''
-
-reaction_mapping = {
-    "🐱" : ["GuanYinMaday",     "8pm"],
-    "🐹" : ["GuanYinMaday",     "9pm"],
-    "🦁" : ["GuanYinMaday",     "10pm+"],
-    "🐶" : ["Friday",       "8pm"],
-    "🐻" : ["Friday",       "9pm"],
-    "🐯" : ["Friday",       "10pm"],
-    "🐰" : ["Friday",       "11pm"],
-    "🐼" : ["Friday",       "12am"],
-    "🦜" : ["Saturday",     "Afternoon"],
-    "🐷" : ["Saturday",     "8pm"],
-    "🐮" : ["Saturday",     "9pm"],
-    "🐔" : ["Saturday",     "10pm"],
-    "🐻‍❄️" : ["Saturday",     "11pm"],
-    "🦉" : ["Saturday",     "12am"],
-    "🐸" : ["Sunday",       "Afternoon"],
-    "🐣" : ["Sunday",       "8pm"],
-    "🐩" : ["Sunday",       "9pm"],
-    "🐵" : ["Sunday",       "10pm+"],
-    "1️⃣" : ["Monday",       "I can do on Monday"],
-    "2️⃣" : ["Tuesday",      "I can do on Tuesday"],
-}

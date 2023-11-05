@@ -21,7 +21,6 @@ from module import testData
 # way 2:
 # from 'path to include' import 'file name'
 from module import scheduler
-from module import users
 from module import utils
 from module import client
 from module import version
@@ -56,7 +55,6 @@ client = client.client
 
 @client.event
 async def on_ready():
-    await utils.construct_schedule()
     print(f'We have logged in as {client.user}')
 
 @client.event
