@@ -62,13 +62,13 @@ async def ver(ctx):
 
 # https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
 @client.command()
-async def check(ctx, arg):
+async def check(ctx, arg, users_channel_id, schedule_channel_id):
     """
     to check votes
     """
 
     # Fetch user & schedule data from discord chat
-    users_dict = await read_user(testData.my_discord_ryuh_bot_channel_user)
+    users_dict = await read_user(users_channel_id)
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users_dict.copy()
@@ -83,7 +83,7 @@ async def check(ctx, arg):
     message_to_check = await channel.fetch_message(arg)
 
     # my intention is to fetch the emoji list only
-    schedule_message, emoji_list = await read_schedule(testData.my_discord_ryuh_bot_channel_schedule)
+    schedule_message, emoji_dict = await read_schedule(schedule_channel_id)
 
     # Show ryuh-bot is typing...
     # 2 approaches:
@@ -99,8 +99,8 @@ async def check(ctx, arg):
             [MONDAY]         <-------
             [emoji] : [user]
             """
-            if reaction_str in emoji_list:
-                day = '[' + emoji_list[reaction_str] + ']\n'
+            if reaction_str in emoji_dict:
+                day = '[' + emoji_dict[reaction_str] + ']\n'
                 # there are multiple emoji on same day, just print the 'day' once
                 # e.i: Monday has 2 emojis, this will make sure print 'day' only once
                 if day not in message:
@@ -131,7 +131,7 @@ async def check(ctx, arg):
 
             # found a concensus bossing date
             if count == 6:
-                bossing_day = " ".join(emoji_list[reaction_str])
+                bossing_day = " ".join(emoji_dict[reaction_str])
                 bossing_day += "!\n"
 
         # if temp dict is empty
@@ -244,7 +244,7 @@ async def read_schedule(channel_id):
     message_fetched = await channel.fetch_message(last_message_id)
     content = message_fetched.content
     rows = content.split('\n')
-    emoji_list = dict()
+    emoji_dict = dict()
     days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@',}
     day = ''
 
@@ -258,12 +258,24 @@ async def read_schedule(channel_id):
             day = row.split(' ')[0]
 
         # only can use discord default emoji,
+        
         # but cannot use emoji that lietrally is number/alphabet
         # like discord `:one:` emoji will show `1` and this code will treat as number rather than emoji
+        
         # Then, if you use custom uploaded emoji, it will be transalted into `<emoji_name:emoji_ID>`
         # then your row[0] will be '<'
+        
+        # Then, for ':bear:' and ':polar_bear:' emoji
+        # they will end up being the same 'bear' emoji
+        # cos for :polar_bear:, it will have :bear: + numbers behind
+        # this i will impose a minor fix, if key present, put msg "conflict emoji or smthg"
+        # nvm, my quick fix is crash the bot
+        # so when printing schedule n bot crashed, good, is a sign
         if not row[0].isalnum():
-            emoji_list[row[0]] = day
+            if emoji_dict.get(row[0]):
+                # this will crash the bot
+                emoji_dict[row[0]+"(1)"] = day
+            emoji_dict[row[0]] = day
 
     # replace '@MONDAY@' symbol to actual date
     for day in days_set:
@@ -284,7 +296,7 @@ async def read_schedule(channel_id):
 
     schedule_message = content
 
-    return schedule_message, emoji_list
+    return schedule_message, emoji_dict
 
 def write_file(message, msg_sent):
     """

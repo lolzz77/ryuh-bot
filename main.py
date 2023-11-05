@@ -66,13 +66,22 @@ async def on_message(message):
     channel_id = message.channel.id
     # print(channel_name)
     # print(channel_id)
+    users_channel_id = 0
+    schedule_channel_id = 0
+
+    if message.guild.id == testData.my_discord:
+        users_channel_id = testData.my_discord_ryuh_bot_channel_user
+        schedule_channel_id = testData.my_discord_ryuh_bot_channel_schedule
+    elif message.guild.id == testData.js_discord:
+        users_channel_id = testData.js_bossing_channel_user
+        schedule_channel_id = testData.js_bossing_channel_schedule
 
     if message.content.lower() == 'ryuh bot' or message.content.lower() == 'chagee':
         mention = ''
         
         # Fetch required data from discord chat
-        schedule_message, emoji_list = await utils.read_schedule(testData.my_discord_ryuh_bot_channel_schedule)
-        users_dict = await utils.read_user(testData.my_discord_ryuh_bot_channel_user)
+        schedule_message, emoji_list = await utils.read_schedule(schedule_channel_id)
+        users_dict = await utils.read_user(users_channel_id)
 
         # Send schedule message to channel
         msg_sent = await message.channel.send(schedule_message)
@@ -113,7 +122,7 @@ async def on_message(message):
         # "message" -> has method .reply()
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
-        await utils.check(message, msg_id)
+        await utils.check(message, msg_id, users_channel_id, schedule_channel_id)
 
     # If message is sent by bot, do nothing
     if message.author == client.user:
