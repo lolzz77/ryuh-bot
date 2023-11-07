@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from discord.ext import commands
 from module import testData
+from module import error
+import inspect
 
 # To import python from other directory, you can do in 2 ways:
 # way 1:
@@ -80,8 +82,21 @@ async def on_message(message):
         mention = ''
         
         # Fetch required data from discord chat
-        schedule_message, emoji_list = await utils.read_schedule(schedule_channel_id)
+        try:
+            schedule_message, emoji_list = await utils.read_schedule(schedule_channel_id)
+        except:
+            error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
+            await message.channel.send(error.error_message)
+            return
+
+        if not schedule_message or not emoji_list:
+            await message.channel.send(error.error_message)
+            return
+
         users_dict = await utils.read_user(users_channel_id)
+        if not users_dict:
+            await message.channel.send(error.error_message)
+            return
 
         # Send schedule message to channel
         msg_sent = await message.channel.send(schedule_message)

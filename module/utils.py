@@ -4,6 +4,8 @@ from module import scheduler
 from module import client
 from module import version as version_file
 from module import testData
+from module import error
+import inspect
 
 client = client.client
 
@@ -69,6 +71,10 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
 
     # Fetch user & schedule data from discord chat
     users_dict = await read_user(users_channel_id)
+    if not users_dict:
+        await message_to_check.channel.send(message)
+        return
+
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
     users_dict_temp = users_dict.copy()
@@ -80,10 +86,24 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
     # get current channel id
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
-    message_to_check = await channel.fetch_message(arg)
+    try:
+        message_to_check = await channel.fetch_message(arg)
+    except:
+        error.error_message = 'Fetch last message failed, did you delete my schedule message that I pinged you guys to vote?'
+        await message_to_check.channel.send(error.error_message)
+        return
 
     # my intention is to fetch the emoji list only
-    schedule_message, emoji_dict = await read_schedule(schedule_channel_id)
+    try:
+        schedule_message, emoji_dict = await read_schedule(schedule_channel_id)
+    except:
+        error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
+        await message_to_check.channel.send(error.error_message)
+        return
+
+    if not schedule_message or not emoji_dict:
+        await message_to_check.channel.send(error.error_message)
+        return
 
     # Show ryuh-bot is typing...
     # 2 approaches:
@@ -176,7 +196,13 @@ async def delete(ctx, arg):
     """
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
-    message_to_delete = await channel.fetch_message(arg)
+    try:
+        message_to_delete = await channel.fetch_message(arg)
+    except:
+        error.error_message = 'Fetch last message failed, did you delete it?'
+        await ctx.channel.send(error.error_message)
+        return
+    
     if(message_to_delete.author == client.user):
         await message_to_delete.delete()
     else:
@@ -204,7 +230,13 @@ async def read_user(channel_id):
     # fetch channel & message
     channel = client.get_channel(channel_id)
     last_message_id = channel.last_message_id
-    message_fetched = await channel.fetch_message(last_message_id)
+    # For this, have to use try, except, it will crash the system
+    try:
+        message_fetched = await channel.fetch_message(last_message_id)
+    except:
+        error.error_message = 'User list last message fetch failed. Try resend the messae again'
+        return None
+    
     content = message_fetched.content
 
     # split into individual row
@@ -212,6 +244,11 @@ async def read_user(channel_id):
 
     # split message
     for row in rows:
+        if not '/' in row:
+            error.error_message = 'Invalid user list, does not contain "/"'
+            return None
+
+        row = row.strip()
         user_list.append(row.split('/'))
 
     # remove leading n traling whitespaces
@@ -241,12 +278,37 @@ async def read_schedule(channel_id):
     # fetch channel & message
     channel = client.get_channel(channel_id)
     last_message_id = channel.last_message_id
-    message_fetched = await channel.fetch_message(last_message_id)
+    try:
+        message_fetched = await channel.fetch_message(last_message_id)
+    except:
+        error.error_message = 'Fetch schedule last message failed. Try resend the schedule again.'
+        return None, None
     content = message_fetched.content
     rows = content.split('\n')
     emoji_dict = dict()
     days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@',}
     day = ''
+    proceed = False
+
+    # check for invalid emoji (contains '\u')
+    # Note: `if '\\u'` will not detect `\u` in the read string
+    # `if '\u` will have compile error
+    # if you type '\u' in the discord and let it read
+    # it will become '\\u' in the read string
+    # .encode will not convert '\\u' into '\x'
+    # .encode will convert '\u' into '\x'
+    # but cant determine which '\x' is exactly the '\u'
+    # i guess the best is see if there's 4 '\x' if more than 4, means this emoji contains '\u'
+
+    # check for invalid schedule template
+    for symbol in days_set:
+        if str(symbol) in content:
+            proceed = True
+            break
+    
+    if not proceed:
+        error.error_message = 'Template does not contain "@DAY@" symbol'
+        return None, None
 
     # fetch emoji
     for row in rows:
@@ -271,10 +333,62 @@ async def read_schedule(channel_id):
         # this i will impose a minor fix, if key present, put msg "conflict emoji or smthg"
         # nvm, my quick fix is crash the bot
         # so when printing schedule n bot crashed, good, is a sign
-        if not row[0].isalnum():
-            if emoji_dict.get(row[0]):
-                # this will crash the bot
-                emoji_dict[row[0]+"(1)"] = day
+        
+        # check for emojies
+        # only check the 1st char is emoji or not
+        
+        # for discord, there are 2 types of emojis:
+        # 1. default
+        # - these emojis if you type `\:smile:` it will output another emoji instead of the emoji ID
+        # - these emojis can be detected using 
+        # 2. custom emojis
+        # - these emojis if you type `\:emoji:` it will output `<emoji_name:emoji_id>`
+        # 3. default emoji with skin
+        # - :polar_bear: will become `🐻\u200d❄️`
+        # - for these type of emoji, u better return fail
+        # - note: after encode('utf-8'), \u all these will be converted into '\x' as well
+
+        # when you read text, and the text contains emoji, it will read the `output` version
+
+        # technique to check for emojies
+        # - text.encode('utf-8')
+        # - only emojies will be converted into '\x' string
+
+        # Condition:
+        # Only check the 1st char is emoji or not
+        # There might be the msg title contain emojis, those are not counted
+        
+        for row in rows:
+            if len(row) <= 0:
+                continue
+
+            # remove leading & trailing whitespaces
+            row = row.strip()
+
+            # # check whether is custom emoji. Custom emoji = <:emoji_name:emoji_id>
+            # if row[0] == '<':
+            #     substring = row.split('>')[0]
+            #     substring += '>' # split above will not include the '>' itself
+            #     emoji_dict[substring] = day
+            #     continue
+
+            # for the moment, reject custom emoji first, got problem
+            if row[0] == '<':
+                error.error_message = 'Schedule tempalte contains custom emoji. Dont use custom emoji, use discord emoji'
+                return None, None
+
+            encoded_first_character = row[0].encode('utf-8') # only check 1st char is emoji or not
+            encoded_first_character_string = str(encoded_first_character)
+            if '\\x' not in encoded_first_character_string:
+                continue
+            # if it is emoji, check whether it is valid emoji
+            # valid emoji = contain '\x' not more than 4
+            encoded = row.encode('utf-8')
+            encoded_string = str(encoded)
+            count = encoded_string.count('\\x')
+            if count > 4: # invalid emoji
+                error.error_message = 'Template contain invalid emoji'
+                return None, None
             emoji_dict[row[0]] = day
 
     # replace '@MONDAY@' symbol to actual date
