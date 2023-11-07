@@ -68,16 +68,8 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
     """
     to check votes
     """
-
-    # Fetch user & schedule data from discord chat
-    users_dict = await read_user(users_channel_id)
-    if not users_dict:
-        await message_to_check.channel.send(message)
-        return
-
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
-    users_dict_temp = users_dict.copy()
     message = ''
     bossing_day = ''
     next_msg = False # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
@@ -92,6 +84,14 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
         error.error_message = 'Fetch last message failed, did you delete my schedule message that I pinged you guys to vote?'
         await message_to_check.channel.send(error.error_message)
         return
+    
+    # Fetch user & schedule data from discord chat
+    users_dict = await read_user(users_channel_id)
+    if not users_dict:
+        await message_to_check.channel.send(error.error_message)
+        return
+    
+    users_dict_temp = users_dict.copy()
 
     # my intention is to fetch the emoji list only
     try:
@@ -244,12 +244,21 @@ async def read_user(channel_id):
 
     # split message
     for row in rows:
-        if not '/' in row:
+        count = row.count('/')
+        if count <= 0:
             error.error_message = 'Invalid user list, does not contain "/"'
             return None
+        elif count > 1:
+            error.error_message = 'Invalid user list, "/" contains more than 1'
+            return None
 
-        row = row.strip()
-        user_list.append(row.split('/'))
+        row = row.strip() # remove leading & traling whitespaces
+        split = row.split('/')
+        if not split[0] or not split[1]:
+            error.error_message = 'Invalid user list. Please use this format: [emoji]/[discord user ID]'
+            return None
+            
+        user_list.append(split)
 
     # remove leading n traling whitespaces
     for user in user_list:
