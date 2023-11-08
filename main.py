@@ -57,10 +57,14 @@ client = client.client
 
 @client.event
 async def on_ready():
+    # this prints current file path : current function : current line
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
     print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_message(message):
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     # Get channel name and ID
     # output: my discord general channel, the output will be 'general'
     channel_name = message.channel.name

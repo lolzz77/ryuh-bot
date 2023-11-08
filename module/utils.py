@@ -16,6 +16,8 @@ async def test(ctx):
     To trigger this command, run `!test`
     in discord chat channel that discord bot has access to
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     # get emoji id by running '\:name:'
     js_bossing_channel = 963160372385296414
     my_discord_general_channel = 803958155935219724
@@ -54,6 +56,8 @@ async def ver(ctx):
     """
     to get current version and send to discord chat
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
 
@@ -68,6 +72,8 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
     """
     to check votes
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
     message = ''
@@ -194,6 +200,8 @@ async def delete(ctx, arg):
     To delete bot's message
     If the message is not bot's, it wont delete
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
     try:
@@ -224,6 +232,8 @@ async def read_user(channel_id):
 
     function will split each row
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     user_dict = dict()
     user_list = list()
 
@@ -284,6 +294,8 @@ async def read_schedule(channel_id):
     2. emoji has to be discord default emoji
     3. emoji cannot be literally num/alphabet like `:one:` emoji
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     # fetch channel & message
     channel = client.get_channel(channel_id)
     last_message_id = channel.last_message_id
@@ -429,6 +441,8 @@ def write_file(message, msg_sent):
     """
     To write data into file
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
     msg_id = msg_sent.id 
 
@@ -450,6 +464,8 @@ def read_file(message):
     """
     To read data from a file
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
     f = open(file_path, "r")
     msg_id = f.read()
@@ -461,6 +477,8 @@ def tokenizer():
     Return list of emojis from the scheduler.time_list
     Not in used
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     token_list = []
     delimiter = "-"
     time_list = scheduler.time_list
@@ -479,6 +497,8 @@ def make_dict(input_list):
     make dictionary
     Not fisnihed, discontinued
     """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     my_dict = {}
     for item in input_list:
         my_dict[item] = "[Mon]\n" + str(item)
