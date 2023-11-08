@@ -400,6 +400,10 @@ async def read_schedule(channel_id):
                 return None, None
             emoji_dict[row[0]] = day
 
+    if not emoji_dict:
+        error.error_message = 'Schedule template has no emoji on the 1st character on any of the rows.'
+        return None, None
+
     # replace '@MONDAY@' symbol to actual date
     for day in days_set:
         if day == '@MONDAY@':
