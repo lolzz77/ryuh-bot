@@ -337,6 +337,9 @@ async def read_schedule(channel_id):
         if len(row) <= 0:
             continue
 
+        # remove leading & trailing whitespaces
+        row = row.strip()
+
         if any(x in row for x in days_set):
             day = row.split(' ')[0]
 
@@ -379,38 +382,31 @@ async def read_schedule(channel_id):
         # Only check the 1st char is emoji or not
         # There might be the msg title contain emojis, those are not counted
         
-        for row in rows:
-            if len(row) <= 0:
-                continue
+        # # check whether is custom emoji. Custom emoji = <:emoji_name:emoji_id>
+        # if row[0] == '<':
+        #     substring = row.split('>')[0]
+        #     substring += '>' # split above will not include the '>' itself
+        #     emoji_dict[substring] = day
+        #     continue
 
-            # remove leading & trailing whitespaces
-            row = row.strip()
+        # for the moment, reject custom emoji first, got problem
+        if row[0] == '<':
+            error.error_message = 'Schedule tempalte contains custom emoji. Dont use custom emoji, use discord emoji'
+            return None, None
 
-            # # check whether is custom emoji. Custom emoji = <:emoji_name:emoji_id>
-            # if row[0] == '<':
-            #     substring = row.split('>')[0]
-            #     substring += '>' # split above will not include the '>' itself
-            #     emoji_dict[substring] = day
-            #     continue
-
-            # for the moment, reject custom emoji first, got problem
-            if row[0] == '<':
-                error.error_message = 'Schedule tempalte contains custom emoji. Dont use custom emoji, use discord emoji'
-                return None, None
-
-            encoded_first_character = row[0].encode('utf-8') # only check 1st char is emoji or not
-            encoded_first_character_string = str(encoded_first_character)
-            if '\\x' not in encoded_first_character_string:
-                continue
-            # if it is emoji, check whether it is valid emoji
-            # valid emoji = contain '\x' not more than 4
-            encoded = row.encode('utf-8')
-            encoded_string = str(encoded)
-            count = encoded_string.count('\\x')
-            if count > 4: # invalid emoji
-                error.error_message = 'Template contain invalid emoji'
-                return None, None
-            emoji_dict[row[0]] = day
+        encoded_first_character = row[0].encode('utf-8') # only check 1st char is emoji or not
+        encoded_first_character_string = str(encoded_first_character)
+        if '\\x' not in encoded_first_character_string:
+            continue
+        # if it is emoji, check whether it is valid emoji
+        # valid emoji = contain '\x' not more than 4
+        encoded = row.encode('utf-8')
+        encoded_string = str(encoded)
+        count = encoded_string.count('\\x')
+        if count > 4: # invalid emoji
+            error.error_message = 'Template contain invalid emoji'
+            return None, None
+        emoji_dict[row[0]] = day
 
     if not emoji_dict:
         error.error_message = 'Schedule template has no emoji on the 1st character on any of the rows.'
