@@ -391,7 +391,7 @@ async def read_schedule(channel_id):
 
         # for the moment, reject custom emoji first, got problem
         if row[0] == '<':
-            error.error_message = 'Schedule tempalte contains custom emoji. Dont use custom emoji, use discord emoji'
+            error.error_message = 'Schedule tempalte contains custom emoji. Dont use custom emoji, use discord default emoji'
             return None, None
 
         encoded_first_character = row[0].encode('utf-8') # only check 1st char is emoji or not
@@ -399,17 +399,31 @@ async def read_schedule(channel_id):
         if '\\x' not in encoded_first_character_string:
             continue
         # if it is emoji, check whether it is valid emoji
-        # valid emoji = contain '\x' not more than 4
-        encoded = row.encode('utf-8')
-        encoded_string = str(encoded)
-        count = encoded_string.count('\\x')
-        if count > 4: # invalid emoji
-            error.error_message = 'Template contain invalid emoji'
+        # valid emoji = contain '\x' not more than 4 for row[0] & row[1]
+        # because :polar_bear: will be translted into :bear:\u200d:cold:
+        # thus, row[0] = :bear:
+        # row[1] maybe is '\u' i dk
+        # that is, if row[1] is also '\x', then this is invalid emoji
+        encoded_second_character = row[1].encode('utf-8') # only check 1st char is emoji or not
+        encoded_second_character_string = str(encoded_second_character)
+        if '\\x' in encoded_second_character_string:
+            error.error_message = 'Template contain invalid emoji.\n'
+            error.error_message += 'This row ' + row
             return None, None
+        
+        # next, before inserting into dictionary, check if got duplicates emoji
+        if row[0] in emoji_dict:
+            error.error_message = "There's duplicate emojis in the schedule template"
+            return None, None
+
         emoji_dict[row[0]] = day
 
     if not emoji_dict:
         error.error_message = 'Schedule template has no emoji on the 1st character on any of the rows.'
+        return None, None
+    
+    if len(emoji_dict) > 20:
+        error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'
         return None, None
 
     # replace '@MONDAY@' symbol to actual date
