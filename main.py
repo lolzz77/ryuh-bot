@@ -82,7 +82,7 @@ async def on_message(message):
         users_channel_id = testData.js_bossing_channel_user
         schedule_channel_id = testData.js_bossing_channel_schedule
 
-    if message.content.lower() == 'ryuh bot' or message.content.lower() == 'chagee':
+    if message.content.lower() == 'ryuh bot':
         mention = ''
         
         # Fetch required data from discord chat
@@ -126,7 +126,13 @@ async def on_message(message):
         # Send schedule message to channel
         msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
 
-    if message.content.lower() == 'ryuh check' or message.content.lower() == 'checkgee':
+    if message.content.lower() == 'chagee':
+        msg_sent = await message.channel.send("thanks")
+
+    if message.content.lower() == 'checkgee':
+        msg_sent = await message.channel.send("u mean chagee?")
+
+    if message.content.lower() == 'ryuh check':
         msg_id = utils.read_file(message)
 
         # if you want bot to execute bot command
