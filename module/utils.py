@@ -156,9 +156,17 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
             message += "\n"
 
             # found a concensus bossing date
-            if count == 6:
-                bossing_day = " ".join(emoji_dict[reaction_str])
-                bossing_day += "!\n"
+            # this means all users voted
+            if count == len(users_dict):
+                rows = schedule_message.split('\n')
+                for row in rows:
+                    # remove leading & trailing whitespaces
+                    row = row.strip()
+                    if row.startswith(str(reaction_str)):
+                        bossing_day += emoji_dict[reaction_str]
+                        bossing_day += ' -> '
+                        bossing_day += row
+                        bossing_day += "!\n"
 
         # if temp dict is empty
         if({} == users_dict_temp):
