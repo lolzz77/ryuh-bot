@@ -252,7 +252,7 @@ async def read_user(channel_id):
     try:
         message_fetched = await channel.fetch_message(last_message_id)
     except:
-        error.error_message = 'User list last message fetch failed. Try resend the messae again'
+        error.error_message = 'User list last message fetch failed. Try resend the message again'
         return None
     
     content = message_fetched.content
