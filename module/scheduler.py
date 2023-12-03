@@ -8,6 +8,9 @@
 
 from datetime import date, timedelta, datetime
 import pytz
+import os
+import inspect
+
 
 # Resets every monday
 # if you call it on monday, the schedule on monday will be next week's one
@@ -30,45 +33,78 @@ import pytz
 
 SCHEDULE_PATH = './schedule/'
 
-my_timezone = pytz.timezone('Asia/Singapore')
-now = datetime.now(my_timezone)
-today_weekday = now.weekday()
-# Get negative value, for calculation
-first_day_of_week_offset = -today_weekday
+my_timezone = None
+now = 0
+today_weekday = None
+first_day_of_week_offset = 0
+monday = ''
+tuesday = ''
+wednesday = ''
+thursday = ''
+friday = ''
+saturday = ''
+sunday = ''
 
-# days=first_day_of_week_offset+7 == next monday
-monday = now + timedelta(days=first_day_of_week_offset+7)
-monday = monday.strftime("%d/%b/%y")
-first_day_of_week_offset+=1
+async def init_date():
+    """
+    To initialite date variables
+    Also to re-set/refresh date variable to make sure the value are up-to-date when it was called
+    Just call it everytime you wanna use this date variable
+    """
+    
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+    
+    global my_timezone
+    global now
+    global today_weekday
+    global first_day_of_week_offset
+    global monday
+    global tuesday
+    global wednesday
+    global thursday
+    global friday
+    global saturday
+    global sunday
 
-# days=first_day_of_week_offset+7 == next tuesday
-tuesday = now + timedelta(days=first_day_of_week_offset+7)
-tuesday = tuesday.strftime("%d/%b/%y")
-first_day_of_week_offset+=1
+    my_timezone = pytz.timezone('Asia/Singapore')
+    now = datetime.now(my_timezone)
+    today_weekday = now.weekday()
+    # Get negative value, for calculation
+    first_day_of_week_offset = -today_weekday
 
-# days=first_day_of_week_offset+7 == next wednesday
-wednesday = now + timedelta(days=first_day_of_week_offset+7)
-wednesday = wednesday.strftime("%d/%b/%y")
-first_day_of_week_offset+=1
+    # days=first_day_of_week_offset+7 == next monday
+    monday = now + timedelta(days=first_day_of_week_offset+7)
+    monday = monday.strftime("%d/%b/%y")
+    first_day_of_week_offset+=1
 
-# days=first_day_of_week_offset == this week's thursday
-thursday = now + timedelta(days=first_day_of_week_offset)
-thursday = thursday.strftime("%d/%b/%y")
-first_day_of_week_offset+=1
+    # days=first_day_of_week_offset+7 == next tuesday
+    tuesday = now + timedelta(days=first_day_of_week_offset+7)
+    tuesday = tuesday.strftime("%d/%b/%y")
+    first_day_of_week_offset+=1
 
-# days=first_day_of_week_offset == this week's friday
-friday = now + timedelta(days=first_day_of_week_offset)
-friday = friday.strftime("%d/%b/%y")
-first_day_of_week_offset+=1
+    # days=first_day_of_week_offset+7 == next wednesday
+    wednesday = now + timedelta(days=first_day_of_week_offset+7)
+    wednesday = wednesday.strftime("%d/%b/%y")
+    first_day_of_week_offset+=1
 
-# days=first_day_of_week_offset == this week's saturday
-saturday = now + timedelta(days=first_day_of_week_offset)
-saturday = saturday.strftime("%d/%b/%y")
-first_day_of_week_offset+=1
+    # days=first_day_of_week_offset == this week's thursday
+    thursday = now + timedelta(days=first_day_of_week_offset)
+    thursday = thursday.strftime("%d/%b/%y")
+    first_day_of_week_offset+=1
 
-# days=first_day_of_week_offset == this week's sunday
-sunday = now + timedelta(days=first_day_of_week_offset)
-sunday = sunday.strftime("%d/%b/%y")
+    # days=first_day_of_week_offset == this week's friday
+    friday = now + timedelta(days=first_day_of_week_offset)
+    friday = friday.strftime("%d/%b/%y")
+    first_day_of_week_offset+=1
+
+    # days=first_day_of_week_offset == this week's saturday
+    saturday = now + timedelta(days=first_day_of_week_offset)
+    saturday = saturday.strftime("%d/%b/%y")
+    first_day_of_week_offset+=1
+
+    # days=first_day_of_week_offset == this week's sunday
+    sunday = now + timedelta(days=first_day_of_week_offset)
+    sunday = sunday.strftime("%d/%b/%y")
 
 # Emoji
 # From Jumping Sushi server

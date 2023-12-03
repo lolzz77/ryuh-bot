@@ -86,9 +86,10 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
     channel = client.get_channel(cur_ch_id)
     try:
         message_to_check = await channel.fetch_message(arg)
-    except:
+    except Exception as exception_error:
         error.error_message = 'Fetch last message failed, did you delete my schedule message that I pinged you guys to vote?'
         await message_to_check.channel.send(error.error_message)
+        await message_to_check.channel.send(exception_error)
         return
     
     # Fetch user & schedule data from discord chat
@@ -102,9 +103,10 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
     # my intention is to fetch the emoji list only
     try:
         schedule_message, emoji_dict = await read_schedule(schedule_channel_id)
-    except:
+    except Exception as exception_error:
         error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
         await message_to_check.channel.send(error.error_message)
+        await message_to_check.channel.send(exception_error)
         return
 
     if not schedule_message or not emoji_dict:
@@ -214,9 +216,10 @@ async def delete(ctx, arg):
     channel = client.get_channel(cur_ch_id)
     try:
         message_to_delete = await channel.fetch_message(arg)
-    except:
+    except Exception as exception_error:
         error.error_message = 'Fetch last message failed, did you delete it?'
         await ctx.channel.send(error.error_message)
+        await ctx.channel.send(exception_error)
         return
     
     if(message_to_delete.author == client.user):
@@ -251,7 +254,7 @@ async def read_user(channel_id):
     # For this, have to use try, except, it will crash the system
     try:
         message_fetched = await channel.fetch_message(last_message_id)
-    except:
+    except Exception as exception_error:
         error.error_message = 'User list last message fetch failed. Try resend the message again'
         return None
     
@@ -304,12 +307,15 @@ async def read_schedule(channel_id):
     """
     print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
 
+    # initialize date, serves as refreshing date as well
+    await scheduler.init_date()
+
     # fetch channel & message
     channel = client.get_channel(channel_id)
     last_message_id = channel.last_message_id
     try:
         message_fetched = await channel.fetch_message(last_message_id)
-    except:
+    except Exception as exception_error:
         error.error_message = 'Fetch schedule last message failed. Try resend the schedule again.'
         return None, None
     content = message_fetched.content

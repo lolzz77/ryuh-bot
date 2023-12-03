@@ -88,9 +88,10 @@ async def on_message(message):
         # Fetch required data from discord chat
         try:
             schedule_message, emoji_list = await utils.read_schedule(schedule_channel_id)
-        except:
+        except Exception as exception_error:
             error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
             await message.channel.send(error.error_message)
+            await message.channel.send(exception_error)
             return
 
         if not schedule_message or not emoji_list:
