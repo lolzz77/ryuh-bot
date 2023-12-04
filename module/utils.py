@@ -52,6 +52,36 @@ async def test(ctx):
     # await channel.send(file = image)
 
 @client.command()
+async def update(ctx, msg):
+    """
+    To update the last msg id in the file
+    Whenever 'ryuh bot' command is triggered
+    It will writ ethe last msg id into the file
+    If you call 'ryuh bot' again, the file will be updated again
+    If you mistaken it, then you can call this command '!update [msg id]' to update the file
+    """
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
+    # get IDs
+    channel_id = ctx.channel.id
+    last_message_id = msg
+
+    file_path = scheduler.SCHEDULE_PATH + str(channel_id) + '.txt'
+    
+    # Check if file exists
+    isExist = os.path.exists(file_path)
+
+    # If not, create it
+    if(False == isExist):
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    
+    f = open(file_path, "w")
+    f.write(str(last_message_id))
+    f.close()
+
+    await ctx.channel.send('updated')
+
+@client.command()
 async def ver(ctx):
     """
     to get current version and send to discord chat
