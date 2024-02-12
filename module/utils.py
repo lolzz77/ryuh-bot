@@ -295,20 +295,27 @@ async def read_user(channel_id):
 
     # split message
     for row in rows:
+        """
+        User list format:
+        <emoji>/<discord ID>/<friendly name>
+        The <friendly name> is not used, but is for user to know who is it
+        """
         count = row.count('/')
-        if count <= 0:
-            error.error_message = 'Invalid user list, does not contain "/"'
-            return None
-        elif count > 1:
-            error.error_message = 'Invalid user list, "/" contains more than 1'
+        if count != 2:
+            error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]'
             return None
 
         row = row.strip() # remove leading & traling whitespaces
         split = row.split('/')
-        if not split[0] or not split[1]:
-            error.error_message = 'Invalid user list. Please use this format: [emoji]/[discord user ID]'
+        if not split[0] or not split[1] or not split[2]:
+            error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]'
             return None
-            
+        
+        # In discord msg, if no nitro, we use <:emoji_name:emoji_id> format
+        # When it reads it out, it will become `\\<:emoji_name:emoji_id>`
+        # We have to remove the leading `\\`, else it wont print the emoji
+        if split[0][:1] == '\\':
+            split[0] = split[0][1:]
         user_list.append(split)
 
     # remove leading n traling whitespaces
