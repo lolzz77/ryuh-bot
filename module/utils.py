@@ -302,13 +302,13 @@ async def read_user(channel_id):
         """
         count = row.count('/')
         if count != 2:
-            error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]'
+            error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]. For [emoji], either use nitro or type like this "\<:name:id\>"'
             return None
 
         row = row.strip() # remove leading & traling whitespaces
         split = row.split('/')
         if not split[0] or not split[1] or not split[2]:
-            error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]'
+            error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]. For [emoji], either use nitro or type like this "\<:name:id\>"'
             return None
         
         # In discord msg, if no nitro, we use <:emoji_name:emoji_id> format
