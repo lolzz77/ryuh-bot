@@ -98,7 +98,7 @@ async def ver(ctx):
 
 # https://discordpy.readthedocs.io/en/stable/ext/commands/commands.html
 @client.command()
-async def check(ctx, arg, users_channel_id, schedule_channel_id):
+async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     """
     to check votes
     """
@@ -115,9 +115,9 @@ async def check(ctx, arg, users_channel_id, schedule_channel_id):
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
     try:
-        message_to_check = await channel.fetch_message(arg)
+        message_to_check = await channel.fetch_message(msg_id)
     except Exception as exception_error:
-        error.error_message = 'Fetch last message failed, did you delete my schedule message that I pinged you guys to vote?'
+        error.error_message = 'Fetch last message failed, did you delete my schedule message that I pinged you guys to vote? Run `!update <msg_id> without `<>` to update.'
         await message_to_check.channel.send(error.error_message)
         await message_to_check.channel.send(exception_error)
         return
