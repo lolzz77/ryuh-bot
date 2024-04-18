@@ -10,6 +10,7 @@ from datetime import date, timedelta, datetime
 import pytz
 import os
 import inspect
+from module import config
 
 
 # Resets every monday
@@ -51,8 +52,8 @@ async def init_date():
     Also to re-set/refresh date variable to make sure the value are up-to-date when it was called
     Just call it everytime you wanna use this date variable
     """
-    
-    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+    if config.DEBUG_PRINT_FUNCTION_ENTRY:
+        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
     
     global my_timezone
     global now

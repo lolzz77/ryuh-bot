@@ -5,6 +5,7 @@ from discord.ext import commands
 from module import testData
 from module import error
 import inspect
+from module import config
 
 # To import python from other directory, you can do in 2 ways:
 # way 1:
@@ -58,12 +59,14 @@ client = client.client
 @client.event
 async def on_ready():
     # this prints current file path : current function : current line
-    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+    if config.DEBUG_PRINT_FUNCTION_ENTRY:
+        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
     print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_message(message):
-    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+    if config.DEBUG_PRINT_FUNCTION_ENTRY:
+        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
 
     # Get channel name and ID
     # output: my discord general channel, the output will be 'general'
