@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Ryuh Bot",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
@@ -14,7 +14,7 @@
         },
         {
             "name":"Python: Current File",
-            "type":"python",
+            "type":"debugpy",
             "request":"launch",
             "program":"${file}",
             "console":"integratedTerminal",

@@ -358,9 +358,10 @@ async def read_schedule(channel_id):
     content = message_fetched.content
     rows = content.split('\n')
     emoji_dict = dict()
-    days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@',}
+    days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@','all cannot'}
     day = ''
     proceed = False
+    all_cannot_one_is_set = False
 
     # check for invalid emoji (contains '\u')
     # Note: `if '\\u'` will not detect `\u` in the read string
@@ -391,8 +392,28 @@ async def read_schedule(channel_id):
         # remove leading & trailing whitespaces
         row = row.strip()
 
-        if any(x in row for x in days_set):
-            day = row.split(' ')[0]
+        # get the day from the message
+        # eg: Monday - @MONDAY@
+        # will get 'Monday'
+        # use .lower() to make them case insensitive
+        if any(x.lower() in row.lower() for x in days_set):
+            if "all cannot" in row.lower() \
+                and all_cannot_one_is_set==False:
+                day = row
+                all_cannot_one_is_set = True
+                
+            # this was to handle
+            # in schedule, i put
+            
+            # All cannot
+            # [emoji] - all cannot
+
+            # both line also contain 'all cannot'
+            # causing the next line to be overwritten lol
+            elif all_cannot_one_is_set:
+                pass
+            else:
+                day = row.split(' ')[0]
 
         # only can use discord default emoji,
         
@@ -442,11 +463,21 @@ async def read_schedule(channel_id):
 
         # for the moment, reject custom emoji first, got problem
         if row[0] == '<':
-            error.error_message = 'Schedule tempalte contains custom emoji. Dont use custom emoji, use discord default emoji'
+            error.error_message = 'Schedule template contains custom emoji. Dont use custom emoji, use discord default emoji'
             return None, None
 
         encoded_first_character = row[0].encode('utf-8') # only check 1st char is emoji or not
         encoded_first_character_string = str(encoded_first_character)
+        # strip 1st 2 chars & last char
+        # eg: "b'A'" -> "A"
+        encoded_first_character_string = encoded_first_character_string[2:-1]
+
+        # These emoji, in discord is ':one:', but once decoded in python, will be come '1'
+        # Then next line will check if contain '\\x', if no, it will skip adding these emoji into dictionary
+        if encoded_first_character_string.isdigit():
+            error.error_message = 'Schedule template contains 1️⃣,2️⃣,3️⃣... emoji, for some reason, these emoji wont work for me'
+            return None, None
+
         if '\\x' not in encoded_first_character_string:
             continue
         # if it is emoji, check whether it is valid emoji
@@ -478,6 +509,7 @@ async def read_schedule(channel_id):
         return None, None
 
     # replace '@MONDAY@' symbol to actual date
+    # '**' is to bold them in discord
     for day in days_set:
         if day == '@MONDAY@':
             content = content.replace(day, "**" + scheduler.monday + "**")
