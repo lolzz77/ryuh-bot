@@ -2,6 +2,9 @@ import sys
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
+from module import testData
+from module import error
+import inspect
 
 # To import python from other directory, you can do in 2 ways:
 # way 1:
@@ -20,7 +23,6 @@ from discord.ext import commands
 # way 2:
 # from 'path to include' import 'file name'
 from module import scheduler
-from module import users
 from module import utils
 from module import client
 from module import version
@@ -55,10 +57,14 @@ client = client.client
 
 @client.event
 async def on_ready():
+    # this prints current file path : current function : current line
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
     print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_message(message):
+    print(str(os.path.dirname(os.path.abspath(__file__))) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
     # Get channel name and ID
     # output: my discord general channel, the output will be 'general'
     channel_name = message.channel.name
@@ -66,25 +72,66 @@ async def on_message(message):
     channel_id = message.channel.id
     # print(channel_name)
     # print(channel_id)
+    users_channel_id = 0
+    schedule_channel_id = 0
+
+    if message.guild.id == testData.my_discord:
+        users_channel_id = testData.my_discord_ryuh_bot_channel_user
+        schedule_channel_id = testData.my_discord_ryuh_bot_channel_schedule
+    elif message.guild.id == testData.js_discord:
+        users_channel_id = testData.js_bossing_channel_user
+        schedule_channel_id = testData.js_bossing_channel_schedule
 
     if message.content.lower() == 'ryuh bot':
-        # Send schedule message to channel
-        msg_sent = await message.channel.send(scheduler.schedule_message)
+        mention = ''
+        
+        # Fetch required data from discord chat
+        try:
+            schedule_message, emoji_list = await utils.read_schedule(schedule_channel_id)
+        except Exception as exception_error:
+            error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
+            await message.channel.send(error.error_message)
+            await message.channel.send(exception_error)
+            return
 
+        if not schedule_message or not emoji_list:
+            await message.channel.send(error.error_message)
+            return
+
+        users_dict = await utils.read_user(users_channel_id)
+        if not users_dict:
+            await message.channel.send(error.error_message)
+            return
+
+        # Send schedule message to channel
+        msg_sent = await message.channel.send(schedule_message)
+
+        # write the sent message ID into a file, to retrieve for 'checking' feature
         msg_id = utils.write_file(message, msg_sent)
 
+        # get the sent message ID
         msg_to_react = await message.channel.fetch_message(msg_id)
 
-        for e in scheduler.reaction_mapping:
+        # react on the message
+        for e in emoji_list:
             await msg_to_react.add_reaction(e)
 
-        # Mention by role, have to have '&' for role mentions
-        mention = '<@&' + str(users.party_role_id) + '>'
+        # ping those affected users
+        # If want mention by role, have to have '&' for role mentions
+        # eg: '<@&[role_id]>'
+        for user in users_dict:
+            mention += '<@' + str(user) + '> '
         await message.channel.send(mention)
 
     if message.content.lower() == 'ryuh weekday' or message.content.lower() == 'ryuh weekend':
         # Send schedule message to channel
         msg_sent = await message.channel.send("This command is deprecated. Please use 'ryuh bot' instead.")
+
+    if message.content.lower() == 'chagee':
+        msg_sent = await message.channel.send("thanks")
+
+    if message.content.lower() == 'checkgee':
+        msg_sent = await message.channel.send("u mean chagee?")
 
     if message.content.lower() == 'ryuh check':
         msg_id = utils.read_file(message)
@@ -101,7 +148,7 @@ async def on_message(message):
         # "message" -> has method .reply()
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
-        await utils.check(message, msg_id)
+        await utils.check(message, msg_id, users_channel_id, schedule_channel_id)
 
     # If message is sent by bot, do nothing
     if message.author == client.user:

@@ -1,13 +1,10 @@
 #!/bin/bash
 
 # make executable file
-pyinstaller --onefile main.py
-# cd into output folder
-cd dist/
+pyinstaller --name main.out --onefile main.py
 # write my current version into text.file
-echo $(git describe) >| VERSION.md
-cd ../
+echo $(git describe) >| dist/VERSION.md
 # move the executable file out to current directory
-mv dist/main .
+mv dist/main.out .
 # run it
-./main
+./main.out
