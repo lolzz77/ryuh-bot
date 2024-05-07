@@ -54,6 +54,32 @@ async def test(ctx):
     # await channel.send(file = image)
 
 @client.command()
+async def send(ctx):
+    """
+    To send message
+    Command: !send [channel id] [message]
+    Example: !send 839981719754244118 hello world hahaha 
+    Observed Result: The bot will send "hello world hahaha" to the channel ID specified.
+    """
+    if config.DEBUG_PRINT_FUNCTION_ENTRY:
+        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+
+
+
+    message_full_content = ctx.message.content
+    message_full_content = message_full_content.split(' ')
+    message_full_content.pop(0)
+    channel_id_to_send = int(message_full_content[0])
+    message_full_content.pop(0)
+    message_to_send = ' '.join(message_full_content)
+
+    channel = client.get_channel(channel_id_to_send)
+
+    await channel.send(message_to_send)
+
+
+
+@client.command()
 async def update(ctx, msg):
     """
     To update the last msg id in the file
