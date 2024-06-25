@@ -109,8 +109,11 @@ async def on_message(message):
         # Send schedule message to channel
         msg_sent = await message.channel.send(schedule_message)
 
+        # The path to save the sent schedule message to a file
+        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/schedule.txt'
+
         # write the sent message ID into a file, to retrieve for 'checking' feature
-        msg_id = utils.write_file(message, msg_sent)
+        msg_id = utils.write_file(msg_sent, file_path)
 
         # get the sent message ID
         msg_to_react = await message.channel.fetch_message(msg_id)
@@ -137,7 +140,8 @@ async def on_message(message):
         msg_sent = await message.channel.send("u mean chagee?")
 
     if message.content.lower() == 'ryuh check':
-        msg_id = utils.read_file(message)
+        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/schedule.txt'
+        msg_id = utils.read_file(file_path)
 
         # if you want bot to execute bot command
         # e.g.: bot to call "!check [msg_id]"
@@ -152,6 +156,14 @@ async def on_message(message):
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
         await utils.check(message, msg_id, users_channel_id, schedule_channel_id)
+
+    if str(client.user.id) in message.content:
+        file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/schedule_check_result.txt'
+        msg_id = utils.read_file(file_path)
+        message_to_write = '.'
+        channel = client.get_channel(message.channel.id)
+        message_to_reply = await channel.fetch_message(msg_id)
+        await message_to_reply.reply(message_to_write)
 
     # If message is sent by bot, do nothing
     if message.author == client.user:

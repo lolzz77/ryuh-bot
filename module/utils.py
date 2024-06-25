@@ -84,7 +84,7 @@ async def update(ctx, msg):
     """
     To update the last msg id in the file
     Whenever 'ryuh bot' command is triggered
-    It will writ ethe last msg id into the file
+    It will write the last msg id into the file
     If you call 'ryuh bot' again, the file will be updated again
     If you mistaken it, then you can call this command '!update [msg id]' to update the file
     """
@@ -95,7 +95,7 @@ async def update(ctx, msg):
     channel_id = ctx.channel.id
     last_message_id = msg
 
-    file_path = scheduler.SCHEDULE_PATH + str(channel_id) + '.txt'
+    file_path = scheduler.SCHEDULE_PATH + str(channel_id) + '/schedule.txt'
     
     # Check if file exists
     isExist = os.path.exists(file_path)
@@ -258,7 +258,9 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 message += '> '
             message += 'oi ' + scheduler.emoji_cat_angery
 
-    await message_to_check.reply(message)
+    msg_sent = await message_to_check.reply(message)
+    file_path = scheduler.SCHEDULE_PATH + str(message_to_check.channel.id) + '/schedule_check_result.txt'
+    msg_id = write_file(msg_sent, file_path)
     
     if(next_msg):
         message = '' 
@@ -564,7 +566,7 @@ async def read_schedule(channel_id):
 
     return schedule_message, emoji_dict
 
-def write_file(message, msg_sent):
+def write_file(msg_sent, file_path):
     """
     To write data into file
     """
@@ -574,8 +576,6 @@ def write_file(message, msg_sent):
     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
     msg_id = msg_sent.id 
 
-    file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
-    
     # Check if file exists
     isExist = os.path.exists(file_path)
 
@@ -588,14 +588,13 @@ def write_file(message, msg_sent):
     f.close()
     return msg_id
 
-def read_file(message):
+def read_file(file_path):
     """
     To read data from a file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
 
-    file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '.txt'
     f = open(file_path, "r")
     msg_id = f.read()
     f.close()
