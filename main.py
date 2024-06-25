@@ -157,6 +157,7 @@ async def on_message(message):
         # then you dont need to pass anything for 1st param, just pass None
         await utils.check(message, msg_id, users_channel_id, schedule_channel_id)
 
+    # If ping bot, get the last `ryuh check` message
     if str(client.user.id) in message.content:
         file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/schedule_check_result.txt'
         msg_id = utils.read_file(file_path)
