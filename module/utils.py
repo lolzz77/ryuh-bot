@@ -514,7 +514,7 @@ async def read_schedule(channel_id):
         # These emoji, in discord is ':one:', but once decoded in python, will be come '1'
         # Then next line will check if contain '\\x', if no, it will skip adding these emoji into dictionary
         if encoded_first_character_string.isdigit() and allow_digit_at_first_char == False:
-            error.error_message = 'Error: contain 1️⃣,2️⃣,3️⃣ in beginning sentence, I suspect the voting emoji there. Please change to other emoji.'
+            error.error_message = 'Error: contain 1️⃣,2️⃣,3️⃣ in beginning sentence, no sentence shall start with number after encounting the first "@DAY@" symbol.'
             return None, None
 
         # Check it after checking 1st char for each row is digit or not
