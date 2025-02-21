@@ -389,8 +389,9 @@ async def read_schedule(channel_id):
     try:
         message_fetched = await channel.fetch_message(last_message_id)
     except Exception as exception_error:
-        error.error_message = 'Fetch schedule last message failed. Try resend the schedule again.'
+        error.error_message = 'Fetch schedule last message failed. Suspect it was deleted, resend it.'
         return None, None
+
     content = message_fetched.content
     rows = content.split('\n')
     emoji_dict = dict()
@@ -398,6 +399,8 @@ async def read_schedule(channel_id):
     day = ''
     proceed = False
     all_cannot_one_is_set = False
+    # Flag to check that, before @DAY@, you can input numbers into the schedule
+    allow_digit_at_first_char = True
 
     # check for invalid emoji (contains '\u')
     # Note: `if '\\u'` will not detect `\u` in the read string
@@ -416,7 +419,7 @@ async def read_schedule(channel_id):
             break
     
     if not proceed:
-        error.error_message = 'Template does not contain "@DAY@" symbol'
+        error.error_message = 'Template does not contain "@DAY@" symbol. (Note: I only can fetch the last message in the channel)'
         return None, None
 
     # fetch emoji
@@ -510,10 +513,19 @@ async def read_schedule(channel_id):
 
         # These emoji, in discord is ':one:', but once decoded in python, will be come '1'
         # Then next line will check if contain '\\x', if no, it will skip adding these emoji into dictionary
-        if encoded_first_character_string.isdigit():
-            error.error_message = 'Schedule template contains 1️⃣,2️⃣,3️⃣... emoji, for some reason, these emoji wont work for me'
+        if encoded_first_character_string.isdigit() and allow_digit_at_first_char == False:
+            error.error_message = 'Error: contain 1️⃣,2️⃣,3️⃣ in beginning sentence, I suspect the voting emoji there. Please change to other emoji.'
             return None, None
 
+        # Check it after checking 1st char for each row is digit or not
+        # Cos who knows, they put digit in the same row as "@DAY@"
+        # For this case, shall let it pass
+        if allow_digit_at_first_char == True:
+            for symbol in days_set:
+                if str(symbol) in row:
+                    allow_digit_at_first_char = False
+                    break
+            
         if '\\x' not in encoded_first_character_string:
             continue
         # if it is emoji, check whether it is valid emoji
