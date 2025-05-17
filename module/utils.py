@@ -142,9 +142,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     # else anything u chg on _temp will affect on the ori dict also
     message = ''
     bossing_time = ''
-    bossing_day = ''
     next_msg = False # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
-    date_pattern = r"\b\d{1,2}/[A-Za-z]{3}/\d{2}\b"
 
     # Have to do this, else you get error channel has no attribute 'fetch_message'
     # get current channel id
@@ -178,21 +176,16 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     async with message_to_check.channel.typing(): 
         # Construct result message
         """
-        [GuanYinMaday]
-        🐱:
-        🐹:
-        🦁:
-        [Friday]
-        🐶:
-        🐻::ryuh:
-        🐯:
-        🐰:
-        🐼:
-        [All Cannot]
-        🙃::ryuh:
+        4️⃣:
+        5️⃣:
+        6️⃣:
+        7️⃣:
+        1️⃣:
+        2️⃣::ryuh:
+        3️⃣:
+        🙃:
         everyone voted
-        Friday -> 🐻 - 9pm
-        All Cannot -> 🙃  - all cannot
+        2️⃣ - Tuesday - 20/May/25
         """
         for line in content_split:
             if line.startswith("Emojis detected"):
@@ -201,23 +194,13 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 continue
             if line.startswith("\n"):
                 continue
-            if re.search(date_pattern, line):
-                # Get the first word in the line
-                # Eg: Friday - 12/May/25
-                # Then, get the "Friday" word
-                message += f"[{line.split()[0]}]\n"
-                bossing_day = f"{line.split()[0]}"
-                continue
+            if emoji.is_emoji(line.split()[0]):
+                message += f"{line.split()[0]}:"
             elif line.startswith('All cannot'):
                 message += "[All Cannot]\n"
-                bossing_day = "All Cannot"
                 continue
             
-            # Check if the 1st word in the line is emoji or not
-            if emoji.is_emoji(line.split()[0]) == False:
-                continue
             _emoji = emoji_v2.decode(line.split()[0])
-            message += f"{line.split()[0]}:"
             count = 0
             
             # check if this emoji exists in the reaction
@@ -256,7 +239,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             # found a concensus bossing date
             # this means all users voted
             if count == len(users_dict):
-                bossing_time += f"{bossing_day} -> {line}\n"
+                bossing_time += f"{line}\n"
 
         # Result: Whether everyone voted or someone didnt vote
         if({} == users_dict_temp):
