@@ -169,6 +169,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     
     users_dict_temp = users_dict.copy()
     reactions = message_to_check.reactions
+    emoji_found = False
 
     # Show ryuh-bot is typing...
     # 2 approaches:
@@ -207,7 +208,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 message += f"[{line.split()[0]}]\n"
                 bossing_day = f"{line.split()[0]}"
                 continue
-            if line.startswith('All cannot'):
+            elif line.startswith('All cannot'):
                 message += "[All Cannot]\n"
                 bossing_day = "All Cannot"
                 continue
@@ -222,9 +223,12 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             # check if this emoji exists in the reaction
             for r in reactions:
                 if _emoji == emoji_v2.decode(r.emoji):
+                    emoji_found = True
                     break
                 else:
                     continue
+            if emoji_found == False:
+                continue
             if len(reactions) == 0:
                 break
             # Get the 1st reaction
