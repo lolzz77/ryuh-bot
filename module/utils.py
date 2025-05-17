@@ -7,8 +7,9 @@ from module import testData
 from module import error
 from module import config
 import inspect
-import emojis
+import emojis as emoji_v2
 import emoji
+import re
 
 client = client.client
 
@@ -140,8 +141,10 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
     message = ''
+    bossing_time = ''
     bossing_day = ''
     next_msg = False # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
+    date_pattern = r"\b\d{1,2}/[A-Za-z]{3}/\d{2}\b"
 
     # Have to do this, else you get error channel has no attribute 'fetch_message'
     # get current channel id
@@ -155,6 +158,9 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         await message_to_check.channel.send(exception_error)
         return
     
+    content = message_to_check.content
+    content_split = content.split("\n")
+
     # Fetch user & schedule data from discord chat
     users_dict = await read_user(users_channel_id)
     if not users_dict:
@@ -162,44 +168,67 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         return
     
     users_dict_temp = users_dict.copy()
-
-    # my intention is to fetch the emoji list only
-    try:
-        schedule_message, emoji_dict = await read_schedule(schedule_channel_id)
-    except Exception as exception_error:
-        error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
-        await message_to_check.channel.send(error.error_message)
-        await message_to_check.channel.send(exception_error)
-        return
-
-    if not schedule_message or not emoji_dict:
-        await message_to_check.channel.send(error.error_message)
-        return
+    reactions = message_to_check.reactions
 
     # Show ryuh-bot is typing...
     # 2 approaches:
     # a. ctx.typing()
     # b. message.channel.typing() <- this works both for 'ryuh check' n '!check <msg ID>' cmd
     async with message_to_check.channel.typing(): 
-        # Check for each reaction
-        for reaction in message_to_check.reactions:
-            reaction_str = str(reaction)
-
-            # Construct 'day' string
-            """
-            [MONDAY]         <-------
-            [emoji] : [user]
-            """
-            if reaction_str in emoji_dict:
-                day = '[' + emoji_dict[reaction_str] + ']\n'
-                # there are multiple emoji on same day, just print the 'day' once
-                # e.i: Monday has 2 emojis, this will make sure print 'day' only once
-                if day not in message:
-                    message += day
-                message += reaction_str
-
-            message += " : "
+        # Construct result message
+        """
+        [GuanYinMaday]
+        🐱:
+        🐹:
+        🦁:
+        [Friday]
+        🐶:
+        🐻::ryuh:
+        🐯:
+        🐰:
+        🐼:
+        [All Cannot]
+        🙃::ryuh:
+        everyone voted
+        Friday -> 🐻 - 9pm
+        All Cannot -> 🙃  - all cannot
+        """
+        for line in content_split:
+            if line.startswith("Emojis detected"):
+                continue
+            if line is '':
+                continue
+            if line.startswith("\n"):
+                continue
+            if re.search(date_pattern, line):
+                # Get the first word in the line
+                # Eg: Friday - 12/May/25
+                # Then, get the "Friday" word
+                message += f"[{line.split()[0]}]\n"
+                bossing_day = f"{line.split()[0]}"
+                continue
+            if line.startswith('All cannot'):
+                message += "[All Cannot]\n"
+                bossing_day = "All Cannot"
+                continue
+            
+            # Check if the 1st word in the line is emoji or not
+            if emoji.is_emoji(line.split()[0]) == False:
+                continue
+            _emoji = emoji_v2.decode(line.split()[0])
+            message += f"{line.split()[0]}:"
             count = 0
+            
+            # check if this emoji exists in the reaction
+            for r in reactions:
+                if _emoji == emoji_v2.decode(r.emoji):
+                    break
+                else:
+                    continue
+            if len(reactions) == 0:
+                break
+            # Get the 1st reaction
+            reaction = reactions.pop(0)
 
             # Check reactions on the message
             async for user in reaction.users():
@@ -223,23 +252,15 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             # found a concensus bossing date
             # this means all users voted
             if count == len(users_dict):
-                rows = schedule_message.split('\n')
-                for row in rows:
-                    # remove leading & trailing whitespaces
-                    row = row.strip()
-                    if row.startswith(str(reaction_str)):
-                        bossing_day += emoji_dict[reaction_str]
-                        bossing_day += ' -> '
-                        bossing_day += row
-                        bossing_day += "!\n"
+                bossing_time += f"{bossing_day} -> {line}\n"
 
-        # if temp dict is empty
+        # Result: Whether everyone voted or someone didnt vote
         if({} == users_dict_temp):
             message += 'everyone voted'
             message += '\n'
 
             # check if vote has reached consensus
-            if not bossing_day:
+            if not bossing_time:
                 message += "there's no consensus on the bossing date"
                 message += '\n'
                 # ping everyone
@@ -251,7 +272,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 message += 'how?' 
                 next_msg = True
             else:
-                message += bossing_day
+                message += bossing_time
         else:
             # get discord user ID, append in message, ping them
             for dis_tag in users_dict_temp:
@@ -408,12 +429,12 @@ async def read_schedule(channel_id):
         error.error_message = 'Template does not contain "@DAY@" symbol.'
         return None, None
     # next, before inserting into dictionary, check if got duplicates emoji
-    emoji_list = list(emojis.iter(content))
+    emoji_list = list(emoji_v2.iter(content))
     if len(emoji_list) != len(set(emoji_list)):
         error.error_message = "There's duplicate emojis in the schedule template"
         return None, None
     
-    emoji_list_decoded = [emojis.decode(emoji) for emoji in emoji_list]
+    emoji_list_decoded = [emoji_v2.decode(emoji) for emoji in emoji_list]
     
     if len(emoji_list) > 20:
         error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'

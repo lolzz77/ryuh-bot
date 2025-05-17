@@ -6,7 +6,7 @@ from module import testData
 from module import error
 import inspect
 from module import config
-import emojis
+import emojis as emoji_v2
 
 # To import python from other directory, you can do in 2 ways:
 # way 1:
@@ -121,7 +121,7 @@ async def on_message(message):
 
         # react on the message
         for e in emoji_list_decoded:
-            await msg_to_react.add_reaction(emojis.encode(e))
+            await msg_to_react.add_reaction(emoji_v2.encode(e))
 
         # ping those affected users
         # If want mention by role, have to have '&' for role mentions
