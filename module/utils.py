@@ -7,6 +7,8 @@ from module import testData
 from module import error
 from module import config
 import inspect
+import emojis
+import emoji
 
 client = client.client
 
@@ -371,11 +373,11 @@ async def read_schedule(channel_id):
     """
     1. return schedule message with @MONDAY@ replaced with actual date
     2. return list of emoji found in the schedule message
-
-    emoji condition:
-    1. emoji has to be the 1st chracter in the row
-    2. emoji has to be discord default emoji
-    3. emoji cannot be literally num/alphabet like `:one:` emoji
+    3. Some emoji cant be detected
+    eg: 
+    1. :regional_indicator_m:
+    2. custom self made added moving emojis
+    
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
@@ -393,166 +395,27 @@ async def read_schedule(channel_id):
         return None, None
 
     content = message_fetched.content
-    rows = content.split('\n')
-    emoji_dict = dict()
     days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@','all cannot'}
     day = ''
-    proceed = False
-    all_cannot_one_is_set = False
-    # Flag to check that, before @DAY@, you can input numbers into the schedule
-    allow_digit_at_first_char = True
-
-    # check for invalid emoji (contains '\u')
-    # Note: `if '\\u'` will not detect `\u` in the read string
-    # `if '\u` will have compile error
-    # if you type '\u' in the discord and let it read
-    # it will become '\\u' in the read string
-    # .encode will not convert '\\u' into '\x'
-    # .encode will convert '\u' into '\x'
-    # but cant determine which '\x' is exactly the '\u'
-    # i guess the best is see if there's 4 '\x' if more than 4, means this emoji contains '\u'
+    schedule_template_contain_DAYS_symbol = False
 
     # check for invalid schedule template
     for symbol in days_set:
         if str(symbol) in content:
-            proceed = True
+            schedule_template_contain_DAYS_symbol = True
             break
-    
-    if not proceed:
-        error.error_message = 'Template does not contain "@DAY@" symbol. (Note: I only can fetch the last message in the channel)'
+    if not schedule_template_contain_DAYS_symbol:
+        error.error_message = 'Template does not contain "@DAY@" symbol.'
         return None, None
-
-    # fetch emoji
-    for row in rows:
-        # for row that contains only new line in it
-        if len(row) <= 0:
-            continue
-
-        # remove leading & trailing whitespaces
-        row = row.strip()
-
-        # get the day from the message
-        # eg: Monday - @MONDAY@
-        # will get 'Monday'
-        # use .lower() to make them case insensitive
-        if any(x.lower() in row.lower() for x in days_set):
-            if "all cannot" in row.lower() \
-                and all_cannot_one_is_set==False:
-                day = row
-                all_cannot_one_is_set = True
-                
-            # this was to handle
-            # in schedule, i put
-            
-            # All cannot
-            # [emoji] - all cannot
-
-            # both line also contain 'all cannot'
-            # causing the next line to be overwritten lol
-            elif all_cannot_one_is_set:
-                pass
-            else:
-                day = row.split(' ')[0]
-
-        # only can use discord default emoji,
-        
-        # but cannot use emoji that lietrally is number/alphabet
-        # like discord `:one:` emoji will show `1` and this code will treat as number rather than emoji
-        
-        # Then, if you use custom uploaded emoji, it will be transalted into `<emoji_name:emoji_ID>`
-        # then your row[0] will be '<'
-        
-        # Then, for ':bear:' and ':polar_bear:' emoji
-        # they will end up being the same 'bear' emoji
-        # cos for :polar_bear:, it will have :bear: + numbers behind
-        # this i will impose a minor fix, if key present, put msg "conflict emoji or smthg"
-        # nvm, my quick fix is crash the bot
-        # so when printing schedule n bot crashed, good, is a sign
-        
-        # check for emojies
-        # only check the 1st char is emoji or not
-        
-        # for discord, there are 2 types of emojis:
-        # 1. default
-        # - these emojis if you type `\:smile:` it will output another emoji instead of the emoji ID
-        # - these emojis can be detected using 
-        # 2. custom emojis
-        # - these emojis if you type `\:emoji:` it will output `<emoji_name:emoji_id>`
-        # 3. default emoji with skin
-        # - :polar_bear: will become `🐻\u200d❄️`
-        # - for these type of emoji, u better return fail
-        # - note: after encode('utf-8'), \u all these will be converted into '\x' as well
-
-        # when you read text, and the text contains emoji, it will read the `output` version
-
-        # technique to check for emojies
-        # - text.encode('utf-8')
-        # - only emojies will be converted into '\x' string
-
-        # Condition:
-        # Only check the 1st char is emoji or not
-        # There might be the msg title contain emojis, those are not counted
-        
-        # # check whether is custom emoji. Custom emoji = <:emoji_name:emoji_id>
-        # if row[0] == '<':
-        #     substring = row.split('>')[0]
-        #     substring += '>' # split above will not include the '>' itself
-        #     emoji_dict[substring] = day
-        #     continue
-
-        # for the moment, reject custom emoji first, got problem
-        if row[0] == '<':
-            error.error_message = 'Schedule template contains custom emoji. Dont use custom emoji, use discord default emoji'
-            return None, None
-
-        encoded_first_character = row[0].encode('utf-8') # only check 1st char is emoji or not
-        encoded_first_character_string = str(encoded_first_character)
-        # strip 1st 2 chars & last char
-        # eg: "b'A'" -> "A"
-        encoded_first_character_string = encoded_first_character_string[2:-1]
-
-        # These emoji, in discord is ':one:', but once decoded in python, will be come '1'
-        # Then next line will check if contain '\\x', if no, it will skip adding these emoji into dictionary
-        if encoded_first_character_string.isdigit() and allow_digit_at_first_char == False:
-            error.error_message = 'Error: contain 1️⃣,2️⃣,3️⃣ in beginning sentence, no sentence shall start with number after encounting the first @DAY@ symbol. Reason is I scare you put number as voting emoji, it doesnt work for me.'
-            return None, None
-
-        # Check it after checking 1st char for each row is digit or not
-        # Cos who knows, they put digit in the same row as "@DAY@"
-        # For this case, shall let it pass
-        if allow_digit_at_first_char == True:
-            for symbol in days_set:
-                if str(symbol) in row:
-                    allow_digit_at_first_char = False
-                    break
-            
-        if '\\x' not in encoded_first_character_string:
-            continue
-        # if it is emoji, check whether it is valid emoji
-        # valid emoji = contain '\x' not more than 4 for row[0] & row[1]
-        # because :polar_bear: will be translted into :bear:\u200d:cold:
-        # thus, row[0] = :bear:
-        # row[1] maybe is '\u' i dk
-        # that is, if row[1] is also '\x', then this is invalid emoji
-        encoded_second_character = row[1].encode('utf-8') # only check 1st char is emoji or not
-        encoded_second_character_string = str(encoded_second_character)
-        if '\\x' in encoded_second_character_string:
-            error.error_message = 'Template contain invalid emoji.\n'
-            error.error_message += 'This row ' + row
-            return None, None
-        
-        # next, before inserting into dictionary, check if got duplicates emoji
-        if row[0] in emoji_dict:
-            error.error_message = "There's duplicate emojis in the schedule template"
-            return None, None
-
-        emoji_dict[row[0]] = day
-
-    if not emoji_dict:
-        error.error_message = 'Schedule template has no emoji on the 1st character on any of the rows.'
+    # next, before inserting into dictionary, check if got duplicates emoji
+    emoji_list = list(emojis.iter(content))
+    if len(emoji_list) != len(set(emoji_list)):
+        error.error_message = "There's duplicate emojis in the schedule template"
         return None, None
     
-    if len(emoji_dict) > 20:
+    emoji_list_decoded = [emojis.decode(emoji) for emoji in emoji_list]
+    
+    if len(emoji_list) > 20:
         error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'
         return None, None
 
@@ -574,9 +437,10 @@ async def read_schedule(channel_id):
         elif day == '@SUNDAY@':
             content = content.replace(day, "**" + scheduler.sunday + "**")
 
-    schedule_message = content
+    schedule_message = f"Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    schedule_message = schedule_message + content
 
-    return schedule_message, emoji_dict
+    return schedule_message, emoji_list_decoded
 
 def write_file(msg_sent, file_path):
     """

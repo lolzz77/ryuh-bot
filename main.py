@@ -6,6 +6,7 @@ from module import testData
 from module import error
 import inspect
 from module import config
+import emojis
 
 # To import python from other directory, you can do in 2 ways:
 # way 1:
@@ -90,14 +91,14 @@ async def on_message(message):
         
         # Fetch required data from discord chat
         try:
-            schedule_message, emoji_list = await utils.read_schedule(schedule_channel_id)
+            schedule_message, emoji_list_decoded = await utils.read_schedule(schedule_channel_id)
         except Exception as exception_error:
             error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
             await message.channel.send(error.error_message)
             await message.channel.send(exception_error)
             return
 
-        if not schedule_message or not emoji_list:
+        if not schedule_message or not emoji_list_decoded:
             await message.channel.send(error.error_message)
             return
 
@@ -119,8 +120,8 @@ async def on_message(message):
         msg_to_react = await message.channel.fetch_message(msg_id)
 
         # react on the message
-        for e in emoji_list:
-            await msg_to_react.add_reaction(e)
+        for e in emoji_list_decoded:
+            await msg_to_react.add_reaction(emojis.encode(e))
 
         # ping those affected users
         # If want mention by role, have to have '&' for role mentions
