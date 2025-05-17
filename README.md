@@ -144,3 +144,24 @@ rmb, your vs code currently is opening file from your local computer
 whereas ur docker, is opening another file within that docker
 
 2 different folders/repo you're editting
+
+# Branch
+1. `main` branch is for original template
+```
+DAY1 - @DAY1@
+emoji1 - 8pm
+emoji2 - 9pm
+DAY2 - @DAY2@
+emoji1 - 8pm
+emoji2 - 9pm
+etc
+```
+
+2. `main_2` branch is for simpler template
+This is decided after we realize we dont need that complex template
+We just want pick day, dont care time
+```
+DAY1 - @DAY1@
+DAY2 - @DAY2@
+```
+Then bot just react emoji 1,2,3,4...
