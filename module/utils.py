@@ -462,7 +462,7 @@ async def read_schedule(channel_id):
         elif day == '@SUNDAY@':
             content = content.replace(day, "**" + scheduler.sunday + "**")
 
-    schedule_message = f"Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
     schedule_message = schedule_message + content
 
     return schedule_message, emoji_list_decoded
