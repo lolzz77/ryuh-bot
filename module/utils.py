@@ -10,6 +10,8 @@ import inspect
 import emojis as emoji_v2
 import emoji
 import re
+from datetime import datetime
+
 
 client = client.client
 
@@ -466,7 +468,18 @@ async def read_schedule(channel_id):
         elif day == '@SUNDAY@':
             content = content.replace(day, "**" + scheduler.sunday + "**")
 
+    # Check if there's date is 1st date of month, to print "Black Mage"
+    date_pattern = r"\d{1,2}/[A-Za-z]{3}/\d{2}"
+    black_mage_message = ''
+    matches = re.findall(date_pattern, content)
+    for match in matches:
+        date_obj = datetime.strptime(match, "%d/%b/%y")
+        if date_obj.day == 1:
+            black_mage_message = "I think new month liao, Black mage?\n\n"
+            break
+
     schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    schedule_message = schedule_message + black_mage_message
     schedule_message = schedule_message + content
 
     return schedule_message, emoji_list_decoded
