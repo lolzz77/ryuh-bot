@@ -197,7 +197,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         for line in content_split:
             if line.startswith("Emojis detected"):
                 continue
-            if line is '':
+            if line == '':
                 continue
             if line.startswith("\n"):
                 continue
@@ -398,6 +398,7 @@ async def read_schedule(channel_id):
     """
     1. return schedule message with @MONDAY@ replaced with actual date
     2. return list of emoji found in the schedule message
+    3. Emoji that use for voting, must be the 1st char of the row
     3. Some emoji cant be detected
     eg: 
     1. :regional_indicator_m:
@@ -420,6 +421,7 @@ async def read_schedule(channel_id):
         return None, None
 
     content = message_fetched.content
+    content_split = content.split("\n")
     days_set = {'@MONDAY@','@TUESDAY@','@WEDNESDAY@','@THURSDAY@','@FRIDAY@','@SATURDAY@','@SUNDAY@','all cannot'}
     day = ''
     schedule_template_contain_DAYS_symbol = False
@@ -432,15 +434,17 @@ async def read_schedule(channel_id):
     if not schedule_template_contain_DAYS_symbol:
         error.error_message = 'Template does not contain "@DAY@" symbol.'
         return None, None
-    # next, before inserting into dictionary, check if got duplicates emoji
-    emoji_list = list(emoji_v2.iter(content))
-    if len(emoji_list) != len(set(emoji_list)):
-        error.error_message = "There's duplicate emojis in the schedule template"
-        return None, None
+    emoji_list_decoded = []
+    # Get all emojis
+    for line in content_split:
+        if line == '':
+            continue
+        if line.startswith("\n"):
+            continue
+        if emoji.is_emoji(line.split()[0]):
+            emoji_list_decoded.append(emoji_v2.decode(line.split()[0]))
     
-    emoji_list_decoded = [emoji_v2.decode(emoji) for emoji in emoji_list]
-    
-    if len(emoji_list) > 20:
+    if len(emoji_list_decoded) > 20:
         error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'
         return None, None
 
