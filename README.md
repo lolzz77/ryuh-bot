@@ -11,9 +11,11 @@
 - ```BOT_TOKEN="STRING"```
 2. Remember to setup 'post-commit' script for your git repo
 
+# Version
+1. Python - 3.10.12
 
 # Setup
-```apt-get install python3```
+```apt-get install python3.10```
 
 ```pip3 install pyinstaller```
 
