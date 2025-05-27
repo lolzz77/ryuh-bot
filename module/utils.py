@@ -474,8 +474,12 @@ async def read_schedule(channel_id):
     matches = re.findall(date_pattern, content)
     for match in matches:
         date_obj = datetime.strptime(match, "%d/%b/%y")
+        week_number = (date_obj.day - 1) // 7 + 1  # Calculate week within the month
         if date_obj.day == 1:
-            black_mage_message = "I think new month liao, Black mage?\n\n"
+            black_mage_message = "I smell new month, Black mage? I will remind again 2nd week.\n\n"
+            break
+        elif week_number == 2:
+            black_mage_message = "It's 2nd week. Have yall done black mage last run?\n\n"
             break
 
     schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
