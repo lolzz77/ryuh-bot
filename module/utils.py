@@ -1,4 +1,4 @@
-import os        
+import os
 import discord
 from module import scheduler
 from module import client
@@ -63,7 +63,7 @@ async def send(ctx):
     """
     To send message
     Command: !send [channel id] [message]
-    Example: !send 839981719754244118 hello world hahaha 
+    Example: !send 839981719754244118 hello world hahaha
     Observed Result: The bot will send "hello world hahaha" to the channel ID specified.
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
@@ -101,14 +101,14 @@ async def update(ctx, msg):
     last_message_id = msg
 
     file_path = scheduler.SCHEDULE_PATH + str(channel_id) + '/schedule.txt'
-    
+
     # Check if file exists
     isExist = os.path.exists(file_path)
 
     # If not, create it
     if(False == isExist):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    
+
     f = open(file_path, "w")
     f.write(str(last_message_id))
     f.close()
@@ -157,7 +157,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         await message_to_check.channel.send(error.error_message)
         await message_to_check.channel.send(exception_error)
         return
-    
+
     content = message_to_check.content
     content_split = content.split("\n")
 
@@ -166,7 +166,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     if not users_dict:
         await message_to_check.channel.send(error.error_message)
         return
-    
+
     users_dict_temp = users_dict.copy()
     reactions = message_to_check.reactions
     emoji_found = False
@@ -175,7 +175,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     # 2 approaches:
     # a. ctx.typing()
     # b. message.channel.typing() <- this works both for 'ryuh check' n '!check <msg ID>' cmd
-    async with message_to_check.channel.typing(): 
+    async with message_to_check.channel.typing():
         # Construct result message
         """
         4️⃣:
@@ -201,10 +201,10 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             elif line.startswith('All cannot'):
                 message += "[All Cannot]\n"
                 continue
-            
+
             _emoji = emoji_v2.decode(line.split()[0])
             count = 0
-            
+
             # check if this emoji exists in the reaction
             for r in reactions:
                 if _emoji == emoji_v2.decode(r.emoji):
@@ -258,7 +258,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 for user in users_dict:
                     message += '<@' + str(user) + '> '
                 message += '\n'
-                message += 'how?' 
+                message += 'how?'
                 next_msg = True
             else:
                 message += bossing_time
@@ -273,9 +273,9 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     msg_sent = await message_to_check.reply(message)
     file_path = scheduler.SCHEDULE_PATH + str(message_to_check.channel.id) + '/schedule_check_result.txt'
     msg_id = write_file(msg_sent, file_path)
-    
+
     if(next_msg):
-        message = '' 
+        message = ''
         message = scheduler.emoji_monkey_how_1 + scheduler.emoji_monkey_how_2
         await message_to_check.channel.send(message)
 
@@ -297,7 +297,7 @@ async def delete(ctx, arg):
         await ctx.channel.send(error.error_message)
         await ctx.channel.send(exception_error)
         return
-    
+
     if(message_to_delete.author == client.user):
         await message_to_delete.delete()
     else:
@@ -334,7 +334,7 @@ async def read_user(channel_id):
     except Exception as exception_error:
         error.error_message = 'User list last message fetch failed. Try resend the message again'
         return None
-    
+
     content = message_fetched.content
 
     # split into individual row
@@ -357,7 +357,7 @@ async def read_user(channel_id):
         if not split[0] or not split[1] or not split[2]:
             error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]. For [emoji], either use nitro or type like this \\\<:emoji_name:emoji_id\\\>'
             return None
-        
+
         # In discord msg, if no nitro, we use <:emoji_name:emoji_id> format
         # When it reads it out, it will become `\\<:emoji_name:emoji_id>`
         # We have to remove the leading `\\`, else it wont print the emoji
@@ -385,10 +385,10 @@ async def read_schedule(channel_id):
     2. return list of emoji found in the schedule message
     3. Emoji that use for voting, must be the 1st char of the row
     3. Some emoji cant be detected
-    eg: 
+    eg:
     1. :regional_indicator_m:
     2. custom self made added moving emojis
-    
+
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
@@ -428,7 +428,7 @@ async def read_schedule(channel_id):
             continue
         if emoji.is_emoji(line.split()[0]):
             emoji_list_decoded.append(emoji_v2.decode(line.split()[0]))
-    
+
     if len(emoji_list_decoded) > 20:
         error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'
         return None, None
@@ -457,12 +457,18 @@ async def read_schedule(channel_id):
     matches = re.findall(date_pattern, content)
     for match in matches:
         date_obj = datetime.strptime(match, "%d/%b/%y")
+        day_obj = date_obj.strftime('%A')
         week_number = (date_obj.day - 1) // 7 + 1  # Calculate week within the month
-        if date_obj.day == 1:
+
+        if day_obj != "Wednesday":
+            continue
+
+        if week_number == 1:
             black_mage_message = "I smell new month, Black mage? I will remind again 2nd week.\n\n"
             break
+
         elif week_number == 2:
-            black_mage_message = "It's 2nd week. Have yall done black mage last run?\n\n"
+            black_mage_message = "It's 2nd week. Have yall done black mage last run? This is the last reminder for the month.\n\n"
             break
 
     schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
@@ -479,7 +485,7 @@ def write_file(msg_sent, file_path):
         print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
 
     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
-    msg_id = msg_sent.id 
+    msg_id = msg_sent.id
 
     # Check if file exists
     isExist = os.path.exists(file_path)
@@ -487,7 +493,7 @@ def write_file(msg_sent, file_path):
     # If not, create it
     if(False == isExist):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    
+
     f = open(file_path, "w")
     f.write(str(msg_id))
     f.close()
