@@ -471,7 +471,8 @@ async def read_schedule(channel_id):
             black_mage_message = "It's 2nd week. Have yall done black mage last run? This is the last reminder for the month.\n\n"
             break
 
-    schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    # plan to use `-debug` to print this msg, but later do, next time sin do
+    # schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
     schedule_message = schedule_message + black_mage_message
     schedule_message = schedule_message + content
 
