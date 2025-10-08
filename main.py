@@ -8,6 +8,8 @@ import inspect
 from module import config
 import emojis as emoji_v2
 
+THIS_FILENAME = os.path.basename(inspect.getfile(inspect.currentframe()))
+
 # To import python from other directory, you can do in 2 ways:
 # way 1:
 # import sys
@@ -30,7 +32,7 @@ from module import client
 from module import version
 
 version = version.version
-print("Version: " + version)
+print(f"Version: {version}")
 
 # https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1
 # load_dotenv() will look for '.env' file
@@ -40,7 +42,7 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 if not BOT_TOKEN:
-    print("BOT TOKEN is null")
+    print(f"BOT TOKEN is null")
     exit()
 
 # if you get error 
@@ -61,13 +63,13 @@ client = client.client
 async def on_ready():
     # this prints current file path : current function : current line
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
-    print(f'We have logged in as {client.user}')
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
+    print(f"We have logged in as {client.user}")
 
 @client.event
 async def on_message(message):
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # Get channel name and ID
     # output: my discord general channel, the output will be 'general'

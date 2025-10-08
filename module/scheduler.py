@@ -11,7 +11,9 @@ import pytz
 import os
 import inspect
 from module import config
+import os
 
+THIS_FILENAME = os.path.basename(inspect.getfile(inspect.currentframe()))
 
 # Resets every monday
 # if you call it on monday, the schedule on monday will be next week's one
@@ -53,7 +55,7 @@ async def init_date():
     Just call it everytime you wanna use this date variable
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
     
     global my_timezone
     global now

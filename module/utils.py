@@ -12,6 +12,7 @@ import emoji
 import re
 from datetime import datetime
 
+THIS_FILENAME = os.path.basename(inspect.getfile(inspect.currentframe()))
 
 client = client.client
 
@@ -23,7 +24,7 @@ async def test(ctx):
     in discord chat channel that discord bot has access to
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # get emoji id by running '\:name:'
     js_bossing_channel = 963160372385296414
@@ -67,8 +68,7 @@ async def send(ctx):
     Observed Result: The bot will send "hello world hahaha" to the channel ID specified.
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
-
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
 
     message_full_content = ctx.message.content
@@ -94,7 +94,7 @@ async def update(ctx, msg):
     If you mistaken it, then you can call this command '!update [msg id]' to update the file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # get IDs
     channel_id = ctx.channel.id
@@ -121,7 +121,7 @@ async def ver(ctx):
     to get current version and send to discord chat
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
@@ -138,7 +138,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     to check votes
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
@@ -286,7 +286,7 @@ async def delete(ctx, arg):
     If the message is not bot's, it wont delete
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
@@ -320,7 +320,7 @@ async def read_user(channel_id):
     function will split each row
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     user_dict = dict()
     user_list = list()
@@ -391,7 +391,7 @@ async def read_schedule(channel_id):
 
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # initialize date, serves as refreshing date as well
     await scheduler.init_date()
@@ -471,8 +471,11 @@ async def read_schedule(channel_id):
             black_mage_message = "It's 2nd week. Have yall done black mage last run? This is the last reminder for the month.\n\n"
             break
 
+    schedule_message = f""
+
     # plan to use `-debug` to print this msg, but later do, next time sin do
     # schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    
     schedule_message = schedule_message + black_mage_message
     schedule_message = schedule_message + content
 
@@ -483,7 +486,7 @@ def write_file(msg_sent, file_path):
     To write data into file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
     msg_id = msg_sent.id
@@ -505,7 +508,7 @@ def read_file(file_path):
     To read data from a file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     f = open(file_path, "r")
     msg_id = f.read()
@@ -518,7 +521,7 @@ def tokenizer():
     Not in used
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     token_list = []
     delimiter = "-"
@@ -539,7 +542,7 @@ def make_dict(input_list):
     Not fisnihed, discontinued
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     my_dict = {}
     for item in input_list:
