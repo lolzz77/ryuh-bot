@@ -99,12 +99,12 @@ async def reply(ctx):
     message_full_content.pop(0) # remove the 1st element, since i send cmd like this `!send [channel id] [message]`, remove the `!send`
     channel_id_to_send = int(message_full_content[0]) # Index 0 is the channel id, given that you input your cmd like this `!send [channel id] [message]
     message_full_content.pop(0) # remove [channel id]
-    message_to_send = ' '.join(message_full_content)
-
     channel = client.get_channel(channel_id_to_send)
 
     msg_to_reply_id = int(message_full_content[0]) # get `[msg id]
     message_full_content.pop(0) # remove [msg id]
+
+    message_to_send = ' '.join(message_full_content)
     msg_to_reply = await channel.fetch_message(msg_to_reply_id)
     
     await msg_to_reply.reply(message_to_send)
