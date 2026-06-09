@@ -73,16 +73,41 @@ async def send(ctx):
 
     message_full_content = ctx.message.content
     message_full_content = message_full_content.split(' ')
-    message_full_content.pop(0)
-    channel_id_to_send = int(message_full_content[0])
-    message_full_content.pop(0)
+    message_full_content.pop(0) # remove the 1st element, since i send cmd like this `!send [channel id] [message]`, remove the `!send`
+    channel_id_to_send = int(message_full_content[0]) # Index 0 is the channel id, given that you input your cmd like this `!send [channel id] [message]
+    message_full_content.pop(0) # remove [channel id]
     message_to_send = ' '.join(message_full_content)
 
     channel = client.get_channel(channel_id_to_send)
 
     await channel.send(message_to_send)
 
+@client.command()
+async def reply(ctx):
+    """
+    To reply message
+    Command: !reply [channel id] [message id] [message]
+    Example: !reply 839981719754244118 1382735224416505876 hello world hahaha
+    Observed Result: The bot will send "hello world hahaha" to the msg ID specified in a specified channel
+    """
+    if config.DEBUG_PRINT_FUNCTION_ENTRY:
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
+
+    message_full_content = ctx.message.content
+    message_full_content = message_full_content.split(' ')
+    message_full_content.pop(0) # remove the 1st element, since i send cmd like this `!send [channel id] [message]`, remove the `!send`
+    channel_id_to_send = int(message_full_content[0]) # Index 0 is the channel id, given that you input your cmd like this `!send [channel id] [message]
+    message_full_content.pop(0) # remove [channel id]
+    message_to_send = ' '.join(message_full_content)
+
+    channel = client.get_channel(channel_id_to_send)
+
+    msg_to_reply_id = int(message_full_content[0]) # get `[msg id]
+    message_full_content.pop(0) # remove [msg id]
+    msg_to_reply = await channel.fetch_message(msg_to_reply_id)
+    
+    await msg_to_reply.reply(message_to_send)
 
 @client.command()
 async def update(ctx, msg):
