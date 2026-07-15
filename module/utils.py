@@ -223,6 +223,15 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         everyone voted
         2️⃣ - Tuesday - 20/May/25
         """
+        # check the "🙃 All Cannot" emoji first
+        # Then i can deduct the total_user
+        for r in reactions:
+            if r.emoji == "🙃":
+                # Minus 1, cos the count will always start with 1, that is voted by peanut
+                # Peanut shall not be counted
+                total_users -= (r.count-1)
+                break
+
         for line in content_split:
             if line.startswith("Emojis detected"):
                 continue
@@ -270,11 +279,6 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 if(str(user.id) in users_dict):
                     message += users_dict[str(user.id)]
                     count += 1
-
-                    # if the user voted all cannot, then deduct this person from the total count
-                    if reaction.emoji == "🙃":
-                        count -= 1
-                        total_users -= 1
 
                 # if is bot itself, dont add the blank emoji
                 elif(user == client.user):
