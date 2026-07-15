@@ -1,4 +1,4 @@
-import os        
+import os
 import discord
 from module import scheduler
 from module import client
@@ -12,6 +12,7 @@ import emoji
 import re
 from datetime import datetime
 
+THIS_FILENAME = os.path.basename(inspect.getfile(inspect.currentframe()))
 
 client = client.client
 
@@ -23,7 +24,7 @@ async def test(ctx):
     in discord chat channel that discord bot has access to
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # get emoji id by running '\:name:'
     js_bossing_channel = 963160372385296414
@@ -63,26 +64,50 @@ async def send(ctx):
     """
     To send message
     Command: !send [channel id] [message]
-    Example: !send 839981719754244118 hello world hahaha 
+    Example: !send 839981719754244118 hello world hahaha
     Observed Result: The bot will send "hello world hahaha" to the channel ID specified.
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
-
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
 
     message_full_content = ctx.message.content
     message_full_content = message_full_content.split(' ')
-    message_full_content.pop(0)
-    channel_id_to_send = int(message_full_content[0])
-    message_full_content.pop(0)
+    message_full_content.pop(0) # remove the 1st element, since i send cmd like this `!send [channel id] [message]`, remove the `!send`
+    channel_id_to_send = int(message_full_content[0]) # Index 0 is the channel id, given that you input your cmd like this `!send [channel id] [message]
+    message_full_content.pop(0) # remove [channel id]
     message_to_send = ' '.join(message_full_content)
 
     channel = client.get_channel(channel_id_to_send)
 
     await channel.send(message_to_send)
 
+@client.command()
+async def reply(ctx):
+    """
+    To reply message
+    Command: !reply [channel id] [message id] [message]
+    Example: !reply 839981719754244118 1382735224416505876 hello world hahaha
+    Observed Result: The bot will send "hello world hahaha" to the msg ID specified in a specified channel
+    """
+    if config.DEBUG_PRINT_FUNCTION_ENTRY:
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
+
+    message_full_content = ctx.message.content
+    message_full_content = message_full_content.split(' ')
+    message_full_content.pop(0) # remove the 1st element, since i send cmd like this `!send [channel id] [message]`, remove the `!send`
+    channel_id_to_send = int(message_full_content[0]) # Index 0 is the channel id, given that you input your cmd like this `!send [channel id] [message]
+    message_full_content.pop(0) # remove [channel id]
+    channel = client.get_channel(channel_id_to_send)
+
+    msg_to_reply_id = int(message_full_content[0]) # get `[msg id]
+    message_full_content.pop(0) # remove [msg id]
+
+    message_to_send = ' '.join(message_full_content)
+    msg_to_reply = await channel.fetch_message(msg_to_reply_id)
+    
+    await msg_to_reply.reply(message_to_send)
 
 @client.command()
 async def update(ctx, msg):
@@ -94,21 +119,21 @@ async def update(ctx, msg):
     If you mistaken it, then you can call this command '!update [msg id]' to update the file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # get IDs
     channel_id = ctx.channel.id
     last_message_id = msg
 
     file_path = scheduler.SCHEDULE_PATH + str(channel_id) + '/schedule.txt'
-    
+
     # Check if file exists
     isExist = os.path.exists(file_path)
 
     # If not, create it
     if(False == isExist):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    
+
     f = open(file_path, "w")
     f.write(str(last_message_id))
     f.close()
@@ -121,7 +146,7 @@ async def ver(ctx):
     to get current version and send to discord chat
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
@@ -138,15 +163,13 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     to check votes
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # you have to use .copy()
     # else anything u chg on _temp will affect on the ori dict also
     message = ''
     bossing_time = ''
-    bossing_day = ''
     next_msg = False # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
-    date_pattern = r"\b\d{1,2}/[A-Za-z]{3}/\d{2}\b"
 
     # Have to do this, else you get error channel has no attribute 'fetch_message'
     # get current channel id
@@ -159,7 +182,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         await message_to_check.channel.send(error.error_message)
         await message_to_check.channel.send(exception_error)
         return
-    
+
     content = message_to_check.content
     content_split = content.split("\n")
 
@@ -168,7 +191,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     if not users_dict:
         await message_to_check.channel.send(error.error_message)
         return
-    
+
     users_dict_temp = users_dict.copy()
     reactions = message_to_check.reactions
     emoji_found = False
@@ -177,24 +200,19 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     # 2 approaches:
     # a. ctx.typing()
     # b. message.channel.typing() <- this works both for 'ryuh check' n '!check <msg ID>' cmd
-    async with message_to_check.channel.typing(): 
+    async with message_to_check.channel.typing():
         # Construct result message
         """
-        [GuanYinMaday]
-        🐱:
-        🐹:
-        🦁:
-        [Friday]
-        🐶:
-        🐻::ryuh:
-        🐯:
-        🐰:
-        🐼:
-        [All Cannot]
-        🙃::ryuh:
+        4️⃣:
+        5️⃣:
+        6️⃣:
+        7️⃣:
+        1️⃣:
+        2️⃣::ryuh:
+        3️⃣:
+        🙃:
         everyone voted
-        Friday -> 🐻 - 9pm
-        All Cannot -> 🙃  - all cannot
+        2️⃣ - Tuesday - 20/May/25
         """
         for line in content_split:
             if line.startswith("Emojis detected"):
@@ -203,25 +221,15 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 continue
             if line.startswith("\n"):
                 continue
-            if re.search(date_pattern, line):
-                # Get the first word in the line
-                # Eg: Friday - 12/May/25
-                # Then, get the "Friday" word
-                message += f"[{line.split()[0]}]\n"
-                bossing_day = f"{line.split()[0]}"
-                continue
+            if emoji.is_emoji(line.split()[0]):
+                message += f"{line.split()[0]}:"
             elif line.startswith('All cannot'):
                 message += "[All Cannot]\n"
-                bossing_day = "All Cannot"
                 continue
-            
-            # Check if the 1st word in the line is emoji or not
-            if emoji.is_emoji(line.split()[0]) == False:
-                continue
+
             _emoji = emoji_v2.decode(line.split()[0])
-            message += f"{line.split()[0]}:"
             count = 0
-            
+
             # check if this emoji exists in the reaction
             for r in reactions:
                 if _emoji == emoji_v2.decode(r.emoji):
@@ -258,7 +266,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             # found a concensus bossing date
             # this means all users voted
             if count == len(users_dict):
-                bossing_time += f"{bossing_day} -> {line}\n"
+                bossing_time += f"{line}\n"
 
         # Result: Whether everyone voted or someone didnt vote
         if({} == users_dict_temp):
@@ -275,7 +283,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 for user in users_dict:
                     message += '<@' + str(user) + '> '
                 message += '\n'
-                message += 'how?' 
+                message += 'how?'
                 next_msg = True
             else:
                 message += bossing_time
@@ -290,9 +298,9 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     msg_sent = await message_to_check.reply(message)
     file_path = scheduler.SCHEDULE_PATH + str(message_to_check.channel.id) + '/schedule_check_result.txt'
     msg_id = write_file(msg_sent, file_path)
-    
+
     if(next_msg):
-        message = '' 
+        message = ''
         message = scheduler.emoji_monkey_how_1 + scheduler.emoji_monkey_how_2
         await message_to_check.channel.send(message)
 
@@ -303,7 +311,7 @@ async def delete(ctx, arg):
     If the message is not bot's, it wont delete
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
@@ -314,7 +322,7 @@ async def delete(ctx, arg):
         await ctx.channel.send(error.error_message)
         await ctx.channel.send(exception_error)
         return
-    
+
     if(message_to_delete.author == client.user):
         await message_to_delete.delete()
     else:
@@ -337,7 +345,7 @@ async def read_user(channel_id):
     function will split each row
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     user_dict = dict()
     user_list = list()
@@ -351,7 +359,7 @@ async def read_user(channel_id):
     except Exception as exception_error:
         error.error_message = 'User list last message fetch failed. Try resend the message again'
         return None
-    
+
     content = message_fetched.content
 
     # split into individual row
@@ -374,7 +382,7 @@ async def read_user(channel_id):
         if not split[0] or not split[1] or not split[2]:
             error.error_message = 'Invalid user list. Format: [emoji]/[discord ID]/[friendly name]. For [emoji], either use nitro or type like this \\\<:emoji_name:emoji_id\\\>'
             return None
-        
+
         # In discord msg, if no nitro, we use <:emoji_name:emoji_id> format
         # When it reads it out, it will become `\\<:emoji_name:emoji_id>`
         # We have to remove the leading `\\`, else it wont print the emoji
@@ -402,13 +410,13 @@ async def read_schedule(channel_id):
     2. return list of emoji found in the schedule message
     3. Emoji that use for voting, must be the 1st char of the row
     3. Some emoji cant be detected
-    eg: 
+    eg:
     1. :regional_indicator_m:
     2. custom self made added moving emojis
-    
+
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # initialize date, serves as refreshing date as well
     await scheduler.init_date()
@@ -445,7 +453,7 @@ async def read_schedule(channel_id):
             continue
         if emoji.is_emoji(line.split()[0]):
             emoji_list_decoded.append(emoji_v2.decode(line.split()[0]))
-    
+
     if len(emoji_list_decoded) > 20:
         error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'
         return None, None
@@ -474,15 +482,25 @@ async def read_schedule(channel_id):
     matches = re.findall(date_pattern, content)
     for match in matches:
         date_obj = datetime.strptime(match, "%d/%b/%y")
+        day_obj = date_obj.strftime('%A')
         week_number = (date_obj.day - 1) // 7 + 1  # Calculate week within the month
-        if date_obj.day == 1:
+
+        if day_obj != "Wednesday":
+            continue
+
+        if week_number == 1:
             black_mage_message = "I smell new month, Black mage? I will remind again 2nd week.\n\n"
             break
+
         elif week_number == 2:
-            black_mage_message = "It's 2nd week. Have yall done black mage last run?\n\n"
+            black_mage_message = "It's 2nd week. Have yall done black mage last run? This is the last reminder for the month.\n\n"
             break
 
-    schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    schedule_message = f""
+
+    # plan to use `-debug` to print this msg, but later do, next time sin do
+    # schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
+    
     schedule_message = schedule_message + black_mage_message
     schedule_message = schedule_message + content
 
@@ -493,10 +511,10 @@ def write_file(msg_sent, file_path):
     To write data into file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
-    msg_id = msg_sent.id 
+    msg_id = msg_sent.id
 
     # Check if file exists
     isExist = os.path.exists(file_path)
@@ -504,7 +522,7 @@ def write_file(msg_sent, file_path):
     # If not, create it
     if(False == isExist):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    
+
     f = open(file_path, "w")
     f.write(str(msg_id))
     f.close()
@@ -515,7 +533,7 @@ def read_file(file_path):
     To read data from a file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     f = open(file_path, "r")
     msg_id = f.read()
@@ -528,7 +546,7 @@ def tokenizer():
     Not in used
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     token_list = []
     delimiter = "-"
@@ -549,7 +567,7 @@ def make_dict(input_list):
     Not fisnihed, discontinued
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
-        print(str(os.path.abspath(__file__)) + ':' + str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno))
+        print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
     my_dict = {}
     for item in input_list:
