@@ -106,7 +106,7 @@ async def reply(ctx):
 
     message_to_send = ' '.join(message_full_content)
     msg_to_reply = await channel.fetch_message(msg_to_reply_id)
-    
+
     await msg_to_reply.reply(message_to_send)
 
 @client.command()
@@ -195,6 +195,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     users_dict_temp = users_dict.copy()
     reactions = message_to_check.reactions
     emoji_found = False
+    total_users = len(users_dict)
 
     # Show ryuh-bot is typing...
     # 2 approaches:
@@ -227,6 +228,13 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 message += "[All Cannot]\n"
                 continue
 
+            # Get the message to check emoji
+            """
+            4️⃣ - Thursday - xxx
+            5️⃣:
+            ...
+            🙃:
+            """
             _emoji = emoji_v2.decode(line.split()[0])
             count = 0
 
@@ -237,11 +245,15 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                     break
                 else:
                     continue
+
             if emoji_found == False:
                 continue
             if len(reactions) == 0:
                 break
+
             # Get the 1st reaction
+            # After peanut wrote the schedule template,
+            # Peanut will react 4,5,6,7... reactions on the message for us to vote
             reaction = reactions.pop(0)
 
             # Check reactions on the message
@@ -250,6 +262,12 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 if(str(user.id) in users_dict):
                     message += users_dict[str(user.id)]
                     count += 1
+
+                    # if the user voted all cannot, then deduct this person from the total count
+                    if reaction.emoji == "🙃":
+                        count -= 1
+                        total_users -= 1
+
                 # if is bot itself, dont add the blank emoji
                 elif(user == client.user):
                     continue
@@ -259,13 +277,14 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 # you have to put str(), like str(user.id), else python will treat this if as true for all users
                 if str(user.id) not in users_dict_temp:
                     continue
+
                 users_dict_temp.pop(str(user.id))
 
             message += "\n"
 
             # found a concensus bossing date
             # this means all users voted
-            if count == len(users_dict):
+            if count == total_users:
                 bossing_time += f"{line}\n"
 
         # Result: Whether everyone voted or someone didnt vote
@@ -500,7 +519,7 @@ async def read_schedule(channel_id):
 
     # plan to use `-debug` to print this msg, but later do, next time sin do
     # schedule_message = f"-# Emojis detected: ({len(emoji_list_decoded)}) {' '.join(emoji_list_decoded)}\n\n"
-    
+
     schedule_message = schedule_message + black_mage_message
     schedule_message = schedule_message + content
 
