@@ -186,6 +186,14 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     content = message_to_check.content
     content_split = content.split("\n")
 
+    # Get the list of dates to print, for ease of conveniences when do ryuh check, immediately know the date
+    # in case some days forgot to ryuh bot and straight away ryuh check and not knowing the dates were old ones
+    date_pattern = r"\d{1,2}/[A-Za-z]{3}/\d{2}"
+    matches = re.findall(date_pattern, content)
+    start_date = matches[0]
+    end_date = matches[-1]
+    message += f"[{start_date} - {end_date}]\n\n"
+
     # Fetch user & schedule data from discord chat
     users_dict = await read_user(users_channel_id)
     if not users_dict:
@@ -315,7 +323,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             message += 'oi ' + scheduler.emoji_cat_angery
 
     msg_sent = await message_to_check.reply(message)
-    msg_id = msg_send.id
+    msg_id = msg_sent.id
     file_path = scheduler.SCHEDULE_PATH + str(message_to_check.channel.id) + '/schedule_check_result.txt'
     write_file(msg_id, file_path)
 
