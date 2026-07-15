@@ -93,7 +93,7 @@ async def on_message(message):
         
         # Fetch required data from discord chat
         try:
-            schedule_message, emoji_list_decoded = await utils.read_schedule(schedule_channel_id)
+            schedule_message, emoji_list_decoded = await utils.read_schedule(schedule_channel_id, message.channel.id)
         except Exception as exception_error:
             error.error_message = str(inspect.currentframe().f_code.co_name) + ':' + str(inspect.currentframe().f_lineno) + ':Error'
             await message.channel.send(error.error_message)
@@ -111,12 +111,13 @@ async def on_message(message):
 
         # Send schedule message to channel
         msg_sent = await message.channel.send(schedule_message)
+        msg_id =msg_sent.id
 
         # The path to save the sent schedule message to a file
         file_path = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/schedule.txt'
 
         # write the sent message ID into a file, to retrieve for 'checking' feature
-        msg_id = utils.write_file(msg_sent, file_path)
+        utils.write_file(msg_id, file_path)
 
         # get the sent message ID
         msg_to_react = await message.channel.fetch_message(msg_id)
@@ -159,6 +160,18 @@ async def on_message(message):
         # UPDATE 2: Since you want bot to reply to specific msg ID
         # then you dont need to pass anything for 1st param, just pass None
         await utils.check(message, msg_id, users_channel_id, schedule_channel_id)
+
+    if message.content.lower() == 'wingardium leviosa':
+        data_to_write = "1"
+        file_path_black_mage = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/black_mage.txt'
+        utils.write_file(data_to_write, file_path_black_mage)
+        await message.channel.send("Black Mage for the month marked done")
+
+    if message.content.lower() == 'expecto patronum':
+        data_to_write = "0"
+        file_path_black_mage = scheduler.SCHEDULE_PATH + str(message.channel.id) + '/black_mage.txt'
+        utils.write_file(data_to_write, file_path_black_mage)
+        await message.channel.send("Black Mage for the month marked NOT done")
 
     # If ping bot, get the last `ryuh check` message
     if str(client.user.id) in message.content:

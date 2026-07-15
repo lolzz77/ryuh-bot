@@ -315,8 +315,9 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             message += 'oi ' + scheduler.emoji_cat_angery
 
     msg_sent = await message_to_check.reply(message)
+    msg_id = msg_send.id
     file_path = scheduler.SCHEDULE_PATH + str(message_to_check.channel.id) + '/schedule_check_result.txt'
-    msg_id = write_file(msg_sent, file_path)
+    write_file(msg_id, file_path)
 
     if(next_msg):
         message = ''
@@ -423,8 +424,11 @@ async def read_user(channel_id):
 
     return user_dict
 
-async def read_schedule(channel_id):
+async def read_schedule(channel_id, message_typed_channel_id):
     """
+    message_typed_channel_id - When you type in discord, all these messages are passed to bot
+                            - so, this is the message.id passed to bot
+
     1. return schedule message with @MONDAY@ replaced with actual date
     2. return list of emoji found in the schedule message
     3. Emoji that use for voting, must be the 1st char of the row
@@ -496,6 +500,7 @@ async def read_schedule(channel_id):
             content = content.replace(day, "**" + scheduler.sunday + "**")
 
     # Check if there's date is 1st date of month, to print "Black Mage"
+    file_path_black_mage = scheduler.SCHEDULE_PATH + str(message_typed_channel_id) + '/black_mage.txt'
     date_pattern = r"\d{1,2}/[A-Za-z]{3}/\d{2}"
     black_mage_message = ''
     matches = re.findall(date_pattern, content)
@@ -508,12 +513,15 @@ async def read_schedule(channel_id):
             continue
 
         if week_number == 1:
-            black_mage_message = "I smell new month, Black mage? I will remind again 2nd week.\n\n"
+            black_mage_message = "I smelled new month.\n"
+            data_to_write = "0"
+            write_file(data_to_write, file_path_black_mage)
             break
 
-        elif week_number == 2:
-            black_mage_message = "It's 2nd week. Have yall done black mage last run? This is the last reminder for the month.\n\n"
-            break
+    # Check black mage done or not done
+    black_mage_done_or_not = read_file(file_path_black_mage)
+    if black_mage_done_or_not == "0":
+        black_mage_message += "Have you done Black Mage?\n\"wingardium leviosa\" to mark done.\n\"expecto patronum\" to mark NOT done.\n\n"
 
     schedule_message = f""
 
@@ -525,15 +533,12 @@ async def read_schedule(channel_id):
 
     return schedule_message, emoji_list_decoded
 
-def write_file(msg_sent, file_path):
+def write_file(data_to_write, file_path):
     """
     To write data into file
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
-
-    # Get the schedule msg ID sent by bot, to save in file, for 'ryuh check' command to retrieve
-    msg_id = msg_sent.id
 
     # Check if file exists
     isExist = os.path.exists(file_path)
@@ -543,9 +548,8 @@ def write_file(msg_sent, file_path):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     f = open(file_path, "w")
-    f.write(str(msg_id))
+    f.write(str(data_to_write))
     f.close()
-    return msg_id
 
 def read_file(file_path):
     """
