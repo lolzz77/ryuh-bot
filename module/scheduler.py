@@ -56,7 +56,7 @@ async def init_date():
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
-    
+
     global my_timezone
     global now
     global today_weekday
@@ -111,7 +111,7 @@ async def init_date():
 
 # Emoji
 # From Jumping Sushi server
-emoji_cat_angery = '<:cat_angery:814753563854503966>' 
+emoji_cat_angery = '<:cat_angery:814753563854503966>'
 # From my server
 emoji_monkey_how_1 = '<:how1:1138852944519897159>'
 emoji_monkey_how_2 = '<:how2:1138852939025354782>'

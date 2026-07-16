@@ -1,16 +1,18 @@
 import os
 import discord
-from module import scheduler
-from module import client
-from module import version as version_file
-from module import testData
-from module import error
-from module import config
 import inspect
 import emojis as emoji_v2
 import emoji
 import re
+import json
 from datetime import datetime
+
+from module import scheduler
+from module import client
+from module import version as version_file
+from module import error
+from module import config
+from module import globalpy
 
 THIS_FILENAME = os.path.basename(inspect.getfile(inspect.currentframe()))
 
@@ -125,18 +127,10 @@ async def update(ctx, msg):
     channel_id = ctx.channel.id
     last_message_id = msg
 
-    file_path = scheduler.SCHEDULE_PATH + str(channel_id) + '/schedule.txt'
-
-    # Check if file exists
-    isExist = os.path.exists(file_path)
-
-    # If not, create it
-    if(False == isExist):
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-    f = open(file_path, "w")
-    f.write(str(last_message_id))
-    f.close()
+    file_path = check_json_exists(channel_id)
+    json_data = read_file(file_path)
+    json_data["schedule"] = last_message_id
+    write_file(json_data, file_path)
 
     await ctx.channel.send('updated')
 
@@ -165,13 +159,11 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
-    # you have to use .copy()
-    # else anything u chg on _temp will affect on the ori dict also
     message = ''
     bossing_time = ''
-    next_msg = False # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
+    # to print next msg, intended for emoji use, bigger emoji will appear on new msg that doesn't contain text
+    next_msg = False
 
-    # Have to do this, else you get error channel has no attribute 'fetch_message'
     # get current channel id
     cur_ch_id = ctx.channel.id
     channel = client.get_channel(cur_ch_id)
@@ -192,29 +184,23 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     matches = re.findall(date_pattern, content)
     start_date = matches[0]
     end_date = matches[-1]
-    message += f"[{start_date} - {end_date}]\n\n"
+    message += f"[{start_date} - {end_date}]\n"
 
     # Fetch user & schedule data from discord chat
-    users_dict = await read_user(users_channel_id)
-    if not users_dict:
+    users_dict_full_original = await read_user(users_channel_id)
+    if not users_dict_full_original:
         await message_to_check.channel.send(error.error_message)
         return
 
-    # users_dict is original
-    # users_dict_temp is to check who didnt vote
-    # users_dict_temp_2 is to check who voted All Cannot
-    users_dict_temp = users_dict.copy()
-    users_dict_temp_2 = users_dict.copy()
+    users_dict_for_checking_who_didnt_vote = users_dict_full_original.copy()
+    users_dict_for_include_those_voted_all_cannot = users_dict_full_original.copy()
     reactions = message_to_check.reactions
     emoji_found = False
 
     # Show ryuh-bot is typing...
-    # 2 approaches:
-    # a. ctx.typing()
-    # b. message.channel.typing() <- this works both for 'ryuh check' n '!check <msg ID>' cmd
     async with message_to_check.channel.typing():
-        # Construct result message
         """
+        Construct result message like this
         4️⃣:
         5️⃣:
         6️⃣:
@@ -227,14 +213,16 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         2️⃣ - Tuesday - 20/May/25
         """
         # check the "🙃 All Cannot" emoji first
-        # Then i can remove the user
-        for r in reactions:
-            if r.emoji == "🙃":
-                async for user in r.users():
-                    if str(user.id) in users_dict_temp_2:
-                        del users_dict_temp_2[str(user.id)]
+        # Then i can remove the user from couting bossing date consensus
+        for reaction in reactions:
+            if reaction.emoji == "🙃":
+                async for user in reaction.users():
+                    if str(user.id) in users_dict_for_include_those_voted_all_cannot:
+                        del users_dict_for_include_those_voted_all_cannot[str(user.id)]
                 break
 
+        # Check the schedule template sent by bot,
+        # now, check the votes
         for line in content_split:
             if line.startswith("Emojis detected"):
                 continue
@@ -248,64 +236,56 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 message += "[All Cannot]\n"
                 continue
 
-            # Get the message to check emoji
-            """
-            4️⃣ - Thursday - xxx
-            5️⃣:
-            ...
-            🙃:
-            """
+            # Get the emoji from the schedule tempalte sent by bot
             _emoji = emoji_v2.decode(line.split()[0])
-            count = 0
 
-            # check if this emoji exists in the reaction
-            for r in reactions:
-                if _emoji == emoji_v2.decode(r.emoji):
+            # check if this emoji exists in the reactions reacted on the schedule template sent by bot
+            for reaction in reactions:
+                if _emoji == emoji_v2.decode(reaction.emoji):
                     emoji_found = True
                     break
                 else:
                     continue
-
+            # If not found, then cannot proceed to count the votes
             if emoji_found == False:
                 continue
             if len(reactions) == 0:
                 break
 
-            # Get the 1st reaction
-            # After peanut wrote the schedule template,
-            # Peanut will react 4,5,6,7... reactions on the message for us to vote
+            # Get the 1st reaction from the schedule tempalte sent by bot
             reaction = reactions.pop(0)
 
+            count = 0
             # Check reactions on the message
             async for user in reaction.users():
                 # If the user reacted to the message contains in the user dictionary
-                if(str(user.id) in users_dict):
-                    message += users_dict[str(user.id)]
+                # if is bot itself, dont add the blank emoji
+                if(user == client.user):
+                    continue
+
+                elif(str(user.id) in users_dict_full_original):
+                    message += users_dict_full_original[str(user.id)]
                     # if this is "All cannot" emoji, dont increase count
                     if reaction.emoji != "🙃":
                         count += 1
 
-                # if is bot itself, dont add the blank emoji
-                elif(user == client.user):
-                    continue
-                # reason to use user_dict_temp, because this will use 'pop' on it
+                # reason to use users_dict_for_checking_who_didnt_vote, because this will use 'pop' on it
                 # then the next loop, it will check the next reaction, then u cannot check on a popped dictionary
                 # this popped dictionary is used to keep track who didn't vote
                 # you have to put str(), like str(user.id), else python will treat this if as true for all users
-                if str(user.id) not in users_dict_temp:
+                if str(user.id) not in users_dict_for_checking_who_didnt_vote:
                     continue
-
-                users_dict_temp.pop(str(user.id))
+                users_dict_for_checking_who_didnt_vote.pop(str(user.id))
 
             message += "\n"
 
             # found a concensus bossing date
             # this means all users voted
-            if count == len(users_dict_temp_2):
+            if count == len(users_dict_for_include_those_voted_all_cannot):
                 bossing_time += f"{line}\n"
 
-        # Result: Whether everyone voted or someone didnt vote
-        if({} == users_dict_temp):
+        # This means everyone voted
+        if({} == users_dict_for_checking_who_didnt_vote):
             message += 'everyone voted'
             message += '\n'
 
@@ -316,7 +296,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 # ping everyone
                 # if you wan to ping role, '<@&[role_id]>'
                 # the differences is '&'
-                for user in users_dict_temp_2:
+                for user in users_dict_for_include_those_voted_all_cannot:
                     message += '<@' + str(user) + '> '
                 message += '\n'
                 message += 'how?'
@@ -324,8 +304,8 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
             else:
                 message += bossing_time
         else:
-            # get discord user ID, append in message, ping them
-            for dis_tag in users_dict_temp:
+            # this means someone didnt vote, ping them!
+            for dis_tag in users_dict_for_checking_who_didnt_vote:
                 message += '<@'
                 message += str(dis_tag)
                 message += '> '
@@ -333,8 +313,10 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
 
     msg_sent = await message_to_check.reply(message)
     msg_id = msg_sent.id
-    file_path = scheduler.SCHEDULE_PATH + str(message_to_check.channel.id) + '/schedule_check_result.txt'
-    write_file(msg_id, file_path)
+    file_path = check_json_exists(ctx.channel.id)
+    json_data = read_file(file_path)
+    json_data["schedule_check_result"] = msg_id
+    write_file(json_data, file_path)
 
     if(next_msg):
         message = ''
@@ -441,10 +423,11 @@ async def read_user(channel_id):
 
     return user_dict
 
-async def read_schedule(channel_id, message_typed_channel_id):
+async def read_schedule(schedule_template_channel_id, incoming_message_channel_id):
     """
-    message_typed_channel_id - When you type in discord, all these messages are passed to bot
-                            - so, this is the message.id passed to bot
+    schedule_template_channel_id - i will pass the channel id that has the schedule template in there
+    incoming_message_channel_id - When you type in discord, all these messages are passed to bot
+                            - so, this is the message channel id passed to bot
 
     1. return schedule message with @MONDAY@ replaced with actual date
     2. return list of emoji found in the schedule message
@@ -453,7 +436,6 @@ async def read_schedule(channel_id, message_typed_channel_id):
     eg:
     1. :regional_indicator_m:
     2. custom self made added moving emojis
-
     """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
@@ -461,8 +443,8 @@ async def read_schedule(channel_id, message_typed_channel_id):
     # initialize date, serves as refreshing date as well
     await scheduler.init_date()
 
-    # fetch channel & message
-    channel = client.get_channel(channel_id)
+    # fetch the schedule template from the channel specified, this channel id is hardcoded
+    channel = client.get_channel(schedule_template_channel_id)
     last_message_id = channel.last_message_id
     try:
         message_fetched = await channel.fetch_message(last_message_id)
@@ -484,8 +466,9 @@ async def read_schedule(channel_id, message_typed_channel_id):
     if not schedule_template_contain_DAYS_symbol:
         error.error_message = 'Template does not contain "@DAY@" symbol.'
         return None, None
+
+    # Get all emojis from the schedule template
     emoji_list_decoded = []
-    # Get all emojis
     for line in content_split:
         if line == '':
             continue
@@ -493,7 +476,6 @@ async def read_schedule(channel_id, message_typed_channel_id):
             continue
         if emoji.is_emoji(line.split()[0]):
             emoji_list_decoded.append(emoji_v2.decode(line.split()[0]))
-
     if len(emoji_list_decoded) > 20:
         error.error_message = 'Schedule template has more than 20 voting emojis. Discord only allow maximum 20 reactions.'
         return None, None
@@ -516,39 +498,29 @@ async def read_schedule(channel_id, message_typed_channel_id):
         elif day == '@SUNDAY@':
             content = content.replace(day, "**" + scheduler.sunday + "**")
 
-    # check if black_mage.txt exists
-    file_path_black_mage = scheduler.SCHEDULE_PATH + str(message_typed_channel_id) + '/black_mage.txt'
-    folder_name = os.path.dirname(file_path_black_mage)
-    isExist = os.path.exists(folder_name)
-    if(False == isExist):
-        os.makedirs(os.path.dirname(folder_name), exist_ok=True)
-    isExist = os.path.exists(file_path_black_mage)
-    if(False == isExist):
-        data_to_write = "0"
-        write_file(data_to_write, file_path_black_mage)
-
     # Check if there's date is 1st date of month, to print "Black Mage"
-    date_pattern = r"\d{1,2}/[A-Za-z]{3}/\d{2}"
-    black_mage_message = ''
-    matches = re.findall(date_pattern, content)
-    for match in matches:
-        date_obj = datetime.strptime(match, "%d/%b/%y")
-        day_obj = date_obj.strftime('%A')
-        week_number = (date_obj.day - 1) // 7 + 1  # Calculate week within the month
-
-        if day_obj != "Wednesday":
-            continue
-
-        if week_number == 1:
-            black_mage_message = "I smelled new month.\n"
-            data_to_write = "0"
-            write_file(data_to_write, file_path_black_mage)
-            break
+    # I already know that, Wednesday is always the last date in the schedule template
+    # Wednesday align with Maple bossing reset time
+    wednesday = scheduler.wednesday
+    date_obj = datetime.strptime(wednesday, "%d/%b/%y")
+    day_obj = date_obj.strftime('%A')
+    # Calculate week within the month
+    week_number = (date_obj.day - 1) // 7 + 1
+    month_name = date_obj.strftime("%B").upper()
+    black_mage_message = ""
+    if week_number == 1:
+        black_mage_message += f"I smelled new month {month_name}\n"
+        file_path = check_json_exists(incoming_message_channel_id)
+        json_data = read_file(file_path)
+        json_data["black_mage_done"] = "0"
+        json_data["black_mage_month"] = str(month_name)
+        write_file(json_data, file_path)
 
     # Check black mage done or not done
-    black_mage_done_or_not = read_file(file_path_black_mage)
-    if black_mage_done_or_not == "0":
-        black_mage_message += "Have you done Black Mage?\n\"wingardium leviosa\" to mark done.\n\"expecto patronum\" to mark NOT done.\n\n"
+    file_path = check_json_exists(incoming_message_channel_id)
+    json_data = read_file(file_path)
+    if json_data["black_mage_done"] == "0":
+        black_mage_message += f"Black Mage {json_data["black_mage_month"]} NOT DONE\n\"wingardium leviosa\" to mark done.\n\"expecto patronum\" to mark NOT done.\n\n"
 
     schedule_message = f""
 
@@ -560,35 +532,20 @@ async def read_schedule(channel_id, message_typed_channel_id):
 
     return schedule_message, emoji_list_decoded
 
-def write_file(data_to_write, file_path):
-    """
-    To write data into file
-    """
+def write_file(json_data, file_path):
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
-    # Check if file exists
-    isExist = os.path.exists(file_path)
-
-    # If not, create it
-    if(False == isExist):
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-    f = open(file_path, "w")
-    f.write(str(data_to_write))
-    f.close()
+    with open(file_path, "w") as f:
+        json.dump(json_data, f, indent=4)
 
 def read_file(file_path):
-    """
-    To read data from a file
-    """
     if config.DEBUG_PRINT_FUNCTION_ENTRY:
         print(f"{THIS_FILENAME}:{str(inspect.currentframe().f_code.co_name)}:{str(inspect.currentframe().f_lineno)}")
 
-    f = open(file_path, "r")
-    msg_id = f.read()
-    f.close()
-    return msg_id
+    with open(file_path, "r") as f:
+        json_data = json.load(f)
+    return json_data
 
 def tokenizer():
     """
@@ -622,3 +579,19 @@ def make_dict(input_list):
     my_dict = {}
     for item in input_list:
         my_dict[item] = "[Mon]\n" + str(item)
+
+def check_json_exists(incoming_message_channel_id):
+    file_path = scheduler.SCHEDULE_PATH + str(incoming_message_channel_id) + '/data.json'
+    dir_path = os.path.dirname(file_path)
+    json_data = globalpy.GlobalVar.json_data
+
+    # Create the dirs if dirs not exists
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path, exist_ok=True)
+
+    # Create the file if file not eixsts
+    if not os.path.exists(file_path):
+        with open(file_path, "w") as f:
+            json.dump(json_data, f, indent=4)
+
+    return file_path
