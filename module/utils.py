@@ -516,8 +516,18 @@ async def read_schedule(channel_id, message_typed_channel_id):
         elif day == '@SUNDAY@':
             content = content.replace(day, "**" + scheduler.sunday + "**")
 
-    # Check if there's date is 1st date of month, to print "Black Mage"
+    # check if black_mage.txt exists
     file_path_black_mage = scheduler.SCHEDULE_PATH + str(message_typed_channel_id) + '/black_mage.txt'
+    folder_name = os.path.dirname(file_path_black_mage)
+    isExist = os.path.exists(folder_name)
+    if(False == isExist):
+        os.makedirs(os.path.dirname(folder_name), exist_ok=True)
+    isExist = os.path.exists(file_path_black_mage)
+    if(False == isExist):
+        data_to_write = "0"
+        write_file(data_to_write, file_path_black_mage)
+
+    # Check if there's date is 1st date of month, to print "Black Mage"
     date_pattern = r"\d{1,2}/[A-Za-z]{3}/\d{2}"
     black_mage_message = ''
     matches = re.findall(date_pattern, content)
