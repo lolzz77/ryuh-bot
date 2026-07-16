@@ -301,7 +301,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
 
             # found a concensus bossing date
             # this means all users voted
-            if count == len(user_dict_temp_2):
+            if count == len(users_dict_temp_2):
                 bossing_time += f"{line}\n"
 
         # Result: Whether everyone voted or someone didnt vote
