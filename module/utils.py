@@ -200,10 +200,13 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         await message_to_check.channel.send(error.error_message)
         return
 
+    # users_dict is original
+    # users_dict_temp is to check who didnt vote
+    # users_dict_temp_2 is to check who voted All Cannot
     users_dict_temp = users_dict.copy()
+    users_dict_temp_2 = users_dict.copy()
     reactions = message_to_check.reactions
     emoji_found = False
-    total_users = len(users_dict)
 
     # Show ryuh-bot is typing...
     # 2 approaches:
@@ -224,12 +227,12 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         2️⃣ - Tuesday - 20/May/25
         """
         # check the "🙃 All Cannot" emoji first
-        # Then i can deduct the total_user
+        # Then i can remove the user
         for r in reactions:
             if r.emoji == "🙃":
-                # Minus 1, cos the count will always start with 1, that is voted by peanut
-                # Peanut shall not be counted
-                total_users -= (r.count-1)
+                async for user in r.users():
+                    if str(user.id) in user_dict_temp_2:
+                        del user_dict_temp_2[str(user.id)]
                 break
 
         for line in content_split:
@@ -278,7 +281,9 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 # If the user reacted to the message contains in the user dictionary
                 if(str(user.id) in users_dict):
                     message += users_dict[str(user.id)]
-                    count += 1
+                    # if this is "All cannot" emoji, dont increase count
+                    if reaction.emoji != "🙃":
+                        count += 1
 
                 # if is bot itself, dont add the blank emoji
                 elif(user == client.user):
@@ -296,7 +301,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
 
             # found a concensus bossing date
             # this means all users voted
-            if count == total_users:
+            if count == len(user_dict_temp_2):
                 bossing_time += f"{line}\n"
 
         # Result: Whether everyone voted or someone didnt vote
