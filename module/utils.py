@@ -231,8 +231,8 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
         for r in reactions:
             if r.emoji == "🙃":
                 async for user in r.users():
-                    if str(user.id) in user_dict_temp_2:
-                        del user_dict_temp_2[str(user.id)]
+                    if str(user.id) in users_dict_temp_2:
+                        del users_dict_temp_2[str(user.id)]
                 break
 
         for line in content_split:
@@ -316,7 +316,7 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
                 # ping everyone
                 # if you wan to ping role, '<@&[role_id]>'
                 # the differences is '&'
-                for user in users_dict:
+                for user in users_dict_temp_2:
                     message += '<@' + str(user) + '> '
                 message += '\n'
                 message += 'how?'
