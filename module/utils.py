@@ -186,6 +186,14 @@ async def check(ctx, msg_id, users_channel_id, schedule_channel_id):
     end_date = matches[-1]
     message += f"[{start_date} - {end_date}]\n"
 
+    # remind black mage
+    file_path = check_json_exists(ctx.channel.id)
+    json_data = read_file(file_path)
+    black_mage_done = json_data["black_mage_done"]
+    black_mage_month = json_data["black_mage_month"]
+    if black_mage_done == "0":
+        message += f"\nReminder: Black Mage {black_mage_month} NOT done\n\n"
+
     # Fetch user & schedule data from discord chat
     users_dict_full_original = await read_user(users_channel_id)
     if not users_dict_full_original:
@@ -595,3 +603,4 @@ def check_json_exists(incoming_message_channel_id):
             json.dump(json_data, f, indent=4)
 
     return file_path
+
